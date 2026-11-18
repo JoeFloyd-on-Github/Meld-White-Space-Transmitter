@@ -1,6 +1,8 @@
 # `wsa` (whitespaceagent): behavior overview
 
-This document describes what the `WhiteSpaceApp/wsa` binary does. It was derived from static analysis: DWARF debug info (types, enums, function and source names) plus Ghidra 12.2 headless decompilation. Nothing here has been confirmed by running the binary yet. Statements marked *(inferred)* are reasoned from the code but not directly visible in it.
+This document describes what the `WhiteSpaceApp/wsa` binary does. It was derived from static analysis: DWARF debug info (types, enums, function and source names) plus Ghidra 12.2 headless decompilation.
+
+Much of it has since been **cross-checked against a snapshot of the running device** (`root/`) and the **firmware upgrade package** (`upgrade/`). The `whitespaceagent` deployed on the device (`root/disk/usr/bin/whitespaceagent`, md5 `79f86dba926e284a0fc46614f9d6f201`) is **byte-identical to `WhiteSpaceApp/wsa`**, so this analysis describes the exact software that ran on the device. The live `/etc/config` files, the XML build pipeline, the boot wiring and the serial dumps in that snapshot all match what the decompile predicts; points that were originally *(inferred)* and are now confirmed by the snapshot are tagged *(confirmed by device snapshot)*. A broader write-up of the device, its boot sequence, the config→XML pipeline and the firmware versions is in [`system-context.md`](system-context.md). Statements still marked *(inferred)* are reasoned from the code but not directly confirmed.
 
 ## 1. Binary at a glance
 
@@ -13,6 +15,9 @@ This document describes what the `WhiteSpaceApp/wsa` binary does. It was derived
 | XML library | ezxml (bundled, `ezxml.c`) |
 | Original source path | `/home/sekhar/software/Projects/meldtech3/src` |
 | Entry point | `0x400120`; application code is `0x400290`–`0x40f800`, everything after is libc/OpenSSL |
+| On the device | `/disk/usr/bin/whitespaceagent`, started at boot by `wsagent_start` (see §2); md5 identical to `WhiteSpaceApp/wsa` |
+| Device | Meld MT300 TV-white-space transmitter; FCC ID `OKVMT300`; NXP/radio firmware `1.3.0 Tx v2`; `sbi` config version **1.38 / Nov-2013** |
+| Other builds seen | `upgrade/` ships **v27** (built Oct 24 2012); patch scripts under `root/disk/Meld/` reference a **v45** |
 
 ### Source files (from DWARF)
 
@@ -42,6 +47,14 @@ wsa <CAfile> <CApath> [<device-info.xml>]     # normal operation
 - The XML file is optional. Without it, most of the context stays empty, but FCC ID and serial number are still read from the radio (§6.2).
 - The process never exits on its own. Both threads loop forever and `main` blocks in `pthread_join`.
 
+**How the device actually launches it** *(confirmed by device snapshot)* — `wsagent_start` runs:
+
+```sh
+whitespaceagent cafile.cert /etc/config /etc/config/meldTechDeviceCapability.xml > /dev/null &
+```
+
+So on the device `CAfile` = `cafile.cert` (a **relative** path — the Go Daddy Class 2 root CA, also present at `/etc/config/cafile.cert`), `CApath` = `/etc/config`, and the XML is `/etc/config/meldTechDeviceCapability.xml`, which `wsagent_start` generates first (see §4). `wsagent_stop` is just `killall whitespaceagent`. At boot, `/etc/init.d/rcS` runs `clear_config_files` (blanks the status files), then `wsagent_start`, then `thttpd` (the PHP web UI). See [`system-context.md`](system-context.md).
+
 ## 3. Process structure
 
 ```
@@ -59,36 +72,47 @@ main()
 
 ## 4. Device-info XML file
 
-`readXmlIntoContext()` reads only **direct children of the root element**. The root element's name is not checked. Every value except the numeric fields is re-escaped (`&`->`&amp;`, `<`->`&lt;`, `>`->`&gt;`, `"`->`&quot;`, `'`->`&apos;`) before it is stored, because it is later pasted into XML/URLs verbatim. **A missing element becomes an empty string or 0.** Lengths are **not** checked: `strcpy` is used throughout, and the setters that do validate lengths (`setWhiteSpaceContext()` and friends) are never called.
+`readXmlIntoContext()` reads only **direct children of the root element**. The root element's name is not checked by the code; on the device it is `<DeviceCapability>` *(confirmed by device snapshot)*. Every value except the numeric fields is re-escaped (`&`->`&amp;`, `<`->`&lt;`, `>`->`&gt;`, `"`->`&quot;`, `'`->`&apos;`) before it is stored, because it is later pasted into XML/URLs verbatim. **A missing element becomes an empty string or 0.** Lengths are **not** checked: `strcpy` is used throughout, and the setters that do validate lengths (`setWhiteSpaceContext()` and friends) are never called.
 
-```xml
-<AnyRoot>
-  <HostAddress>db.example.com</HostAddress>          <!-- hostname for TLS connect; port is ALWAYS 443 -->
-  <HostPortNumber>443</HostPortNumber>               <!-- stored as comPortNumber; never used -->
-  <RegulatoryDomain>US</RegulatoryDomain>            <!-- overwritten by TvwsDeviceInfo/CountryCode below -->
-  <Location>
-    <Latitude>38.9</Latitude>                        <!-- strings, used verbatim in URL and XML -->
-    <Longitude>-77.0</Longitude>
-  </Location>
-  <TvwsDeviceInfo>
-    <FccID>...</FccID>                               <!-- overwritten by the value read from the radio -->
-    <MfgSerialNumber>...</MfgSerialNumber>           <!-- overwritten by the value read from the radio -->
-    <DeviceType>8</DeviceType>                       <!-- DEVICE_MODE_ENUM, sent in registration -->
-    <ChLookupDeviceType>8</ChLookupDeviceType>       <!-- DEVICE_MODE_ENUM, sent as &type= in channel query -->
-    <AntennaHeightAglMeters>10</AntennaHeightAglMeters>
-    <ContactCity/> <ContactCountry/> <ContactEmail/> <ContactName/>
-    <ContactPhone/> <ContactState/> <ContactStreet/> <ContactZip/>
-    <CountryCode>US</CountryCode>                    <!-- becomes regulatoryDomain (wins over RegulatoryDomain) -->
-    <DeviceOwner/>
-  </TvwsDeviceInfo>
-  <PreferredChannel>27,30</PreferredChannel>         <!-- comma-separated list -->
-  <EnumeratedTransmitPower>10</EnumeratedTransmitPower> <!-- 0..10, default 10 (see section 6.3) -->
-  <StreamingIpAddress>192.168.1.100</StreamingIpAddress>
-  <ModulationMode>0</ModulationMode>                 <!-- MELD_MODULATION_TYPE_ENUM -->
-</AnyRoot>
+### How the XML is produced *(confirmed by device snapshot)*
+
+The device does **not** hand-write this XML. Settings live in `/etc/config/sbi` in OpenWrt UCI format, and `wsagent_start` converts them into the XML with an awk script and a fixed template:
+
+```sh
+awk -f /disk/usr/bin/xml_conversion /etc/config/sbi /etc/config/template_file > /etc/config/meldTechDeviceCapability.xml
 ```
 
-**Regulatory domain gotcha:** the default is `"US"`, then `<RegulatoryDomain>` is applied, then `<TvwsDeviceInfo><CountryCode>` is applied. If `CountryCode` is missing, the domain becomes **empty**, which changes the serial thread to the non-US code paths (§6).
+`xml_conversion` reads `sbi` (fields split on `'`, so `option 'Key' 'Value'` → `Key=Value`), then walks `template_file` line by line and, for each `<Tag>...</Tag>` whose `Tag` exists in `sbi`, substitutes the value. Tags not present in `sbi` keep the template's own content. This means **the set of fields `wsa` can receive is fixed by `template_file`** — which, on the device, is exactly:
+
+```xml
+<DeviceCapability>
+  <HostAddress>tvws.spectrumbridge.com</HostAddress> <!-- live SpectrumBridge DB; TLS to port 443 (hard-coded in wsa) -->
+  <HostPortNumber>443</HostPortNumber>               <!-- stored as comPortNumber; never used by wsa -->
+  <RegulatoryDomain>US</RegulatoryDomain>            <!-- overwritten by TvwsDeviceInfo/CountryCode below -->
+  <Location>
+    <Latitude>38.8132280</Latitude>                  <!-- strings, used verbatim in URL and XML -->
+    <Longitude>-77.0443610</Longitude>
+  </Location>
+  <TvwsDeviceInfo>
+    <DeviceType>3</DeviceType>                        <!-- DEVICE_MODE_ENUM, sent in registration -->
+    <ChLookupDeviceType>3</ChLookupDeviceType>        <!-- DEVICE_MODE_ENUM, sent as &type= in channel query -->
+    <AntennaHeightAglMeters>30</AntennaHeightAglMeters>
+    <ContactCity/> <ContactCountry/> <ContactEmail/> <ContactName/>
+    <ContactPhone/> <ContactState/> <ContactStreet/> <ContactZip/>
+    <CountryCode>US</CountryCode>                     <!-- becomes regulatoryDomain (wins over RegulatoryDomain) -->
+    <DeviceOwner/>
+  </TvwsDeviceInfo>
+  <PreferredChannel>22</PreferredChannel>            <!-- comma-separated list -->
+  <EnumeratedTransmitPower>11</EnumeratedTransmitPower> <!-- index; the on-device value is 11 (out of the 0..10 range, see section 6.3) -->
+  <StreamingIpAddress>192.168.0.203</StreamingIpAddress>
+</DeviceCapability>
+```
+
+(Contact fields and the example coordinates above are shown blank/approximate here; the live snapshot carries the device owner's real registration details.)
+
+**Note which tags the template omits:** there is **no `<FccID>`, `<MfgSerialNumber>` or `<ModulationMode>`**. That is consistent with the decompile — `fccID` and `serialNumber` are overwritten from the radio (§6.2), and `meldModulationMode` is left at its default (0 = ATSC) because nothing supplies it. `wsa` can still read those three tags if present, but the device never writes them.
+
+**Regulatory domain gotcha:** the default is `"US"`, then `<RegulatoryDomain>` is applied, then `<TvwsDeviceInfo><CountryCode>` is applied. If `CountryCode` is missing, the domain becomes **empty**, which changes the serial thread to the non-US code paths (§6). On the device `CountryCode` is `US`, so this does not bite in practice.
 
 ### Enumerations
 
@@ -156,7 +180,8 @@ Behavior that follows from this:
 
 ### 5.2 TLS / transport
 
-- Resolves `HostAddress` with `gethostbyname()` (IPv4 only) and connects to TCP **port 443**. The port is hard-coded.
+- Resolves `HostAddress` with `gethostbyname()` (IPv4 only) and connects to TCP **port 443**. The port is hard-coded. On the device `HostAddress` is **`tvws.spectrumbridge.com`** — the live SpectrumBridge white-space database *(confirmed by device snapshot)*. This is the endpoint the `spectrumbridge_spoof_*` servers stand in for. Earlier firmware pointed `HostAddress` at demo/test servers (see `upgrade/.../RELEASE_NOTES`).
+- The CA passed in (`cafile.cert` / `/etc/config`) is the **Go Daddy Class 2 root CA** on the device, the trust anchor for the real server's certificate chain.
 - `SSLv23_client_method()` from **OpenSSL 1.0.0**, which can negotiate only **SSLv3 or TLS 1.0**. TLS 1.1/1.2 arrived in OpenSSL 1.0.1. A modern server must explicitly re-enable TLS 1.0 and a matching legacy cipher, such as `AES128-SHA` or `AES256-SHA` (RSA key exchange) or the DHE-RSA equivalents.
 - Verification: `SSL_VERIFY_PEER` with a callback that treats three specific error codes as acceptable:
   - 9 `X509_V_ERR_CERT_NOT_YET_VALID`
@@ -324,6 +349,23 @@ All files are in OpenWrt UCI syntax and are rewritten (`w+`) on each update.
 | `/etc/config/fccidSerialInfo` | thread B | `NXP Version:`, `Serial Number:`, `FCCID:`, `StreamingIpAddress:` |
 
 Several writers call `putc`/`fclose` even when `fopen` failed, so a read-only `/etc/config` will likely crash the process.
+
+### Live example *(from the device snapshot)*
+
+These files from `root/etc/config/` match the formats above exactly, and together capture the device's runtime state at snapshot time — **registered unsuccessfully, radio idle**:
+
+```
+registration     -> registration_status '99'   (99 = WS_UNKNOWN_STATUS: no successful registration)
+channel_status   -> channel_request_status ''   (never got a successful channel response)
+channels         -> option 'channels' ''        (empty available map)
+operating        -> option 'channel' ''          (no operating channel)
+transmitter      -> option 'status' '0'          (transmitter OFF)
+fccidSerialInfo  -> NXP Version:1.3.0 Tx v2 / Serial Number:371 / FCCID:OKVMT300 / StreamingIpAddress:192.168.0.203
+queryInfo        -> MT300 Firmware version = 1.3.0 v0036 Tx v2 / S/N = 00000371 / FCC ID = OKVMT300 /
+                    Channel = 21 / TX disabled / DAC gain = 0xAB / Modulation mode = ATSC
+```
+
+`fccidSerialInfo` is `recreateFccSerialMeldFile()`'s output and `queryInfo` is the raw `h`-command dump (§6.2) — both confirm the serial-parsing (`S/N =`, `FCC ID =`, `Firmware version =`) documented in §6.
 
 ## 8. Dead or unused code
 

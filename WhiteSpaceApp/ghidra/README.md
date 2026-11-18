@@ -91,7 +91,9 @@ program actually touches:
   the root for each top-level tag and, for the nested `<Location>` and
   `<TvwsDeviceInfo>` blocks, calls `ezxml_child` again on that sub-node. There is
   no XPath and no recursion; the tag tables (`responseTags`, `locationTags`,
-  `tvwsDeviceTags`) are walked by index.
+  `tvwsDeviceTags`) are walked by index. The device's actual input file uses the
+  root element `<DeviceCapability>` and is generated from `/etc/config/sbi` by an
+  awk template — see `docs/system-context.md` §3 for the real schema.
 - **A missing element is treated as empty, not an error.** The pattern
   everywhere is `peVar = ezxml_child(...); text = peVar ? peVar->txt : "";`.
   So an absent tag silently yields `""` (or `0` after `atoi`).
