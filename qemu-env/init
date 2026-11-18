@@ -1,0 +1,65 @@
+#!/bin/sh
+# Custom init: run the Meld MT300 USERSPACE on a generic qemu `malta` board.
+# The device's own ViXS 2.6.36 kernel can't be emulated, so a stock mipsel
+# malta kernel loads this ext3 rootfs and starts the device's static binaries.
+# A radio stand-in on ttyS1 (radio-emu.py, host side) supplies the FCC ID and
+# serial so wsa proceeds to the database cycle; sb_mips answers the database.
+
+BB=/bin/busybox
+$BB mount -t proc     none /proc  2>/dev/null
+$BB mount -t sysfs    none /sys   2>/dev/null
+$BB mount -t devtmpfs none /dev   2>/dev/null
+exec </dev/console >/dev/console 2>&1
+$BB mount -t tmpfs    none /tmp   2>/dev/null
+
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/disk/usr/bin:/disk/bin
+export LD_LIBRARY_PATH=/disk/lib:/lib   # glibc for the dynamic binaries (thttpd)
+
+echo
+echo "=================================================================="
+echo " Meld MT300 userspace on qemu-malta  (generic kernel, not ViXS)"
+echo "=================================================================="
+uname -a
+
+# network: loopback + the emulated NIC (qemu user-net DHCP)
+ifconfig lo 127.0.0.1 netmask 255.0.0.0 up 2>/dev/null
+udhcpc -i eth0 -q -n -t 3 2>/dev/null || ifconfig eth0 10.0.2.15 up 2>/dev/null
+echo "[net ] $(ifconfig eth0 2>/dev/null | grep -o 'inet addr:[0-9.]*')"
+
+# redirect the dead database host to this box (literal IP needs no resolver)
+sed -i "s/option 'HostAddress' '[^']*'/option 'HostAddress' '127.0.0.1'/" /etc/config/sbi
+echo "127.0.0.1 tvws.spectrumbridge.com" >> /etc/hosts
+echo "[redir] tvws.spectrumbridge.com / HostAddress -> 127.0.0.1"
+
+# the on-device SpectrumBridge stand-in on 443
+/disk/usr/bin/sb_mips https://0.0.0.0:443 >/tmp/sb.log 2>&1 &
+echo "[sb  ] database stand-in on :443"
+
+# the web server
+mkdir -p /disk/www/logs 2>/dev/null
+thttpd -C /disk/www/thttpd.conf >/tmp/thttpd.log 2>&1 &
+echo "[web ] thttpd on :80"
+
+sleep 3
+
+# build the device XML (as wsagent_start does) and launch wsa
+awk -f /disk/usr/bin/xml_conversion /etc/config/sbi /etc/config/template_file \
+    > /etc/config/meldTechDeviceCapability.xml 2>/dev/null
+/disk/usr/bin/whitespaceagent cafile.cert /etc/config \
+    /etc/config/meldTechDeviceCapability.xml >/tmp/wsa.log 2>&1 &
+echo "[wsa ] launched; running register -> channel cycle ..."
+
+sleep 18
+
+echo
+echo "================  RESULT  ========================================"
+echo "--- radio stand-in handshake (host /tmp/radio.log) is external ---"
+echo "--- database stand-in saw: ---"
+grep -E "request on TLS|replied 200" /tmp/sb.log 2>/dev/null
+echo "--- channels wsa accepted from the database (/etc/config/channels): ---"
+grep "option 'channels'" /etc/config/channels 2>/dev/null || echo "(none)"
+echo "--- web server: ---"
+echo "GET /status.php:"; wget -qO- "http://127.0.0.1/status.php" 2>&1 | grep -iE "html|title|channel|status|operating|<td|Meld" | head -8
+echo "=================================================================="
+echo
+exec $BB sh </dev/console >/dev/console 2>&1

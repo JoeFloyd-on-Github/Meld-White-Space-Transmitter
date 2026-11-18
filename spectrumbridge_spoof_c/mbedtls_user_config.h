@@ -12,3 +12,10 @@
  */
 #define MBEDTLS_SSL_PROTO_TLS1
 #define MBEDTLS_SSL_PROTO_TLS1_1
+
+/* wsa uses OpenSSL 1.0.0's SSLv23_client_method, which announces itself with a
+ * legacy SSLv2-format ClientHello (that then negotiates TLS 1.0). mbedTLS will
+ * not parse that hello unless this is enabled - without it the server rejects
+ * the ClientHello (-0x7900). Also enable SSLv3 in case the client steps down. */
+#define MBEDTLS_SSL_SRV_SUPPORT_SSLV2_CLIENT_HELLO
+#define MBEDTLS_SSL_PROTO_SSL3

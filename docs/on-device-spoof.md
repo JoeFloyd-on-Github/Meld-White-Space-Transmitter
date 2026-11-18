@@ -144,20 +144,28 @@ channel GET      : HTTP 200, SBI-Status: 0, <ChannelResponse>,
 This confirms the TLS 1.0 handshake and the exact wire protocol work end to end
 against the real server binary.
 
-### What could not be tested here
+### Full-system run against the real wsa
 
-The **real `wsa` binary does not run under qemu-user 10.2.1** in this
-environment: it is a uClibc, hard-float, MIPS32r2, statically linked ELF, and
-qemu's user-mode loader rejects it (it reserves the guest address space and then
-`exit_group(1)` before `main` — `wsa -v` prints nothing). qemu runs the
-soft-float `sb_mips` fine, so this is a qemu-user limitation with wsa's
-toolchain/float ABI, not a problem with the stand-in. Running wsa itself would
-need either full-system emulation (`qemu-system-mipsel` with a matching kernel)
-or the physical device. Because of this, the **redirect in §2 and the live
-registration/channel cycle were validated by protocol replay and from the
-decompile, not by running wsa against the server.** The final confirmation —
-`sb_mips` on 443 + a §2 redirect + `/etc/config/channels` filling in — should be
-done on the MT300.
+The real wsa **does not load under `qemu-user`** (its uClibc/hard-float MIPS32r2
+image is rejected by the user-mode ELF loader before `main`), so it was run under
+**full-system emulation** instead — a stock mipsel `malta` kernel booting the
+device's userspace, with a stand-in radio on `/dev/ttyS1`. See
+[`../qemu-env/`](../qemu-env). Observed end to end:
+
+```
+radio:  S/N = 371   FCC ID = OKVMT300          (wsa's serial handshake satisfied)
+sb:     PUT /v3/devices/US/OKVMT300/371                  -> 200, SBI-Status 0
+sb:     GET /v3/channels/US/38.8132280/-77.0443610/?...  -> 200, 11 channels
+wsa:    /etc/config/channels = '21,24,27,30,33,36,39,42,45,48,51'
+```
+
+So the redirect (§2) and the live register→channel cycle are confirmed with the
+**actual wsa binary**, not only by replay. Two notes: wsa will not contact the
+database until the radio reports an FCC ID and serial (hence the radio stand-in);
+and the device's own 2.6.36 ViXS kernel — recovered from the NAND dump — cannot
+boot on qemu's malta machine (no ViXS model), so a compatible stock kernel hosts
+the userspace. Running on the physical MT300 remains the only way to also
+exercise the real radio and ViXS hardware.
 
 ### Host-side quick check (no device)
 
