@@ -458,29 +458,310 @@ WSServiceStatus getWhiteSpaceStatus(WhiteSpaceContext *wsCtx,MessageType msgType
  *   /etc/config status-file writers, and channel-map filtering
  * =====================================================================
  *
- * The simple setters/getters are summarized here rather than reproduced; all
- * take (context, value) and copy into the matching field, and the length-
- * checked setters return LIB_STATUS_SET_SUCCESS/FAILURE. NONE of the length-
- * checked setters is actually reached at runtime (they are only called by
- * setWhiteSpaceContext(), which is itself dead code - readXmlIntoContext uses
- * raw strcpy instead). See the raw file for their full bodies.
- *
- *   setHostURL            len<200  -> strcpy context->hostURL
- *   setRegulatoryDomain   len<3    -> strcpy context->regulatoryDomain
- *   setFccId              len<0x18 -> strncpy context->fccID
- *   setSerialNumber       len<0x20 -> strncpy context->serialNumber
- *   setLatitudeAndLongitude  each len<100 -> strncpy lat/long strings
- *   setWhiteSpaceContextAddress  nested length checks on the 9 contact fields
- *   setComPortNumber / setModeInContext / setChannelLookUpModeInContext /
- *     setAntennaeHeightInMeters   plain field stores
- *   getRegistrationStatus  -- returns context->mode (looks like a BUG: it
- *     returns mode, not registrationStatus; unused anyway)
- *   getRegistrationErrorCode / getChannelRequestStatus /
- *     getChannelRequestErrorCode / getLibraryState / getChannelCountFromChannelMap
- *     -- field reads
- *   printChannelMap / printPreferredChannelMap  -- empty (stubbed out)
- *   setWhiteSpaceContext  -- dead orchestrator that calls all the setters
+ * The setters/getters below are all DEAD CODE: the only caller of the length-
+ * checked setters is setWhiteSpaceContext(), which is itself never called
+ * (readXmlIntoContext loads the context with raw strcpy instead). They are a
+ * complete library-style API that the final program does not use. Each length-
+ * checked setter returns LIB_STATUS_SET_SUCCESS / LIB_STATUS_SET_FAILURE, and
+ * local_10 is almost always that return value.
  */
+
+/* setWhiteSpaceContext(...): the dead orchestrator. Calls every setter in turn,
+ * printing a "... Failure" line and marking LIB_STATE_INIT_FAILURE on the first
+ * that fails; on full success sets LIB_STATE_INIT_SUCCESS (the only place that
+ * state is ever set). LVar1 = each setter's result; local_10 = overall return. */
+LibraryInterfaceStatus
+setWhiteSpaceContext
+          (WhiteSpaceContext *wsCtx,char *hostURL,int comPortNumber,DevMode mode,DevMode chanDevMode
+          ,int antHeightInMeters,char *regDomain,char *fccId,char *serialNumber,char *latString,
+          char *lonString,char *ownerName,char *contName,char *contStreetAddress,char *contactCity,
+          char *contactPostalCode,char *contactProvince,char *contactCountry,char *contactEmail,
+          char *contactPhoneNumber)
+{
+  LibraryInterfaceStatus LVar1;      // each setter's result
+  LibraryInterfaceStatus local_10;   // overall return
+  LVar1 = setHostURL(wsCtx,hostURL);
+  if (LVar1 == LIB_STATUS_SET_FAILURE) {
+    puts("URL Failure");
+    wsCtx->libraryState = LIB_STATE_INIT_FAILURE;
+    local_10 = LIB_STATUS_SET_FAILURE;
+  }
+  else {
+    setComPortNumber(wsCtx,comPortNumber);
+    setModeInContext(wsCtx,mode);
+    setChannelLookUpModeInContext(wsCtx,chanDevMode);
+    setAntennaeHeightInMeters(wsCtx,antHeightInMeters);
+    LVar1 = setRegulatoryDomain(wsCtx,regDomain);
+    if (LVar1 == LIB_STATUS_SET_FAILURE) {
+      puts("Reg Dom Failure");
+      wsCtx->libraryState = LIB_STATE_INIT_FAILURE;
+      local_10 = LIB_STATUS_SET_FAILURE;
+    }
+    else {
+      LVar1 = setFccId(wsCtx,fccId);
+      if (LVar1 == LIB_STATUS_SET_FAILURE) {
+        puts("FCCID Failure");
+        wsCtx->libraryState = LIB_STATE_INIT_FAILURE;
+        local_10 = LIB_STATUS_SET_FAILURE;
+      }
+      else {
+        LVar1 = setSerialNumber(wsCtx,serialNumber);
+        if (LVar1 == LIB_STATUS_SET_FAILURE) {
+          puts("SERIAL NUMBER Failure");
+          wsCtx->libraryState = LIB_STATE_INIT_FAILURE;
+          local_10 = LIB_STATUS_SET_FAILURE;
+        }
+        else {
+          LVar1 = setLatitudeAndLongitude(wsCtx,latString,lonString);
+          if (LVar1 == LIB_STATUS_SET_FAILURE) {
+            puts("Lat and Long Failure");
+            wsCtx->libraryState = LIB_STATE_INIT_FAILURE;
+            local_10 = LIB_STATUS_SET_FAILURE;
+          }
+          else {
+            local_10 = setWhiteSpaceContextAddress
+                                 (wsCtx,ownerName,contName,contStreetAddress,contactCity,
+                                  contactPostalCode,contactProvince,contactCountry,contactEmail,
+                                  contactPhoneNumber);
+            if (local_10 == LIB_STATUS_SET_FAILURE) {
+              puts("Address Failure");
+              wsCtx->libraryState = LIB_STATE_INIT_FAILURE;
+            }
+            else {
+              wsCtx->libraryState = LIB_STATE_INIT_SUCCESS;   // only setter of this state
+            }
+          }
+        }
+      }
+    }
+  }
+  return local_10;
+}
+
+/* setHostURL(context, hostURL): store if < 200 chars (strcpy). sVar1 = length. */
+LibraryInterfaceStatus setHostURL(WhiteSpaceContext *context,char *hostURL)
+{
+  size_t sVar1;                      // length of hostURL
+  LibraryInterfaceStatus local_10;   // return
+  sVar1 = strlen(hostURL);
+  if (sVar1 < 200) {
+    strcpy(context->hostURL,hostURL);
+    local_10 = LIB_STATUS_SET_SUCCESS;
+  }
+  else {
+    local_10 = LIB_STATUS_SET_FAILURE;
+  }
+  return local_10;
+}
+
+/* setComPortNumber(context, portNumber): plain field store. */
+void setComPortNumber(WhiteSpaceContext *context,int portNumber)
+{
+  context->comPortNumber = portNumber;
+  return;
+}
+
+/* setRegulatoryDomain(context, regDomain): store if < 3 chars (strcpy). */
+LibraryInterfaceStatus setRegulatoryDomain(WhiteSpaceContext *context,char *regDomain)
+{
+  size_t sVar1;
+  LibraryInterfaceStatus local_10;
+  sVar1 = strlen(regDomain);
+  if (sVar1 < 3) {
+    strcpy(context->regulatoryDomain,regDomain);
+    local_10 = LIB_STATUS_SET_SUCCESS;
+  }
+  else {
+    local_10 = LIB_STATUS_SET_FAILURE;
+  }
+  return local_10;
+}
+
+/* setWhiteSpaceContextAddress(wsCtx, 9 contact strings): length-check each of
+ * the 9 fields (owner<100, contact name<100, street<100, city<0x30, postal<0x14,
+ * province<4, country<4, email<100, phone<0x20) and strcpy on success; any
+ * overflow returns FAILURE. sVar1 is reused for each strlen. NOTE: a decompiler-
+ * visible BUG - the postal-code success path strcpy's contactCity again into
+ * contactCity instead of writing contactPostalCode. local_10 = return. */
+LibraryInterfaceStatus
+setWhiteSpaceContextAddress
+          (WhiteSpaceContext *wsCtx,char *ownerName,char *contName,char *contStreetAddress,
+          char *contactCity,char *contactPostalCode,char *contactProvince,char *contactCountry,
+          char *contactEmail,char *contactPhoneNumber)
+{
+  size_t sVar1;                      // each field length
+  LibraryInterfaceStatus local_10;   // return
+  sVar1 = strlen(ownerName);
+  if (sVar1 < 100) {
+    strcpy((wsCtx->addressInfo).ownerName,ownerName);
+    sVar1 = strlen(contName);
+    if (sVar1 < 100) {
+      strcpy((wsCtx->addressInfo).contactName,contName);
+      sVar1 = strlen(contStreetAddress);
+      if (sVar1 < 100) {
+        strcpy((wsCtx->addressInfo).contactStreetAddress,contStreetAddress);
+        sVar1 = strlen(contactCity);
+        if (sVar1 < 0x30) {
+          strcpy((wsCtx->addressInfo).contactCity,contactCity);
+          sVar1 = strlen(contactPostalCode);
+          if (sVar1 < 0x14) {
+            strcpy((wsCtx->addressInfo).contactCity,contactCity);   // BUG: should be contactPostalCode
+            sVar1 = strlen(contactProvince);
+            if (sVar1 < 4) {
+              strcpy((wsCtx->addressInfo).contactProvince,contactProvince);
+              sVar1 = strlen(contactCountry);
+              if (sVar1 < 4) {
+                strcpy((wsCtx->addressInfo).contactCountry,contactCountry);
+                sVar1 = strlen(contactEmail);
+                if (sVar1 < 100) {
+                  strcpy((wsCtx->addressInfo).contactEmail,contactEmail);
+                  sVar1 = strlen(contactPhoneNumber);
+                  if (sVar1 < 0x20) {
+                    strcpy((wsCtx->addressInfo).contactPhoneNumber,contactPhoneNumber);
+                    local_10 = LIB_STATUS_SET_SUCCESS;
+                  }
+                  else { local_10 = LIB_STATUS_SET_FAILURE; }
+                }
+                else { local_10 = LIB_STATUS_SET_FAILURE; }
+              }
+              else { local_10 = LIB_STATUS_SET_FAILURE; }
+            }
+            else { local_10 = LIB_STATUS_SET_FAILURE; }
+          }
+          else { local_10 = LIB_STATUS_SET_FAILURE; }
+        }
+        else { local_10 = LIB_STATUS_SET_FAILURE; }
+      }
+      else { local_10 = LIB_STATUS_SET_FAILURE; }
+    }
+    else { local_10 = LIB_STATUS_SET_FAILURE; }
+  }
+  else { local_10 = LIB_STATUS_SET_FAILURE; }
+  return local_10;
+}
+
+/* setModeInContext(context, devMode): plain field store (DEVICE_MODE_ENUM). */
+void setModeInContext(WhiteSpaceContext *context,DevMode devMode)
+{
+  context->mode = devMode;
+  return;
+}
+
+/* setChannelLookUpModeInContext(context, chDevMode): plain field store. */
+void setChannelLookUpModeInContext(WhiteSpaceContext *context,DevMode chDevMode)
+{
+  context->channelLookUpMode = chDevMode;
+  return;
+}
+
+/* setAntennaeHeightInMeters(context, antHeight): plain field store. */
+void setAntennaeHeightInMeters(WhiteSpaceContext *context,int antHeight)
+{
+  context->antennaeHeightInMeters = antHeight;
+  return;
+}
+
+/* setFccId(context, fccId): store if < 0x18 chars (strncpy 0x18). */
+LibraryInterfaceStatus setFccId(WhiteSpaceContext *context,char *fccId)
+{
+  size_t sVar1;
+  LibraryInterfaceStatus local_10;
+  sVar1 = strlen(fccId);
+  if (sVar1 < 0x18) {
+    strncpy(context->fccID,fccId,0x18);
+    local_10 = LIB_STATUS_SET_SUCCESS;
+  }
+  else {
+    local_10 = LIB_STATUS_SET_FAILURE;
+  }
+  return local_10;
+}
+
+/* setSerialNumber(context, serialNumber): store if < 0x20 chars (strncpy 0x20). */
+LibraryInterfaceStatus setSerialNumber(WhiteSpaceContext *context,char *serialNumber)
+{
+  size_t sVar1;
+  LibraryInterfaceStatus local_10;
+  sVar1 = strlen(serialNumber);
+  if (sVar1 < 0x20) {
+    strncpy(context->serialNumber,serialNumber,0x20);
+    local_10 = LIB_STATUS_SET_SUCCESS;
+  }
+  else {
+    local_10 = LIB_STATUS_SET_FAILURE;
+  }
+  return local_10;
+}
+
+/* setLatitudeAndLongitude(context, latString, lonString): store both if each
+ * is < 100 chars (strncpy 100). */
+LibraryInterfaceStatus
+setLatitudeAndLongitude(WhiteSpaceContext *context,char *latString,char *lonString)
+{
+  size_t sVar1;
+  LibraryInterfaceStatus local_10;
+  sVar1 = strlen(latString);
+  if ((sVar1 < 100) && (sVar1 = strlen(lonString), sVar1 < 100)) {
+    strncpy(context->latitudeString,latString,100);
+    strncpy(context->longitudeString,lonString,100);
+    local_10 = LIB_STATUS_SET_SUCCESS;
+  }
+  else {
+    local_10 = LIB_STATUS_SET_FAILURE;
+  }
+  return local_10;
+}
+
+/* getRegistrationStatus(context): BUG - returns context->mode, not
+ * registrationStatus (the return type is WSServiceStatus but mode is a DevMode).
+ * Never called. */
+WSServiceStatus getRegistrationStatus(WhiteSpaceContext *context)
+{
+  return context->mode;
+}
+
+/* getRegistrationErrorCode(context): field read. */
+int getRegistrationErrorCode(WhiteSpaceContext *context)
+{
+  return context->registrationErrorCode;
+}
+
+/* getChannelRequestStatus(context): field read. */
+WSServiceStatus getChannelRequestStatus(WhiteSpaceContext *context)
+{
+  return context->channelRequestStatus;
+}
+
+/* getChannelRequestErrorCode(context): field read. */
+int getChannelRequestErrorCode(WhiteSpaceContext *context)
+{
+  return context->channelRequestErrorCode;
+}
+
+/* getLibraryState(context): field read (LIBRARY_STATE_ENUM). */
+LibraryState getLibraryState(WhiteSpaceContext *context)
+{
+  return context->libraryState;
+}
+
+/* printChannelMap(context): empty stub. */
+void printChannelMap(WhiteSpaceContext *context)
+{
+  return;
+}
+
+/* printPreferredChannelMap(context): empty stub. */
+void printPreferredChannelMap(WhiteSpaceContext *context)
+{
+  return;
+}
+
+/* getChannelCountFromChannelMap(context): field read (available channel count).
+ * This one IS used - by the channel-response handler. */
+int getChannelCountFromChannelMap(WhiteSpaceContext *context)
+{
+  return (context->availableChannelMap).channelCount;
+}
 
 /* initializeWhiteSpaceContext(context): zero the whole 5232-byte context and
  * set the two non-zero defaults. Called once from main before XML load. */
@@ -622,20 +903,138 @@ void reAdjustChannelMapToMeldCapabilities(WhiteSpaceContext *context)
  *   OpenSSL 1.0.0, so SSLv3 / TLS 1.0 only)
  * =====================================================================
  *
- * Helpers summarized (full bodies in the raw file):
- *   initializeSecurityCtx() -- SSL_library_init + SSL_load_error_strings +
- *       RAND_seed("This is a Random Number",0x18)  (a fixed, weak seed)
- *   pexit(s)      -- perror(s), then returns (does NOT exit despite the name)
- *   log_ssl()     -- drain the OpenSSL error queue to stdout via "*** %s"
- *   create_tcp_socket() -- socket(AF_INET, SOCK_STREAM=2, IPPROTO_TCP=6)
- *   get_ip(host,ip) -- gethostbyname + inet_ntop; fills `ip`; 1 ok / 0 fail
- *   recv_to(...)  -- select()-with-timeout wrapper around recv(); DEAD CODE,
- *       the TLS path uses recv_to_ssl instead
- *   recv_to_ssl(ssl,buf,len,to) -- just SSL_read(ssl,buf,len); the `to`
- *       (5000 ms) timeout argument is IGNORED
- *   sslShutDown(wsCtx,ctx,ssl) -- SSL_shutdown, close(activeSockForSession),
- *       SSL_free, SSL_CTX_free
  */
+
+/* initializeSecurityCtx(): OpenSSL global init. RAND_seed uses a fixed 24-byte
+ * literal string, so the PRNG seed is weak/predictable. Called once from main. */
+void initializeSecurityCtx(void)
+{
+  SSL_library_init();
+  SSL_load_error_strings();
+  RAND_seed("This is a Random Number",0x18);      // fixed, weak seed
+  return;
+}
+
+/* pexit(s): perror(s) then RETURNS (does not exit, despite the name). */
+void pexit(char *s)
+{
+  perror(s);
+  return;
+}
+
+/* log_ssl(): drain the OpenSSL error queue, printing each as "*** <text>".
+ * e = the current error code; acStack_10c = the formatted message buffer. */
+int log_ssl(void)
+{
+  ulong e;                           // OpenSSL error code
+  char acStack_10c [260];            // error-string buffer
+  while( true ) {
+    e = ERR_get_error();
+    if (e == 0) break;
+    ERR_error_string_n(e,acStack_10c,0x100);
+    printf("*** %s\n",acStack_10c);
+  }
+  return 0;
+}
+
+/* recv_to(fd, buffer, len, flags, to): select()-with-timeout wrapper around
+ * recv(). DEAD CODE - the TLS path uses recv_to_ssl instead. Returns bytes read,
+ * -1 on select error, -2 on timeout. fStack_98 = fd_set; local_18 = timeval
+ * (to ms); local_a4 = fd_set clear index; local_10 = return. */
+int recv_to(int fd,char *buffer,int len,int flags,int to)
+{
+  int iVar1;                         // select() / fcntl result
+  uint local_a4;                     // fd_set clear index
+  fd_set fStack_98;
+  timeval local_18;                  // timeout
+  ssize_t local_10;                  // return
+  for (local_a4 = 0; local_a4 < 0x20; local_a4 = local_a4 + 1) {
+    fStack_98.fds_bits[local_a4] = 0;
+  }
+  fStack_98.fds_bits[(uint)fd >> 5] = fStack_98.fds_bits[(uint)fd >> 5] | 1 << (fd & 0x1fU);
+  local_18.tv_sec = 0;
+  local_18.tv_usec = to * 1000;
+  iVar1 = select(fd + 1,&fStack_98,(fd_set *)0x0,(fd_set *)0x0,&local_18);
+  if (iVar1 < 0) {
+    local_10 = -1;                   // select error
+  }
+  else if ((iVar1 < 1) || ((fStack_98.fds_bits[(uint)fd >> 5] >> (fd & 0x1fU) & 1U) == 0)) {
+    local_10 = -2;                   // timeout
+  }
+  else {
+    iVar1 = fcntl(fd,3);             // F_GETFL (toggle non-block around recv)
+    if (iVar1 != -1) {
+      fcntl(fd,4);                   // F_SETFL
+    }
+    local_10 = recv(fd,buffer,len,flags);
+    if (iVar1 != -1) {
+      fcntl(fd,4);
+    }
+  }
+  return local_10;
+}
+
+/* recv_to_ssl(ssl, buffer, len, to): just SSL_read(ssl, buffer, len). The `to`
+ * (5000 ms) timeout argument is accepted but IGNORED - this is why the receive
+ * loop blocks until the server closes the connection. */
+int recv_to_ssl(SSL *ssl,char *buffer,int len,int to)
+{
+  int iVar1;
+  iVar1 = SSL_read((SSL *)ssl,buffer,len);
+  return iVar1;
+}
+
+/* create_tcp_socket(): socket(AF_INET=2, SOCK_STREAM=2, IPPROTO_TCP=6). On
+ * failure logs via pexit and returns the (negative) error. */
+int create_tcp_socket(void)
+{
+  int iVar1;
+  iVar1 = socket(2,2,6);
+  if (iVar1 < 0) {
+    pexit("Can\'t create TCP socket");
+  }
+  return iVar1;
+}
+
+/* get_ip(host, ip): resolve `host` (gethostbyname) and write the first address
+ * as a dotted-quad string into `ip` (inet_ntop). IPv4 only. Returns 1 ok / 0.
+ * phVar1 = the hostent; pcVar2 = inet_ntop result; local_10 = return. */
+int get_ip(char *host,char *ip)
+{
+  hostent *phVar1;                   // resolved host
+  char *pcVar2;                      // inet_ntop result
+  int local_10;                      // return
+  memset(ip,0,0x10);
+  phVar1 = gethostbyname(host);
+  if (phVar1 == (hostent *)0x0) {
+    pexit("Can\'t get IP");
+    local_10 = 0;
+  }
+  else {
+    pcVar2 = inet_ntop(2,*phVar1->h_addr_list,ip,0xf);
+    if (pcVar2 == (char *)0x0) {
+      pexit("Can\'t resolve host");
+      local_10 = 0;
+    }
+    else {
+      local_10 = 1;
+    }
+  }
+  return local_10;
+}
+
+/* sslShutDown(wsCtx, ctx, ssl): orderly teardown of one session - SSL_shutdown,
+ * close the socket (if > 0), SSL_free, SSL_CTX_free. */
+void sslShutDown(WhiteSpaceContext *wsCtx,SSL_CTX **ctx,SSL **ssl)
+{
+  SSL_shutdown((SSL *)*ssl);
+  if (0 < wsCtx->activeSockForSession) {
+    close(wsCtx->activeSockForSession);
+  }
+  SSL_free((SSL *)*ssl);
+  SSL_CTX_free((SSL_CTX *)*ctx);
+  return;
+}
 
 /* verify_callback(ok, ctx): OpenSSL per-certificate verify hook.
  * Returns 1 to accept the certificate, 0 to reject. When OpenSSL already
@@ -885,19 +1284,86 @@ int sslReceiveMessage(WhiteSpaceContext *wsCtx,SSL_CTX *ctx,SSL *ssl)
  *      SSL_CTX **sslCtx, SSL **ssl, pthread_mutex_t *whiteSpaceMutex)
  * and returns the next WhiteSpaceState.
  *
- * The scan-related early states are stubs that only advance and set an event
- * (full bodies in the raw file):
- *     IDLE                -> BACKGROUND_SCANNING
- *     BACKGROUND_SCANNING -> ASSOCIATING        (event = CHANNEL_LOCKED)
- *     ASSOCIATING         -> OBTAINING_IP        (event = ASSOCIATED)
- *     OBTAINING_IP        -> SERVICE_RESOLUTION  (event = IP_OBTAINED)
- *     SERVICE_RESOLUTION  -> REGISTRATION        (event = SERVICE_RESOLVED)
- *     REGISTRATION        -> WAIT_TO_ESTABLISH_SECURE_SESSION (event=REG_REQUEST_SEND)
- *     CHANNEL_REQUEST     -> WAIT_TO_ESTABLISH_SECURE_SESSION (event=CHANNEL_REQUEST_SEND)
+ * The scan-related early states (IDLE..SERVICE_RESOLUTION) plus REGISTRATION
+ * and CHANNEL_REQUEST are stubs that only set an event and advance - leftovers
+ * from a design that once did radio scanning. Their one-line bodies are given
+ * below.
  *
  * The global freeRunningClockForReferenceInSeconds just accumulates every
- * sleep() below; nothing reads it back.
+ * sleep() in the real states; nothing reads it back.
  */
+
+/* processWS_STATE_IDLE: stub -> BACKGROUND_SCANNING. */
+WhiteSpaceState
+processWS_STATE_IDLE
+          (WhiteSpaceContext *wsCtx,WhiteSpaceEvent *event,SSL_CTX **sslCtx,SSL **ssl,
+          pthread_mutex_t *whiteSpaceMutex)
+{
+  return WS_STATE_BACKGROUND_SCANNING;
+}
+
+/* processWS_STATE_BACKGROUND_SCANNING: stub -> ASSOCIATING, event=CHANNEL_LOCKED. */
+WhiteSpaceState
+processWS_STATE_BACKGROUND_SCANNING
+          (WhiteSpaceContext *wsCtx,WhiteSpaceEvent *event,SSL_CTX **sslCtx,SSL **ssl,
+          pthread_mutex_t *whiteSpaceMutex)
+{
+  *event = WS_EVENT_CHANNEL_LOCKED;
+  return WS_STATE_ASSOCIATING;
+}
+
+/* processWS_STATE_ASSOCIATING: stub -> OBTAINING_IP, event=ASSOCIATED. */
+WhiteSpaceState
+processWS_STATE_ASSOCIATING
+          (WhiteSpaceContext *wsCtx,WhiteSpaceEvent *event,SSL_CTX **sslCtx,SSL **ssl,
+          pthread_mutex_t *whiteSpaceMutex)
+{
+  *event = WS_EVENT_ASSOCIATED;
+  return WS_STATE_OBTAINING_IP;
+}
+
+/* processWS_STATE_OBTAINING_IP: stub -> SERVICE_RESOLUTION, event=IP_OBTAINED. */
+WhiteSpaceState
+processWS_STATE_OBTAINING_IP
+          (WhiteSpaceContext *wsCtx,WhiteSpaceEvent *event,SSL_CTX **sslCtx,SSL **ssl,
+          pthread_mutex_t *whiteSpaceMutex)
+{
+  *event = WS_EVENT_IP_OBTAINED;
+  return WS_STATE_SERVICE_RESOLUTION;
+}
+
+/* processWS_STATE_SERVICE_RESOLUTION: stub -> REGISTRATION, event=SERVICE_RESOLVED. */
+WhiteSpaceState
+processWS_STATE_SERVICE_RESOLUTION
+          (WhiteSpaceContext *wsCtx,WhiteSpaceEvent *event,SSL_CTX **sslCtx,SSL **ssl,
+          pthread_mutex_t *whiteSpaceMutex)
+{
+  *event = WS_EVENT_SERVICE_RESOLVED;
+  return WS_STATE_REGISTRATION;
+}
+
+/* processWS_STATE_REGISTRATION: stub -> WAIT_TO_ESTABLISH_SECURE_SESSION,
+ * event=REGISTRATION_REQUEST_SEND (tells the TLS state we are registering). */
+WhiteSpaceState
+processWS_STATE_REGISTRATION
+          (WhiteSpaceContext *wsCtx,WhiteSpaceEvent *event,SSL_CTX **sslCtx,SSL **ssl,
+          pthread_mutex_t *whiteSpaceMutex)
+{
+  *event = WS_EVENT_REGISTRATION_REQUEST_SEND;
+  return WS_STATE_WAIT_TO_ESTABLISH_SECURE_SESSION;
+}
+
+/* processWS_STATE_CHANNEL_REQUEST: stub -> WAIT_TO_ESTABLISH_SECURE_SESSION,
+ * event=CHANNEL_REQUEST_SEND (tells the TLS state we want a channel lookup).
+ * This is the state the renewal loop returns to for every periodic refresh. */
+WhiteSpaceState
+processWS_STATE_CHANNEL_REQUEST
+          (WhiteSpaceContext *wsCtx,WhiteSpaceEvent *event,SSL_CTX **sslCtx,SSL **ssl,
+          pthread_mutex_t *whiteSpaceMutex)
+{
+  *event = WS_EVENT_CHANNEL_REQUEST_SEND;
+  return WS_STATE_WAIT_TO_ESTABLISH_SECURE_SESSION;
+}
 
 /* processWS_STATE_WAIT_TO_ESTABLISH_SECURE_SESSION: open the TLS session and
  * branch on whether we are here to register or to ask for channels (decided by
