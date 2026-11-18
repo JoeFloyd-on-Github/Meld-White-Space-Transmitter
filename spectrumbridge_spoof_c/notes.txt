@@ -1,0 +1,420 @@
+
+  wget https://raw.githubusercontent.com/cesanta/mongoose/master/mongoose.c
+
+  wget https://raw.githubusercontent.com/cesanta/mongoose/master/mongoose.h
+
+
+#define MG_TLS_NONE 0     
+#define MG_TLS_MBED 1     
+#define MG_TLS_OPENSSL 2  
+#define MG_TLS_WOLFSSL 5  
+#define MG_TLS_BUILTIN 3  
+#define MG_TLS_CUSTOM 4   
+
+// FORCE MBEDTLS HERE
+#undef MG_TLS
+#define MG_TLS MG_TLS_MBED
+#ifndef MG_ENABLE_MBEDTLS
+#define MG_ENABLE_MBEDTLS 1
+#endif
+
+  sudo apt-get install gcc-mipsel-linux-gnu
+
+
+
+  wget https://github.com/Mbed-TLS/mbedtls/archive/refs/tags/v2.28.2.tar.gz
+
+  tar -xzf v2.28.2.tar.gz
+
+
+
+wget https://musl.cc/mipsel-linux-muslsf-cross.tgz
+tar -xzf mipsel-linux-muslsf-cross.tgz
+# Add the bin directory to your current path
+export PATH=$PATH:$(pwd)/mipsel-linux-muslsf-cross/bin
+
+cd mbedtls-2.28.2
+make clean
+# Build using the musl compiler
+make CC=mipsel-linux-muslsf-gcc AR=mipsel-linux-muslsf-ar \
+     CFLAGS="-O2 -static -msoft-float" \
+     LDFLAGS="-static" \
+     lib
+cd ..
+
+
+# 1. Compile Mongoose to an object file
+mipsel-linux-muslsf-gcc -static -O2 -msoft-float \
+    -DMG_ENABLE_MBEDTLS=1 \
+    -I./mbedtls-2.28.2/include \
+    -c mongoose.c -o mongoose.o
+
+# 2. Compile your server code to an object file
+mipsel-linux-muslsf-gcc -static -O2 -msoft-float \
+    -DMG_ENABLE_MBEDTLS=1 \
+    -I./mbedtls-2.28.2/include \
+    -c sb.c -o sb.o
+
+# 3. Link them with the static libraries
+mipsel-linux-muslsf-gcc -static -msoft-float \
+    sb.o mongoose.o \
+    ./mbedtls-2.28.2/library/libmbedtls.a \
+    ./mbedtls-2.28.2/library/libmbedx509.a \
+    ./mbedtls-2.28.2/library/libmbedcrypto.a \
+    -lpthread -o sb_final
+
+
+mipsel-linux-gnu-strip sb_mips_static
+
+
+nc 192.168.1.214 8443 > /tmp/sb_server
+chmod +x /tmp/sb_server
+
+
+# Set time
+date -s "2026-03-16 11:00:00"
+
+# Redirect the agent to localhost
+sed -i "s/option 'HostAddress' 'tvws.spectrumbridge.com'/option 'HostAddress' '127.0.0.1'/" /etc/config/sbi
+
+# Create the trust link (even though we embedded it, 
+# the agent binary still looks for this local file to trust the peer)
+ln -sf /etc/config/cafile.cert /etc/config/3ef04004.0
+
+
+-----BEGIN CERTIFICATE-----
+
+MIIDozCCAougAwIBAgIUSc6KghUcrnPPfaUK8yvtRmgXHlUwDQYJKoZIhvcNAQEF
+
+BQAwYTELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAlZBMRAwDgYDVQQHDAdGYWlyZmF4
+
+MREwDwYDVQQKDAhNZWxkVGVjaDEgMB4GA1UEAwwXdHZ3cy5zcGVjdHJ1bWJyaWRn
+
+ZS5jb20wHhcNMjYwMzE2MTQyNDMzWhcNMzYwMzEzMTQyNDMzWjBhMQswCQYDVQQG
+
+EwJVUzELMAkGA1UECAwCVkExEDAOBgNVBAcMB0ZhaXJmYXgxETAPBgNVBAoMCE1l
+
+bGRUZWNoMSAwHgYDVQQDDBd0dndzLnNwZWN0cnVtYnJpZGdlLmNvbTCCASIwDQYJ
+
+KoZIhvcNAQEBBQADggEPADCCAQoCggEBAKd2WKz5DoLJIVQJZMMTkv0OXZ18PFT4
+
+pDc5ww/Gav4yvTK51DoW/jW23oNBoeopAVnPxW41Fo34RxvUNeHQoye/ds32dlXo
+
+MqvJad7XXDFSNCPx/JJf1p+r4/n6u9iYQDDh4tacbgLHe2LsbH9OanKGoyAqyeNo
+
+DaA8Wl6e9mALrEanXS1FcVY8GCkm3ror6EV2Hjo1c/insI9FjnEXZaEprLniO/jp
+
+nBFCtGapZXU/e/tx4ewLjcZVJj5oS0ZF9qVAWsIvZsdk8tXU+WjVCqLhiMZ2QZHx
+
+IHiYZLKT8zAyCPBesV4Dkj/r+ccytdAOoMd/ENF/7Nsl3Dth2ime9o8CAwEAAaNT
+
+MFEwHQYDVR0OBBYEFJJGk3Hf0vFRf7U8PxxyXG8q+L6HMB8GA1UdIwQYMBaAFJJG
+
+k3Hf0vFRf7U8PxxyXG8q+L6HMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEF
+
+BQADggEBAEpsWsuoFKNX1DaioZMVrNNbpBB/5A71YqD3Ol8SpoIZZhCqSSlPqRUf
+
+8agyhIUf41vghnfckaGalhHxzf7hgOYA8N/rybjYzbilfYjfbWx9p/XRaT1SdiFs
+
+vANvVNBvJfzKAcybzVKKLj+aucmQm/jTiv6znmhdEtY+fUWCGCiTS/fSVXudxbm1
+
+RZq39PvQgSEtUphmIt2rra6mZLLsLwxrsw9eCrRQWgZG7beL7ItnKA5eSdr1OEPf
+
+cfweb6iGz4N0VU8ptnOlRgFWGhq25mTpO6e+ZjhQNRvrkCpRWY51NzwZzze3xAmj
+
+knMSRatQob9DT9AA3Wbl1jiCHPWW3tQ=
+
+-----END CERTIFICATE-----
+
+-----BEGIN PRIVATE KEY-----
+
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCndlis+Q6CySFU
+
+CWTDE5L9Dl2dfDxU+KQ3OcMPxmr+Mr0yudQ6Fv41tt6DQaHqKQFZz8VuNRaN+Ecb
+
+1DXh0KMnv3bN9nZV6DKryWne11wxUjQj8fySX9afq+P5+rvYmEAw4eLWnG4Cx3ti
+
+7Gx/TmpyhqMgKsnjaA2gPFpenvZgC6xGp10tRXFWPBgpJt66K+hFdh46NXP4p7CP
+
+RY5xF2WhKay54jv46ZwRQrRmqWV1P3v7ceHsC43GVSY+aEtGRfalQFrCL2bHZPLV
+
+1Plo1Qqi4YjGdkGR8SB4mGSyk/MwMgjwXrFeA5I/6/nHMrXQDqDHfxDRf+zbJdw7
+
+YdopnvaPAgMBAAECggEAT5XU6s+qb8l6h1+3fWZOEunC39dtLMzF7mELLPIVYx1m
+
+ATeDft/yjECOWz7T3l8Cf1ZY89lTEMGPudAOk3T+NSOvKI8bChTCEBY2tGsRK3dv
+
+xC165W2aqGOegu0AXR1uVEzl6yyIs9Vt9EN8BLyVpjwKRn1PWT3YS/Ci2hkd6eKd
+
+Xt/eKSqRDOxtsm4vCAQVOIMJMtnlxyOKtyqARVI4tY2Jqg8HvKZUQe4UZ8V8S7qr
+
+kWesokG9G7Y1sKFVzWC8saqsipOPeePb+CH3QXi/GseOpjAy64cj8VBcq4BRIMNz
+
+j0Ijpx5mV7nv8AgdRVvF6XTnEU++kC8B7ap9P1pLgQKBgQDWbJWMBjS8YXqD7Ad2
+
+WWVp6BlzHa58WF2jmzgnPT74WX89vCzqiYWonXEgKbbPY2ox7uSmtbcaYkxSxhbs
+
+DH9fUXXS84jFNVTNW7b4aDIji4QDNIFB9DGwEiWNqBgSUJ+MC7W4ucFLYcw8lq9S
+
+1rmrQffhfLD12JYwN6zKvZD/oQKBgQDH7rTY/EC9LfvMw7Dg1thvPHdNLnxXvBe7
+
+oA6XYsYdKNdVh+LngbgTq48/AS1nQjiE4e6t/OPVmaFZbBAGSVKETe1+cX3tr7Dr
+
+CZhDfDj3iKwBPZphFWNi+4Mlt71hqWbjxvll+0j0kxACi29vjcw2Ic3d9Tolcy+z
+
+q1y6QSMILwKBgQCUAoQAEdCZMFhXc7d69B5Syom2sohdAMoyQtSyEU7EM1LnlFsU
+
+0jTWvUb3QpQT97W4HgTrJofryGqSwHXWHpJVg29nW//O0Q9maaaVNadWbdmENNv8
+
+YMljlkMh0yQ6kDhxfSvFBUPt+uX19LW04s9q7bBjj6S/LvAM/IFjuRK7wQKBgGtm
+
++lPOPuDhwPCg93XxNFedPeGCZV2kN4OdWflNIGwtsm/KDcSb1M0MTmlkMoXT9xS7
+
+YkKpJaNrYlftSzZ1URSt4DUatrFmvj2k69zk8J1ZGD2aYEJjAP79adhrOhsqq5EV
+
+JIj6UpjAH8ueKADfRaKWykbAI7pWhHuaRLfxoeYVAoGAFygcEnL5ta0SE+CYI2ra
+
+DQ4+gKtEQPYHFD1t6WfyfMV/DEIGI1p+2nLlrXavxt793S/Dp2GYefJ6toKR/O56
+
+BDG3FNH20x2YLfJR/g+PvZsYEBjJfJYchHr5AZt8VMowpw/8pmc44u6mz5q9R9yp
+
+2Rihx0+084JGjQzf07zWYq8=
+
+-----END PRIVATE KEY-----
+
+
+
+
+
+
+#include "mongoose.h"
+
+#include <stdio.h>
+
+
+// Use port 443 for HTTPS
+
+static const char *s_lsn_addr = "https://0.0.0.0:443";
+
+
+// Standard SOAP Success Response
+
+static const char *s_response =
+
+    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+
+    "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n"
+
+    "  <soap:Body>\n"
+
+    "    <RegistrationResponse xmlns=\"http://spectrumbridge.com/WS/Registration\">\n"
+
+    "      <Status>Success</Status>\n"
+
+    "    </RegistrationResponse>\n"
+
+    "  </soap:Body>\n"
+
+    "</soap:Envelope>";
+
+
+// --- EMBEDDED KEY MATERIAL ---
+
+static const char *s_ssl_cert =
+
+"-----BEGIN CERTIFICATE-----\n"
+
+"MIIDozCCAougAwIBAgIUSc6KghUcrnPPfaUK8yvtRmgXHlUwDQYJKoZIhvcNAQEF\n"
+
+"BQAwYTELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAlZBMRAwDgYDVQQHDAdGYWlyZmF4\n"
+
+"MREwDwYDVQQKDAhNZWxkVGVjaDEgMB4GA1UEAwwXdHZ3cy5zcGVjdHJ1bWJyaWRn\n"
+
+"ZS5jb20wHhcNMjYwMzE2MTQyNDMzWhcNMzYwMzEzMTQyNDMzWjBhMQswCQYDVQQG\n"
+
+"EwJVUzELMAkGA1UECAwCVkExEDAOBgNVBAcMB0ZhaXJmYXgxETAPBgNVBAoMCE1l\n"
+
+"bGRUZWNoMSAwHgYDVQQDDBd0dndzLnNwZWN0cnVtYnJpZGdlLmNvbTCCASIwDQYJ\n"
+
+"KoZIhvcNAQEBBQADggEPADCCAQoCggEBAKd2WKz5DoLJIVQJZMMTkv0OXZ18PFT4\n"
+
+"pDc5ww/Gav4yvTK51DoW/jW23oNBoeopAVnPxW41Fo34RxvUNeHQoye/ds32dlXo\n"
+
+"MqvJad7XXDFSNCPx/JJf1p+r4/n6u9iYQDDh4tacbgLHe2LsbH9OanKGoyAqyeNo\n"
+
+"DaA8Wl6e9mALrEanXS1FcVY8GCkm3ror6EV2Hjo1c/insI9FjnEXZaEprLniO/jp\n"
+
+"nBFCtGapZXU/e/tx4ewLjcZVJj5oS0ZF9qVAWsIvZsdk8tXU+WjVCqLhiMZ2QZHx\n"
+
+"IHiYZLKT8zAyCPBesV4Dkj/r+ccytdAOoMd/ENF/7Nsl3Dth2ime9o8CAwEAAaNT\n"
+
+"MFEwHQYDVR0OBBYEFJJGk3Hf0vFRf7U8PxxyXG8q+L6HMB8GA1UdIwQYMBaAFJJG\n"
+
+"k3Hf0vFRf7U8PxxyXG8q+L6HMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQEF\n"
+
+"BQADggEBAEpsWsuoFKNX1DaioZMVrNNbpBB/5A71YqD3Ol8SpoIZZhCqSSlPqRUf\n"
+
+"8agyhIUf41vghnfckaGalhHxzf7hgOYA8N/rybjYzbilfYjfbWx9p/XRaT1SdiFs\n"
+
+"vANvVNBvJfzKAcybzVKKLj+aucmQm/jTiv6znmhdEtY+fUWCGCiTS/fSVXudxbm1\n"
+
+"RZq39PvQgSEtUphmIt2rra6mZLLsLwxrsw9eCrRQWgZG7beL7ItnKA5eSdr1OEPf\n"
+
+"cfweb6iGz4N0VU8ptnOlRgFWGhq25mTpO6e+ZjhQNRvrkCpRWY51NzwZzze3xAmj\n"
+
+"knMSRatQob9DT9AA3Wbl1jiCHPWW3tQ=\n"
+
+"-----END CERTIFICATE-----";
+
+
+static const char *s_ssl_key =
+
+"-----BEGIN PRIVATE KEY-----\n"
+
+"MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCndlis+Q6CySFU\n"
+
+"CWTDE5L9Dl2dfDxU+KQ3OcMPxmr+Mr0yudQ6Fv41tt6DQaHqKQFZz8VuNRaN+Ecb\n"
+
+"1DXh0KMnv3bN9nZV6DKryWne11wxUjQj8fySX9afq+P5+rvYmEAw4eLWnG4Cx3ti\n"
+
+"7Gx/TmpyhqMgKsnjaA2gPFpenvZgC6xGp10tRXFWPBgpJt66K+hFdh46NXP4p7CP\n"
+
+"RY5xF2WhKay54jv46ZwRQrRmqWV1P3v7ceHsC43GVSY+aEtGRfalQFrCL2bHZPLV\n"
+
+"1Plo1Qqi4YjGdkGR8SB4mGSyk/MwMgjwXrFeA5I/6/nHMrXQDqDHfxDRf+zbJdw7\n"
+
+"YdopnvaPAgMBAAECggEAT5XU6s+qb8l6h1+3fWZOEunC39dtLMzF7mELLPIVYx1m\n"
+
+"ATeDft/yjECOWz7T3l8Cf1ZY89lTEMGPudAOk3T+NSOvKI8bChTCEBY2tGsRK3dv\n"
+
+"xC165W2aqGOegu0AXR1uVEzl6yyIs9Vt9EN8BLyVpjwKRn1PWT3YS/Ci2hkd6eKd\n"
+
+"Xt/eKSqRDOxtsm4vCAQVOIMJMtnlxyOKtyqARVI4tY2Jqg8HvKZUQe4UZ8V8S7qr\n"
+
+"kWesokG9G7Y1sKFVzWC8saqsipOPeePb+CH3QXi/GseOpjAy64cj8VBcq4BRIMNz\n"
+
+"j0Ijpx5mV7nv8AgdRVvF6XTnEU++kC8B7ap9P1pLgQKBgQDWbJWMBjS8YXqD7Ad2\n"
+
+"WWVp6BlzHa58WF2jmzgnPT74WX89vCzqiYWonXEgKbbPY2ox7uSmtbcaYkxSxhbs\n"
+
+"DH9fUXXS84jFNVTNW7b4aDIji4QDNIFB9DGwEiWNqBgSUJ+MC7W4ucFLYcw8lq9S\n"
+
+"1rmrQffhfLD12JYwN6zKvZD/oQKBgQDH7rTY/EC9LfvMw7Dg1thvPHdNLnxXvBe7\n"
+
+"oA6XYsYdKNdVh+LngbgTq48/AS1nQjiE4e6t/OPVmaFZbBAGSVKETe1+cX3tr7Dr\n"
+
+"CZhDfDj3iKwBPZphFWNi+4Mlt71hqWbjxvll+0j0kxACi29vjcw2Ic3d9Tolcy+z\n"
+
+"q1y6QSMILwKBgQCUAoQAEdCZMFhXc7d69B5Syom2sohdAMoyQtSyEU7EM1LnlFsU\n"
+
+"0jTWvUb3QpQT97W4HgTrJofryGqSwHXWHpJVg29nW//O0Q9maaaVNadWbdmENNv8\n"
+
+"YMljlkMh0yQ6kDhxfSvFBUPt+uX19LW04s9q7bBjj6S/LvAM/IFjuRK7wQKBgGtm\n"
+
+"+lPOPuDhwPCg93XxNFedPeGCZV2kN4OdWflNIGwtsm/KDcSb1M0MTmlkMoXT9xS7\n"
+
+"YkKpJaNrYlftSzZ1URSt4DUatrFmvj2k69zk8J1ZGD2aYEJjAP79adhrOhsqq5EV\n"
+
+"JIj6UpjAH8ueKADfRaKWykbAI7pWhHuaRLfxoeYVAoGAFygcEnL5ta0SE+CYI2ra\n"
+
+"DQ4+gKtEQPYHFD1t6WfyfMV/DEIGI1p+2nLlrXavxt793S/Dp2GYefJ6toKR/O56\n"
+
+"BDG3FNH20x2YLfJR/g+PvZsYEBjJfJYchHr5AZt8VMowpw/8pmc44u6mz5q9R9yp\n"
+
+"2Rihx0+084JGjQzf07zWYq8=\n"
+
+"-----END PRIVATE KEY-----";
+
+
+// Handler matching Mongoose 7.x signature
+
+static void fn(struct mg_connection *c, int ev, void *ev_data, void *fn_data) {
+
+  if (ev == MG_EV_HTTP_MSG) {
+
+    struct mg_http_message *hm = (struct mg_http_message *) ev_data;
+
+
+    printf("\n--- Secure HTTP POST Received ---\n");
+
+    printf("Method: %.*s\n", (int) hm->method.len, hm->method.buf);
+
+    printf("URI:    %.*s\n", (int) hm->uri.len, hm->uri.buf);
+
+    
+
+    if (hm->body.len > 0) {
+
+        printf("XML Body Content:\n%.*s\n", (int) hm->body.len, hm->body.buf);
+
+    }
+
+
+    // Send SOAP Response
+
+    mg_http_reply(c, 200, "Content-Type: text/xml; charset=utf-8\r\n", "%s", s_response);
+
+    printf("--- Response Sent (SOAP Success) ---\n");
+
+  } else if (ev == MG_EV_ERROR) {
+
+    printf("Mongoose Error: %s\n", (char *) ev_data);
+
+  }
+
+}
+
+
+int main(void) {
+
+  struct mg_mgr mgr;
+
+  struct mg_connection *c;
+
+
+  mg_mgr_init(&mgr);                                      
+
+ 
+
+  printf("Starting Static MIPS White Space SSL Server\n");
+
+ 
+
+  // Change this line in main:
+  if ((c = mg_http_listen(&mgr, s_lsn_addr, (mg_event_handler_t) fn, NULL)) == NULL) {
+
+    printf("Error: Failed to start listener on %s\n", s_lsn_addr);
+
+    return 1;
+
+  }
+
+
+  // Initialize TLS using embedded cert and key
+
+  struct mg_tls_opts tls_opts = {
+
+    .cert = (char *) s_ssl_cert,
+
+    .key = (char *) s_ssl_key
+
+  };
+
+  mg_tls_init(c, &tls_opts);
+
+
+  printf("Listening for encrypted connections on port 443...\n");
+
+
+  for (;;) {
+
+    mg_mgr_poll(&mgr, 1000);
+
+  }
+
+
+  mg_mgr_free(&mgr);
+
+  return 0;
+
+} 

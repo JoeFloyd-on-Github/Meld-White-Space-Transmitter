@@ -1,0 +1,13 @@
+# Ghidra project (local reverse-engineering scratch state; regenerable from the binary)
+WhiteSpaceApp/WSA.gpr
+WhiteSpaceApp/WSA.rep/
+WhiteSpaceApp/WSA.lock
+WhiteSpaceApp/WSA.lock~
+*.rep/
+
+# Build artifacts
+spectrumbridge_spoof_c/*.o
+
+# Private keys (keep test keys local)
+spectrumbridge_spoof_python/key.pem
+*.pem

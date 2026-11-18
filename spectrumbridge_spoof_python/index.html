@@ -1,0 +1,479 @@
+
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" xmlns:xml="http://www.w3.org/XML/1998/namespace" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+
+<script type="text/javascript">
+
+  function validateForm()
+  {
+    var cName=document.forms["cbi"]["ContactName"].value;
+    if (cName==null || cName=="")
+    {
+      alert("Contact Name is required!");
+      return false;
+    } else {
+      if (cName.indexOf("<") >= 0) {
+	alert("Contact Name cannot contain\nCharacter '<'");
+	return false;
+      }  
+    }
+    
+    var oName=document.forms["cbi"]["DeviceOwner"].value;
+    if (oName==null || oName=="")
+    {
+      alert("Owner Name is required!");
+      return false;
+    } else {
+      if (oName.indexOf("<") >= 0) {
+	alert("Owner Name cannot contain\nCharacter '<'");
+	return false;
+      }
+    }
+
+    var pNumber=document.forms["cbi"]["ContactPhone"].value;
+    if (pNumber==null || pNumber=="")
+    {
+      alert("Phone Number is required!");
+      return false;
+    } else {
+      if (pNumber.indexOf("<") >= 0) {
+	alert("Phone Number cannot contain\nCharacter '<'");
+	return false;
+      }
+    }
+ 
+    var eAddress=document.forms["cbi"]["ContactEmail"].value;
+    if (eAddress==null || eAddress=="")
+    {
+      alert("Email Address is required!");
+      return false;
+    } else {
+      if (eAddress.indexOf("<") >= 0) {
+	alert("Email Address cannot contain\nCharacter '<'");
+	return false;
+      }
+    }
+ 
+    var sAddress=document.forms["cbi"]["ContactStreet"].value;
+    if (sAddress==null || sAddress=="")
+    {
+      alert("Street Address is required!");
+      return false;
+    } else {
+      if (sAddress.indexOf("<") >= 0) {
+	alert("Street Address cannot contain\nCharacter '<'");
+	return false;
+      }
+    }
+  
+    var cCity=document.forms["cbi"]["ContactCity"].value;
+    if (cCity==null || cCity=="")
+    {
+      alert("City is required!");
+      return false;
+    } else {
+      if (cCity.indexOf("<") >= 0) {
+	alert("City cannot contain\nCharacter '<'");
+	return false;
+      }
+    }
+  
+    var cState=document.forms["cbi"]["ContactState"].value;
+    if (cState==null || cState=="")
+    {
+      alert("State is required!");
+      return false;
+    }
+ 
+    var zCode=document.forms["cbi"]["ContactZip"].value;
+    if (zCode==null || zCode=="")
+    {
+      alert("Zip Code is required!");
+      return false;
+    } else {
+      if (zCode.indexOf("<") >= 0) {
+	alert("Zip Code cannot contain\nCharacter '<'");
+	return false;
+      }
+    }
+ 
+    var cCountry=document.forms["cbi"]["ContactCountry"].value;
+    if (cCountry==null || cCountry=="")
+    {
+      alert("Country is required!");
+      return false;
+    }
+ 
+    var cLat=document.forms["cbi"]["Latitude"].value;
+    if (cLat==null || cLat=="")
+    {
+      alert("Latitude is required!");
+      return false;
+    } else {
+      if (isNaN(cLat)) {
+	alert("Latitude needs to be in decimal format!");
+	return false;
+      }
+    }
+ 
+    var cLon=document.forms["cbi"]["Longitude"].value;
+    if (cLon==null || cLon=="")
+    {
+      alert("Longitude is required!");
+      return false;
+    } else {
+      if (isNaN(cLon)) {
+	alert("Longitude needs to be in decimal format!");
+	return false;
+      }
+    }
+
+    var cAnt=document.forms["cbi"]["AntennaHeightAglMeters"].value;
+    if (isNaN(cAnt) || cAnt=="" || cAnt > 30 || cAnt < 1)
+    {
+      alert("Antenna Height needs to be a number between 1 and 30 meters!");
+      return false;
+    }
+
+
+
+  }
+</script>
+
+<link rel="stylesheet" type="text/css" media="screen" href="resources/cascade.css" />
+<script type="text/javascript" src="resources/xhr.js"></script>
+<title>MELDTECH - White Space Registration</title>
+</head>
+<body class="lang_en">
+
+<div id="menubar">
+<h2 class="navigation"><a id="navigation" name="navigation">Navigation</a></h2>
+<div class="hostinfo">
+<table border="0">
+     <tr>
+           <td><img src="images/meld.jpg" /></td>
+           <td> </td>
+           <td style="color: #FF0000">
+                OKVMT300
+ - 371
+<br />
+                Version: 1.3.0 Tx v2  
+ - 1.38 - 44 <br />
+                Release Date: Nov-25-2013            </td>
+
+                 </tr>
+    </table>
+</div>
+
+
+<div class="clear"></div>
+</div>
+
+
+<div id="maincontainer">
+        <div id="tabmenu">
+        <br style="clear:both" />
+
+        <div class="tabmenu1">
+        <ul class="tabmenu l1">
+
+                        <li class="tabmenu-item-registration active">
+                                <a href="registration.php">White Space Registration</a>
+
+                        </li>
+
+                        <li class="tabmenu-item-achannels">
+                                <a href="status.php">Status</a>
+                        </li>
+                       <li class="tabmenu-item-advanced">
+                                <a href="preferences.php">Advanced</a>
+
+                        </li>
+
+        </ul>
+        <br style="clear:both" />
+
+       </div>
+
+        </div>
+
+	<div id="maincontent">
+
+<form method="post" name="cbi" action="/registration.php" enctype="multipart/form-data" onreset="return cbi_validate_reset(this)" onsubmit="return validateForm()">
+	<div>
+		<script type="text/javascript" src="resources/cbi.js"></script>
+		<input type="hidden" name="cbi.submit" value="1" />
+		<input type="submit" value="Save" class="hidden" />
+	</div>
+
+<div class="cbi-map" id="cbi-sbi">
+	<h2><a id="content" name="content">White Space Registration</a></h2>
+	<div class="cbi-map-descr">Please fill out the form below to submit device registration to the White Space Database</div>
+<fieldset class="cbi-section" id="cbi-sbi-device">
+	<b>Who you are</b>
+	<div class="cbi-section-descr"></div>
+	
+
+
+		
+
+		<fieldset class="cbi-section-node" id="cbi-sbi-meldtech">
+			
+
+
+	<div class="cbi-value" id="cbi-sbi-meldtech-ContactName"><label class="cbi-value-title" for="cbid.sbi.meldtech.ContactName">Contact Name</label>
+		<div class="cbi-value-field">
+
+	<input type="text" class="cbi-input-text" onchange="cbi_d_update(this.id)" name="ContactName" id="cbid.sbi.meldtech.ContactName" value="AAAE Test" />
+	
+			
+</div></div>
+
+
+
+
+
+<div class="cbi-value" id="cbi-sbi-meldtech-DeviceOwner">
+	<label class="cbi-value-title" for="cbid.sbi.meldtech.DeviceOwner">Owner Name</label>
+	<div class="cbi-value-field">
+
+	<input type="text" class="cbi-input-text" onchange="cbi_d_update(this.id)" name="DeviceOwner" id="cbid.sbi.meldtech.DeviceOwner" value="AAAE" />
+	
+	<br />
+	<div class="cbi-value-description">
+		<span class="cbi-value-helpicon">
+		<img src="images/help.gif" alt="help" /></span>
+		Company Name or Representative
+	</div>
+</div></div>
+
+
+
+
+
+<div class="cbi-value" id="cbi-sbi-meldtech-PhoneNumber"><label class="cbi-value-title" for="cbid.sbi.meldtech.PhoneNumber">Phone Number</label>
+		<div class="cbi-value-field">
+
+	<input type="text" class="cbi-input-text" onchange="cbi_d_update(this.id)" name=ContactPhone id="cbid.sbi.meldtech.PhoneNumber" value="7038240500" />
+	
+			
+</div></div>
+
+
+
+
+
+<div class="cbi-value" id="cbi-sbi-meldtech-ContactEmail"><label class="cbi-value-title" for="cbid.sbi.meldtech.ContactEmail">Email Address</label>
+		<div class="cbi-value-field">
+
+	<input type="text" class="cbi-input-text" onchange="cbi_d_update(this.id)" name="ContactEmail" id="cbid.sbi.meldtech.ContactEmail" value="IETSupport@aaae.org" />
+	
+			
+</div></div>
+
+
+
+
+
+<div class="cbi-value" id="cbi-sbi-meldtech-ContactStreet"><label class="cbi-value-title" for="cbid.sbi.meldtech.ContactStreet">Street Address</label>
+		<div class="cbi-value-field">
+
+	<input type="text" class="cbi-input-text" onchange="cbi_d_update(this.id)" name="ContactStreet" id="cbid.sbi.meldtech.ContactStreet" value="601 Madison Street" />
+	
+			
+</div></div>
+
+
+
+
+
+<div class="cbi-value" id="cbi-sbi-meldtech-ContactCity"><label class="cbi-value-title" for="cbid.sbi.meldtech.ContactCity">City</label>
+		<div class="cbi-value-field">
+
+	<input type="text" class="cbi-input-text" onchange="cbi_d_update(this.id)" name="ContactCity" id="cbid.sbi.meldtech.ContactCity" value="Alexandria" />
+	
+			
+</div></div>
+
+
+
+
+
+<div class="cbi-value" id="cbi-sbi-meldtech-ContactState"><label class="cbi-value-title" for="cbid.sbi.meldtech.ContactState">State</label>
+		<div class="cbi-value-field">
+
+	<select class="cbi-input-select" onchange="cbi_d_update(this.id)" name="ContactState" id="cbid.sbi.meldtech.ContactState" size="1" ?>" />
+		<option value="AL" >Alabama</option>
+		<option value="AK" >Alaska</option>
+		<option value="AZ" >Arizona</option>
+		<option value="AR" >Arkansas</option>
+		<option value="CA" >California</option>
+		<option value="CO" >Colorado</option>
+		<option value="CT" >Connecticut</option>
+		<option value="DE" >Delaware</option>
+		<option value="DC" >District of Columbia</option>
+		<option value="FL" >Florida</option>
+		<option value="GA" >Georgia</option>
+		<option value="HI" >Hawaii</option>
+		<option value="ID" >Idaho</option>
+		<option value="IL" >Illinois</option>
+		<option value="IN" >Indiana</option>
+		<option value="IA" >Iowa</option>
+		<option value="KS" >Kansas</option>
+		<option value="KY" >Kentucky</option>
+		<option value="LA" >Louisiana</option>
+		<option value="ME" >Maine</option>
+		<option value="MD" >Maryland</option>
+		<option value="MA" >Massachusetts</option>
+		<option value="MI" >Michigan</option>
+		<option value="MN" >Minnesota</option>
+		<option value="MS" >Mississippi</option>
+		<option value="MO" >Missouri</option>
+		<option value="MT" >Montana</option>
+		<option value="NE" >Nebraska</option>
+		<option value="NV" >Nevada</option>
+		<option value="NH" >New Hampshire</option>
+		<option value="NJ" >New Jersey</option>
+		<option value="NM" >New Mexico</option>
+		<option value="NY" >New York</option>
+		<option value="NC" >North Carolina</option>
+		<option value="ND" >North Dakota</option>
+		<option value="OH" >Ohio</option>
+		<option value="OK" >Oklahoma</option>
+		<option value="OR" >Oregon</option>
+		<option value="PA" >Pennsylvania</option>
+		<option value="RI" >Rhode Island</option>
+		<option value="SC" >South Carolina</option>
+		<option value="SD" >South Dakota</option>
+		<option value="TN" >Tennessee</option>
+		<option value="TX" >Texas</option>
+		<option value="UT" >Utah</option>
+		<option value="VT" >Vermont</option>
+		<option value="VA" selected>Virginia</option>
+		<option value="WA" >Washington</option>
+		<option value="WV" >West Virginia</option>
+		<option value="WI" >Wisconsin</option>
+		<option value="WY" >Wyoming</option>	
+	</select>			
+</div></div>
+
+
+
+
+
+<div class="cbi-value" id="cbi-sbi-meldtech-ContactZip"><label class="cbi-value-title" for="cbid.sbi.meldtech.ContactZip">Zip Code</label>
+		<div class="cbi-value-field">
+
+	<input type="text" class="cbi-input-text" onchange="cbi_d_update(this.id)" name="ContactZip" id="cbid.sbi.meldtech.ContactZip" value="22314" />
+	
+			
+</div></div>
+
+
+
+
+
+<div class="cbi-value cbi-value-last" id="cbi-sbi-meldtech-ContactCountry"><label class="cbi-value-title" for="cbid.sbi.meldtech.ContactCountry">Country</label>
+		<div class="cbi-value-field">
+
+	<input type="text" class="cbi-input-text" readonly="readonly" onchange="cbi_d_update(this.id)" name="ContactCountry" id="cbid.sbi.meldtech.ContactCountry" value="US" />
+	
+			
+</div></div>
+		</fieldset>
+		<br />
+
+	
+
+	
+</fieldset>
+<fieldset class="cbi-section" id="cbi-sbi-device">
+  <b>Where you are</b>
+  <div class="cbi-section-descr"></div>
+  <fieldset class="cbi-section-node" id="cbi-sbi-meldtech">
+    <div class="cbi-value" id="cbi-sbi-meldtech-Latitude"><label class="cbi-value-title" for="cbid.sbi.meldtech.Latitude">Latitude</label>
+      <div class="cbi-value-field">
+	<input type="text" class="cbi-input-text" onchange="cbi_d_update(this.id)" name="Latitude" id="cbid.sbi.meldtech.Latitude" value="38.8132280" />
+	<br />
+	<div class="cbi-value-description">
+	  <span class="cbi-value-helpicon"><img src="images/help.gif" alt="help" /></span>
+	  Coordinates in decimal format
+	</div>
+      </div>
+    </div>
+
+    <div class="cbi-value" id="cbi-sbi-meldtech-Longitude"><label class="cbi-value-title" for="cbid.sbi.meldtech.Longitude">Longitude</label>
+      <div class="cbi-value-field">
+	<input type="text" class="cbi-input-text" onchange="cbi_d_update(this.id)" name="Longitude" id="cbid.sbi.meldtech.Longitude" value="-77.0443610" />
+	<br />
+	<div class="cbi-value-description">
+	  <span class="cbi-value-helpicon"><img src="images/help.gif" alt="help" /></span>
+	  Coordinates in decimal format
+	</div>
+      </div>
+    </div>
+
+    <div class="cbi-value" id="cbi-sbi-meldtech-AntennaHeight"><label class="cbi-value-title" for="cbid.sbi.meldtech.AntennaHeight">Antenna Height</label>
+      <div class="cbi-value-field">
+	<input type="text" class="cbi-input-text" onchange="cbi_d_update(this.id)" name="AntennaHeightAglMeters" id="cbid.sbi.meldtech.AntennaHeight" value="30" />
+	<br />
+	<div class="cbi-value-description">
+	  <span class="cbi-value-helpicon"><img src="images/help.gif" alt="help" /></span>
+	  Height in meters between 1 and 30
+	</div>
+      </div>
+    </div>
+  </fieldset>
+  <br />
+</fieldset>
+
+<fieldset class="cbi-section" id="cbi-sbi-device">
+	<b>Device Information</b>
+	<div class="cbi-section-descr"></div>
+	
+		<fieldset class="cbi-section-node" id="cbi-sbi-meldtech">
+			
+
+
+	<div class="cbi-value" id="cbi-sbi-meldtech-FccID"><label class="cbi-value-title" for="cbid.sbi.meldtech.FccID">FCC ID</label>
+		<div class="cbi-value-field">
+
+OKVMT300
+
+		
+</div></div>
+
+
+<div class="cbi-value" id="cbi-sbi-meldtech-MfgSerialNumber"><label class="cbi-value-title" for="cbid.sbi.meldtech.MfgSerialNumber">Serial Number</label>
+		<div class="cbi-value-field">
+
+371
+
+</div></div>
+
+<div class="cbi-value" id="cbi-sbi-meldtech-DeviceType"><label class="cbi-value-title" for="cbid.sbi.meldtech.DeviceType">Device Type</label>
+		<div class="cbi-value-field">
+
+3
+</div></div>
+		</fieldset>
+</br>	
+</fieldset>
+	<div class="cbi-page-actions">
+		
+		<input class="cbi-button cbi-button-apply" type="submit" name="submit" value="Save &amp; Apply" />
+		
+		<script type="text/javascript">cbi_d_update();</script>
+	</div></form>
+<h3>© 2012 Spectrum Bridge, Inc. All Rights Reserved.</h3>
+
+</div>
+<div class="clear"></div>
+</div>
+</div>
+
+</body>
+</html>
