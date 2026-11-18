@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 440" width="1200" height="440" font-family="'Segoe UI',Roboto,Helvetica,Arial,sans-serif" role="img" aria-label="Meld MT300 TV white-space transmitter, bricked by the shutdown of the SpectrumBridge database">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0f1f"/>
+      <stop offset="0.55" stop-color="#101a33"/>
+      <stop offset="1" stop-color="#0b1326"/>
+    </linearGradient>
+    <linearGradient id="dev" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#28344f"/>
+      <stop offset="1" stop-color="#18213a"/>
+    </linearGradient>
+    <radialGradient id="led" cx="0.5" cy="0.4" r="0.6">
+      <stop offset="0" stop-color="#7cf3d2"/>
+      <stop offset="1" stop-color="#17a883"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="440" rx="18" fill="url(#bg)"/>
+  <g fill="#2a3a5c" opacity="0.18">
+    <circle cx="60" cy="70" r="2"/><circle cx="140" cy="40" r="2"/><circle cx="1140" cy="380" r="2"/>
+    <circle cx="1060" cy="60" r="2"/><circle cx="980" cy="30" r="2"/><circle cx="90" cy="400" r="2"/>
+    <circle cx="300" cy="30" r="2"/><circle cx="1180" cy="200" r="2"/><circle cx="30" cy="240" r="2"/>
+  </g>
+  <rect x="2" y="2" width="1196" height="436" rx="17" fill="none" stroke="#2f477a" stroke-opacity="0.5"/>
+
+  <!-- Title -->
+  <text x="64" y="86" fill="#f4f7ff" font-size="52" font-weight="700" letter-spacing="1">MELD&#160;MT300</text>
+  <text x="66" y="120" fill="#8fa6cf" font-size="20" font-weight="500" letter-spacing="2">TV WHITE-SPACE TRANSMITTER&#160;&#160;·&#160;&#160;FCC ID OKVMT300</text>
+
+  <!-- Device -->
+  <g transform="translate(96,210)">
+    <line x1="150" y1="-6" x2="150" y2="-70" stroke="#7f8fdb" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="150" cy="-74" r="7" fill="#9fb0e6"/>
+    <g fill="none" stroke="#54617f" stroke-width="4" stroke-dasharray="5 7" opacity="0.65" stroke-linecap="round">
+      <path d="M176 -84 a 34 34 0 0 1 0 44"/>
+      <path d="M194 -96 a 60 60 0 0 1 0 82"/>
+      <path d="M124 -84 a 34 34 0 0 0 0 44"/>
+      <path d="M106 -96 a 60 60 0 0 0 0 82"/>
+    </g>
+    <rect x="20" y="-8" width="260" height="128" rx="14" fill="url(#dev)" stroke="#3a4a72" stroke-width="2"/>
+    <rect x="20" y="-8" width="260" height="20" rx="14" fill="#ffffff" opacity="0.04"/>
+    <circle cx="52" cy="56" r="11" fill="url(#led)"/>
+    <circle cx="52" cy="56" r="17" fill="none" stroke="#36d6b0" stroke-opacity="0.35" stroke-width="2"/>
+    <g fill="#46608f" opacity="0.8">
+      <rect x="92" y="34" width="150" height="7" rx="3.5"/>
+      <rect x="92" y="52" width="120" height="7" rx="3.5"/>
+      <rect x="92" y="70" width="140" height="7" rx="3.5"/>
+    </g>
+    <text x="150" y="112" fill="#6c82ad" font-size="12" letter-spacing="3" text-anchor="middle">PICO BROADCASTER</text>
+  </g>
+
+  <!-- Dead dependency -->
+  <g stroke-linecap="round">
+    <path d="M400 250 H560" fill="none" stroke="#3b4a72" stroke-width="3" stroke-dasharray="2 10"/>
+    <path d="M700 250 H840" fill="none" stroke="#3b4a72" stroke-width="3" stroke-dasharray="2 10"/>
+    <path d="M567 250 l14 -14 l12 28 l14 -28 l12 28 l12 -14" fill="none" stroke="#ff5d6c" stroke-width="3"/>
+  </g>
+  <text x="500" y="236" fill="#6c82ad" font-size="13" text-anchor="middle" letter-spacing="1">TLS :443 query</text>
+
+  <g transform="translate(846,196)">
+    <path d="M44 92 a40 40 0 0 1 2 -79 a46 46 0 0 1 88 -6 a36 36 0 0 1 26 85 Z"
+          fill="#141d33" stroke="#51607f" stroke-width="2.5" stroke-dasharray="7 6" opacity="0.9"/>
+    <text x="92" y="52" fill="#9fb0e6" font-size="15" text-anchor="middle" font-weight="600">tvws.</text>
+    <text x="92" y="72" fill="#9fb0e6" font-size="15" text-anchor="middle" font-weight="600">spectrumbridge.com</text>
+    <circle cx="150" cy="18" r="20" fill="#1a0e16" stroke="#ff5d6c" stroke-width="3"/>
+    <line x1="137" y1="5" x2="163" y2="31" stroke="#ff5d6c" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <text x="938" y="330" fill="#ff8a94" font-size="15" text-anchor="middle" font-weight="600" letter-spacing="1">NXDOMAIN · SERVICE RETIRED</text>
+
+  <!-- status chips -->
+  <g font-size="14" font-weight="600">
+    <g transform="translate(96,352)">
+      <rect width="150" height="34" rx="17" fill="#10321f" stroke="#2f7d55"/>
+      <circle cx="22" cy="17" r="5" fill="#36d6b0"/>
+      <text x="40" y="22" fill="#8ff0cf">radio OK</text>
+    </g>
+    <g transform="translate(260,352)">
+      <rect width="150" height="34" rx="17" fill="#10321f" stroke="#2f7d55"/>
+      <circle cx="22" cy="17" r="5" fill="#36d6b0"/>
+      <text x="40" y="22" fill="#8ff0cf">web UI OK</text>
+    </g>
+    <g transform="translate(424,352)">
+      <rect width="196" height="34" rx="17" fill="#321015" stroke="#8a2f3a"/>
+      <circle cx="22" cy="17" r="5" fill="#ff5d6c"/>
+      <text x="40" y="22" fill="#ffb3b9">transmitter OFF</text>
+    </g>
+  </g>
+
+  <text x="64" y="424" fill="#c7d3ec" font-size="18" font-weight="500">A fully functional radio, switched off forever by a database that no longer exists.</text>
+</svg>
