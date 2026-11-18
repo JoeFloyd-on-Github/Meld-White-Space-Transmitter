@@ -1403,72 +1403,288 @@ void postProcessDataForEscapeSequence(char *data,char *convData)
  */
 int readXmlIntoContext(char *fileName,WhiteSpaceContext *wsCtx)
 {
-  ezxml_t_conflict xml;              // root node
-  ezxml_t_conflict peVar1;           // nested child
+  ezxml_t_conflict xml;              // root node from ezxml_parse_file
+  ezxml_t_conflict peVar1;           // nested child (Location / TvwsDeviceInfo sub-tag)
   DevMode DVar2;                     // atoi -> device mode
   uint uVar3;                        // atoi -> channel number
-  int iVar4;                         // atoi scratch
-  ezxml_t_conflict peVar5;           // top-level child
+  int iVar4;                         // atoi scratch (port / antenna height)
+  ezxml_t_conflict peVar5;           // current top-level child
   MeldModulationMode MVar6;          // atoi -> modulation
   uint uVar7;                        // preferred channel count
-  char *local_510;                   // strtok cursor
-  uint local_4f4;                    // inner index
-  uint local_4f0;                    // outer index
-  char acStack_4ec [100];            // raw text staging
-  undefined2 local_488 [2];          // "," delimiter for strtok
+  char *local_510;                   // strtok cursor over PreferredChannel CSV
+  uint local_4f4;                    // inner index (locationTags / tvwsDeviceTags)
+  uint local_4f0;                    // outer index (responseTags, 0..8)
+  char acStack_4ec [100];            // raw text staging before escaping
+  undefined2 local_488 [2];          // holds the ',' strtok delimiter
   char acStack_484 [1028];           // PreferredChannel text staging
-  char *local_80; /* ... local_1c : per-case "txt or empty" temporaries ... */
-  uint local_14;                     // inner index copy
-  xml = ezxml_parse_file(fileName);               // ezxml: read + parse whole file
-  memcpy(wsCtx->regulatoryDomain,&DAT_00519e98,3); // seed "US"
+  /* local_80 .. local_1c are the per-arm "node ? node->txt : \"\"" string
+   * temporaries Ghidra materialized (one distinct stack slot per switch arm).
+   * Each holds the text pointer just long enough to strcpy/atoi it out. */
+  char *local_80;                    // case 8 text (ModulationMode)
+  char *local_7c;                    // case 7 text (StreamingIpAddress)
+  char *local_78;                    // case 7 dest (= meldStreamingIpAddress)
+  char *local_74;                    // case 6 text (EnumeratedTransmitPower)
+  char *local_70;                    // case 5 text (PreferredChannel)
+  char *local_6c;                    // case 4 sub 14 text (DeviceOwner)
+  char *local_68;                    // case 4 sub 13 text (CountryCode)
+  char *local_64;                    // case 4 sub 12 text (ContactZip)
+  char *local_60;                    // case 4 sub 11 text (ContactStreet)
+  char *local_5c;                    // case 4 sub 10 text (ContactState)
+  char *local_58;                    // case 4 sub 9  text (ContactPhone)
+  char *local_54;                    // case 4 sub 8  text (ContactName)
+  char *local_50;                    // case 4 sub 7  text (ContactEmail)
+  char *local_4c;                    // case 4 sub 6  text (ContactCountry)
+  char *local_48;                    // case 4 sub 5  text (ContactCity)
+  char *local_44;                    // case 4 sub 4  text (AntennaHeightAglMeters)
+  char *local_40;                    // case 4 sub 3  text (ChLookupDeviceType)
+  char *local_3c;                    // case 4 sub 2  text (DeviceType)
+  char *local_38;                    // case 4 sub 1  text (MfgSerialNumber)
+  char *local_34;                    // case 4 sub 0  text (FccID)
+  char *local_30;                    // case 3 text (Longitude)
+  char *local_2c;                    // case 3 text (Latitude)
+  char *local_28;                    // case 2 text (RegulatoryDomain)
+  char *local_24;                    // case 2 dest (= wsCtx->regulatoryDomain)
+  char *local_20;                    // case 1 text (HostPortNumber)
+  char *local_1c;                    // case 0 text (HostAddress)
+  WhiteSpaceContext *local_18;       // scratch copy of wsCtx (case 0)
+  uint local_14;                     // copy of the inner index (debug leftover)
+  xml = ezxml_parse_file(fileName);                // ezxml: read + parse the whole file
+  memcpy(wsCtx->regulatoryDomain,&DAT_00519e98,3); // seed regulatoryDomain = "US"
   (wsCtx->preferredChannelMap).channelCount = 0;
   memset(wsCtx->meldStreamingIpAddress,0,100);
-  for (local_4f0 = 0; local_4f0 < 9; local_4f0 = local_4f0 + 1) {
+  for (local_4f0 = 0; local_4f0 < 9; local_4f0 = local_4f0 + 1) {   // walk responseTags
     switch(local_4f0) {
-    case 0:   /* HostAddress -> wsCtx->hostURL (strcpy, raw) */
-      peVar5 = ezxml_child(xml,responseTags[local_4f0]);
-      strcpy(wsCtx->hostURL, peVar5 ? peVar5->txt : "");
+    case 0:   /* <HostAddress> -> wsCtx->hostURL (raw strcpy, no length check) */
+      peVar5 = ezxml_child(xml,readXmlIntoContext::responseTags[local_4f0]);
+      if (peVar5 == (ezxml_t_conflict)0x0) {
+        local_1c = "";                             // missing tag -> empty string
+      }
+      else {
+        local_1c = peVar5->txt;                    // ezxml node text
+      }
+      local_18 = wsCtx;
+      strcpy(wsCtx->hostURL,local_1c);
       break;
-    case 1:   /* HostPortNumber -> wsCtx->comPortNumber (atoi; never used later) */
-      peVar5 = ezxml_child(xml,responseTags[local_4f0]);
-      wsCtx->comPortNumber = atoi(peVar5 ? peVar5->txt : "");
+    case 1:   /* <HostPortNumber> -> wsCtx->comPortNumber (atoi; never used later) */
+      peVar5 = ezxml_child(xml,readXmlIntoContext::responseTags[local_4f0]);
+      if (peVar5 == (ezxml_t_conflict)0x0) {
+        local_20 = "";
+      }
+      else {
+        local_20 = peVar5->txt;
+      }
+      iVar4 = atoi(local_20);
+      wsCtx->comPortNumber = iVar4;
       break;
-    case 2:   /* RegulatoryDomain -> wsCtx->regulatoryDomain (strcpy, raw) */
-      peVar5 = ezxml_child(xml,responseTags[local_4f0]);
-      strcpy(wsCtx->regulatoryDomain, peVar5 ? peVar5->txt : "");
+    case 2:   /* <RegulatoryDomain> -> wsCtx->regulatoryDomain (raw strcpy) */
+      peVar5 = ezxml_child(xml,readXmlIntoContext::responseTags[local_4f0]);
+      local_24 = wsCtx->regulatoryDomain;
+      if (peVar5 == (ezxml_t_conflict)0x0) {
+        local_28 = "";
+      }
+      else {
+        local_28 = peVar5->txt;
+      }
+      strcpy(local_24,local_28);
       break;
-    case 3:   /* <Location> -> Latitude/Longitude via locationTags[0..1] */
-      peVar5 = ezxml_child(xml,responseTags[local_4f0]);
+    case 3:   /* <Location> -> Latitude / Longitude via locationTags[0..1] */
+      peVar5 = ezxml_child(xml,readXmlIntoContext::responseTags[local_4f0]);
       for (local_4f4 = 0; local_4f4 < 2; local_4f4 = local_4f4 + 1) {
-        peVar1 = ezxml_child(peVar5,locationTags[local_4f4]);   // nested child
-        if (local_4f4 == 0)
-          { strcpy(acStack_4ec, peVar1 ? peVar1->txt : "");
-            postProcessDataForEscapeSequence(acStack_4ec,wsCtx->latitudeString); }
-        else
-          { strcpy(acStack_4ec, peVar1 ? peVar1->txt : "");
-            postProcessDataForEscapeSequence(acStack_4ec,wsCtx->longitudeString); }
+        peVar1 = ezxml_child(peVar5,readXmlIntoContext::locationTags[local_4f4]); // nested child
+        local_14 = local_4f4;
+        if (local_4f4 == 0) {                      // <Latitude>
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_2c = "";
+          }
+          else {
+            local_2c = peVar1->txt;
+          }
+          strcpy(acStack_4ec,local_2c);
+          postProcessDataForEscapeSequence(acStack_4ec,wsCtx->latitudeString);   // escape + store
+        }
+        else if (local_4f4 == 1) {                 // <Longitude>
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_30 = "";
+          }
+          else {
+            local_30 = peVar1->txt;
+          }
+          strcpy(acStack_4ec,local_30);
+          postProcessDataForEscapeSequence(acStack_4ec,wsCtx->longitudeString);
+        }
       }
       break;
     case 4:   /* <TvwsDeviceInfo> -> 15 fields via tvwsDeviceTags[0..14].
-               * Each sub-case follows ONE of two shapes:
-               *   text fields  : strcpy(stage, node?txt:"") then
-               *                  postProcessDataForEscapeSequence(stage, destField)
-               *   numeric fields (sub 2=DeviceType->mode, 3=ChLookupDeviceType->
-               *                  channelLookUpMode, 4=AntennaHeightAglMeters):
-               *                  atoi(node?txt:"") into the field.
-               * sub 13 = CountryCode -> regulatoryDomain (overwrites case 2).
-               * sub 14 = DeviceOwner -> addressInfo.ownerName.
-               * (The 15 near-identical arms are collapsed here; see raw file.) */
-      peVar5 = ezxml_child(xml,responseTags[local_4f0]);
+               * Text fields are escaped via postProcessDataForEscapeSequence;
+               * sub 2/3/4 are numeric (atoi). sub 13 (CountryCode) overwrites
+               * regulatoryDomain set in case 2; sub 0/1 (FccID/MfgSerialNumber)
+               * are later overwritten by the radio-read values. */
+      peVar5 = ezxml_child(xml,readXmlIntoContext::responseTags[local_4f0]);
       for (local_4f4 = 0; local_4f4 < 0xf; local_4f4 = local_4f4 + 1) {
-        peVar1 = ezxml_child(peVar5,tvwsDeviceTags[local_4f4]);
-        /* dispatch on local_4f4 as described above */
+        peVar1 = ezxml_child(peVar5,readXmlIntoContext::tvwsDeviceTags[local_4f4]); // nested child
+        switch(local_4f4) {
+        case 0:   /* <FccID> -> wsCtx->fccID */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_34 = "";
+          }
+          else {
+            local_34 = peVar1->txt;
+          }
+          strcpy(acStack_4ec,local_34);
+          postProcessDataForEscapeSequence(acStack_4ec,wsCtx->fccID);
+          break;
+        case 1:   /* <MfgSerialNumber> -> wsCtx->serialNumber */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_38 = "";
+          }
+          else {
+            local_38 = peVar1->txt;
+          }
+          strcpy(acStack_4ec,local_38);
+          postProcessDataForEscapeSequence(acStack_4ec,wsCtx->serialNumber);
+          break;
+        case 2:   /* <DeviceType> -> wsCtx->mode (atoi, DEVICE_MODE_ENUM) */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_3c = "";
+          }
+          else {
+            local_3c = peVar1->txt;
+          }
+          DVar2 = atoi(local_3c);
+          wsCtx->mode = DVar2;
+          break;
+        case 3:   /* <ChLookupDeviceType> -> wsCtx->channelLookUpMode (atoi) */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_40 = "";
+          }
+          else {
+            local_40 = peVar1->txt;
+          }
+          DVar2 = atoi(local_40);
+          wsCtx->channelLookUpMode = DVar2;
+          break;
+        case 4:   /* <AntennaHeightAglMeters> -> wsCtx->antennaeHeightInMeters (atoi) */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_44 = "";
+          }
+          else {
+            local_44 = peVar1->txt;
+          }
+          iVar4 = atoi(local_44);
+          wsCtx->antennaeHeightInMeters = iVar4;
+          break;
+        case 5:   /* <ContactCity> -> addressInfo.contactCity */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_48 = "";
+          }
+          else {
+            local_48 = peVar1->txt;
+          }
+          strcpy(acStack_4ec,local_48);
+          postProcessDataForEscapeSequence(acStack_4ec,(wsCtx->addressInfo).contactCity);
+          break;
+        case 6:   /* <ContactCountry> -> addressInfo.contactCountry */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_4c = "";
+          }
+          else {
+            local_4c = peVar1->txt;
+          }
+          strcpy(acStack_4ec,local_4c);
+          postProcessDataForEscapeSequence(acStack_4ec,(wsCtx->addressInfo).contactCountry);
+          break;
+        case 7:   /* <ContactEmail> -> addressInfo.contactEmail */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_50 = "";
+          }
+          else {
+            local_50 = peVar1->txt;
+          }
+          strcpy(acStack_4ec,local_50);
+          postProcessDataForEscapeSequence(acStack_4ec,(wsCtx->addressInfo).contactEmail);
+          break;
+        case 8:   /* <ContactName> -> addressInfo.contactName */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_54 = "";
+          }
+          else {
+            local_54 = peVar1->txt;
+          }
+          strcpy(acStack_4ec,local_54);
+          postProcessDataForEscapeSequence(acStack_4ec,(wsCtx->addressInfo).contactName);
+          break;
+        case 9:   /* <ContactPhone> -> addressInfo.contactPhoneNumber */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_58 = "";
+          }
+          else {
+            local_58 = peVar1->txt;
+          }
+          strcpy(acStack_4ec,local_58);
+          postProcessDataForEscapeSequence(acStack_4ec,(wsCtx->addressInfo).contactPhoneNumber);
+          break;
+        case 10:  /* <ContactState> -> addressInfo.contactProvince */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_5c = "";
+          }
+          else {
+            local_5c = peVar1->txt;
+          }
+          strcpy(acStack_4ec,local_5c);
+          postProcessDataForEscapeSequence(acStack_4ec,(wsCtx->addressInfo).contactProvince);
+          break;
+        case 0xb: /* <ContactStreet> -> addressInfo.contactStreetAddress */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_60 = "";
+          }
+          else {
+            local_60 = peVar1->txt;
+          }
+          strcpy(acStack_4ec,local_60);
+          postProcessDataForEscapeSequence(acStack_4ec,(wsCtx->addressInfo).contactStreetAddress);
+          break;
+        case 0xc: /* <ContactZip> -> addressInfo.contactPostalCode */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_64 = "";
+          }
+          else {
+            local_64 = peVar1->txt;
+          }
+          strcpy(acStack_4ec,local_64);
+          postProcessDataForEscapeSequence(acStack_4ec,(wsCtx->addressInfo).contactPostalCode);
+          break;
+        case 0xd: /* <CountryCode> -> wsCtx->regulatoryDomain (OVERWRITES case 2) */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_68 = "";
+          }
+          else {
+            local_68 = peVar1->txt;
+          }
+          strcpy(acStack_4ec,local_68);
+          postProcessDataForEscapeSequence(acStack_4ec,wsCtx->regulatoryDomain);
+          break;
+        case 0xe: /* <DeviceOwner> -> addressInfo.ownerName */
+          if (peVar1 == (ezxml_t_conflict)0x0) {
+            local_6c = "";
+          }
+          else {
+            local_6c = peVar1->txt;
+          }
+          strcpy(acStack_4ec,local_6c);
+          postProcessDataForEscapeSequence(acStack_4ec,(wsCtx->addressInfo).ownerName);
+        }
       }
       break;
-    case 5:   /* PreferredChannel -> preferredChannelMap (comma-split, atoi) */
-      peVar5 = ezxml_child(xml,responseTags[local_4f0]);
-      local_488[0] = DAT_00519ea0;                // ','
-      strcpy(acStack_484, peVar5 ? peVar5->txt : "");
+    case 5:   /* <PreferredChannel> -> preferredChannelMap (comma-split, atoi) */
+      peVar5 = ezxml_child(xml,readXmlIntoContext::responseTags[local_4f0]);
+      local_488[0] = DAT_00519ea0;                 // the ',' delimiter byte
+      if (peVar5 == (ezxml_t_conflict)0x0) {
+        local_70 = "";
+      }
+      else {
+        local_70 = peVar5->txt;
+      }
+      strcpy(acStack_484,local_70);
       local_510 = strtok(acStack_484,(char *)local_488);
       while (local_510 != (char *)0x0) {
         uVar7 = (wsCtx->preferredChannelMap).channelCount;
@@ -1477,22 +1693,43 @@ int readXmlIntoContext(char *fileName,WhiteSpaceContext *wsCtx)
         (wsCtx->preferredChannelMap).channelCount = (wsCtx->preferredChannelMap).channelCount + 1;
         local_510 = strtok((char *)0x0,(char *)local_488);
       }
-      printPreferredChannelMap(wsCtx);             // (stub)
+      printPreferredChannelMap(wsCtx);             // (stub, does nothing)
       break;
-    case 6:   /* EnumeratedTransmitPower -> atoi -> enumeratedTransmitPower */
-      peVar5 = ezxml_child(xml,responseTags[local_4f0]);
-      wsCtx->enumeratedTransmitPower = atoi(peVar5 ? peVar5->txt : "");
+    case 6:   /* <EnumeratedTransmitPower> -> wsCtx->enumeratedTransmitPower (atoi) */
+      peVar5 = ezxml_child(xml,readXmlIntoContext::responseTags[local_4f0]);
+      if (peVar5 == (ezxml_t_conflict)0x0) {
+        local_74 = "";
+      }
+      else {
+        local_74 = peVar5->txt;
+      }
+      iVar4 = atoi(local_74);
+      wsCtx->enumeratedTransmitPower = iVar4;
       break;
-    case 7:   /* StreamingIpAddress -> meldStreamingIpAddress (strcpy, raw) */
-      peVar5 = ezxml_child(xml,responseTags[local_4f0]);
-      strcpy(wsCtx->meldStreamingIpAddress, peVar5 ? peVar5->txt : "");
+    case 7:   /* <StreamingIpAddress> -> wsCtx->meldStreamingIpAddress (raw strcpy) */
+      peVar5 = ezxml_child(xml,readXmlIntoContext::responseTags[local_4f0]);
+      local_78 = wsCtx->meldStreamingIpAddress;
+      if (peVar5 == (ezxml_t_conflict)0x0) {
+        local_7c = "";
+      }
+      else {
+        local_7c = peVar5->txt;
+      }
+      strcpy(local_78,local_7c);
       break;
-    case 8:   /* ModulationMode -> atoi -> meldModulationMode */
-      peVar5 = ezxml_child(xml,responseTags[local_4f0]);
-      wsCtx->meldModulationMode = atoi(peVar5 ? peVar5->txt : "");
+    case 8:   /* <ModulationMode> -> wsCtx->meldModulationMode (atoi) */
+      peVar5 = ezxml_child(xml,readXmlIntoContext::responseTags[local_4f0]);
+      if (peVar5 == (ezxml_t_conflict)0x0) {
+        local_80 = "";
+      }
+      else {
+        local_80 = peVar5->txt;
+      }
+      MVar6 = atoi(local_80);
+      wsCtx->meldModulationMode = MVar6;
     }
   }
-  ezxml_free(xml);                                // release the parsed tree
+  ezxml_free(xml);                                 // release the parsed tree
   return 0;
 }
 
@@ -1500,30 +1737,347 @@ int readXmlIntoContext(char *fileName,WhiteSpaceContext *wsCtx)
  * SerialServer.c  --  the radio controller (thread B) over /dev/ttyS1
  * =====================================================================
  *
- * Simple helpers summarized (full bodies in the raw file):
- *   open_port() -- open /dev/ttyS1 O_RDWR at B115200 (cfsetospeed only); the
- *       error text wrongly says ttyS0. Returns the fd.
- *   flush_port(fd) -- empty (returns an uninitialized register; no-op).
- *   setOperatingChannelFile(ch) -- write /etc/config/operating with `ch`.
- *   setTransmitterFlagFile(flag) -- write /etc/config/transmitter radio_status.
- *   stripOutExcessBlanks(in,len,out) -- copy `in` to `out` dropping ' ' and
- *       '\n'; returns the new length.
- *   recreateFccSerialMeldFile(fp,serial,fcc,ip) -- write the three
- *       "Serial Number:/FCCID:/StreamingIpAddress:" lines to fp.
- *   convertIpOctetsToMeldHexFormatIpStringAndSize(ip,out) -- "a.b.c.d" ->
- *       8 hex digits "%02x%02x%02x%02x"; returns length.
- *   dumpAllSerialReceive(fd) / getSerialReceive(fd,buf) -- drain pending serial
- *       input using select() with a 100 ms timeout (fStack_* is the fd_set).
- *   enableRadio(fd)/disableRadio(fd) -- write "e1\r"/"e0\r" and update the
- *       transmitter flag file. changeChannelOnRadio(fd,ch) -- "c%d\r" (US path).
- *   changeATSCChannelNumber(fd,ch) -- "m#[01%08d]" (DEAD CODE, never called).
- *   changeNewPowerLevel(fd,p) -- "m#[02%08d]". changeNewModulation(fd,m) --
- *       "m#[03%08d]". changeNewFrequency(fd,ch) -- "m#[04%08d]" with the freq
- *       from convertChannelNumberToFrequency (non-US path).
- * In all the above, acStack_1014[4100] is the command/response scratch buffer
- * and the write length is strlen (so the trailing NUL is usually NOT sent,
- * except setPPowerValue which deliberately writes strlen+1).
+ * In the command senders below, acStack_1014[4100] is the command/response
+ * scratch buffer and the write length is strlen (so the trailing NUL is
+ * usually NOT sent, except setPPowerValue which deliberately writes strlen+1).
+ * The DAT_0051a0xx constants are the literal command byte strings.
  */
+
+/* open_port(): open /dev/ttyS1 O_RDWR at output speed B115200 (cfsetospeed
+ * only). auStack_40 = struct termios. The error text wrongly says ttyS0.
+ * Returns the fd (or -1). */
+int open_port(void)
+{
+  int __fd;
+  undefined1 auStack_40 [56];        // struct termios
+  __fd = open("/dev/ttyS1",2);       // O_RDWR
+  if (__fd == -1) {
+    perror("open_port: Unable to open /dev/ttyS0 - ");
+  }
+  else {
+    tcgetattr(__fd,(termios *)auStack_40);
+    cfsetospeed((termios *)auStack_40,0x1002);    // B115200
+    tcsetattr(__fd,0x540e,(termios *)auStack_40); // TCSETSW
+    tcflush(__fd,1);                              // TCOFLUSH
+    fcntl(__fd,4);                                // F_SETFL
+  }
+  return __fd;
+}
+
+/* flush_port(fd): empty stub - returns an uninitialized register (in_v0).
+ * Effectively a no-op; nothing calls it meaningfully. */
+int flush_port(int fd)
+{
+  int in_v0;                         // uninitialized return (decompiler artifact)
+  return in_v0;
+}
+
+/* packChannelMapIntoBufferAndGetLength(context, buf): format the available
+ * channel list as "ch ch ch ..." into buf, returning the length. DEAD CODE -
+ * nothing calls it. local_18 = index; acStack_14 = per-number "%d " scratch. */
+int packChannelMapIntoBufferAndGetLength(WhiteSpaceContext *context,char *buf)
+{
+  size_t sVar1;
+  uint local_18;                     // channel index
+  char acStack_14 [12];              // "%d " scratch
+  if ((context->availableChannelMap).channelCount != 0) {
+    memset(buf,0,4);
+    for (local_18 = 0; local_18 < (context->availableChannelMap).channelCount;
+        local_18 = local_18 + 1) {
+      sprintf(acStack_14,"%d ",(context->availableChannelMap).channels[local_18]);
+      strcat(buf,acStack_14);
+    }
+    memcpy(acStack_14,&DAT_00519f48,2);           // trailing "\n"
+    strcat(buf,acStack_14);
+  }
+  sVar1 = strlen(buf);
+  return sVar1;
+}
+
+/* setOperatingChannelFile(chNumber): rewrite /etc/config/operating (UCI) with
+ * the current operating channel. Same NULL-FILE* hazard as the other writers. */
+void setOperatingChannelFile(int chNumber)
+{
+  FILE *__s;
+  __s = fopen("/etc/config/operating","w+");
+  if (__s != (FILE *)0x0) {
+    fwrite(" config \'current\' \'operating_channel\'\n",1,0x26,__s);
+    fprintf(__s,"\t option \'channel\' \'%d\'\n",chNumber);
+  }
+  putc(10,__s);
+  fflush(__s);
+  fclose(__s);
+  return;
+}
+
+/* dumpAllSerialReceive(fd): drain and discard whatever the radio is currently
+ * sending, using select() with a 100 ms timeout. Used before a query to clear
+ * stale bytes. auStack_1094 = 4 KB sink; fStack_94 = fd_set; local_14 = timeval;
+ * local_10a0 = a 0..3 rolling counter (only used to pace the 1 s sleeps). */
+void dumpAllSerialReceive(int fd)
+{
+  int iVar1;                         // select() result
+  uint local_10a4;                   // fd_set clear index
+  int local_10a0;                    // rolling counter
+  undefined1 auStack_1094 [4096];    // discard buffer
+  fd_set fStack_94;
+  timeval local_14;                  // 100 ms timeout
+  local_10a0 = 0;
+  for (local_10a4 = 0; local_10a4 < 0x20; local_10a4 = local_10a4 + 1) {
+    fStack_94.fds_bits[local_10a4] = 0;
+  }
+  fStack_94.fds_bits[(uint)fd >> 5] = fStack_94.fds_bits[(uint)fd >> 5] | 1 << (fd & 0x1fU);
+  local_14.tv_sec = 0;
+  local_14.tv_usec = 100000;
+  memset(auStack_1094,0,0x1000);
+  while( true ) {
+    iVar1 = select(fd + 1,&fStack_94,(fd_set *)0x0,(fd_set *)0x0,&local_14);
+    if (iVar1 < 1) break;            // nothing left to read
+    read(fd,auStack_1094,0x1000);
+    if (3 < local_10a0) {
+      local_10a0 = 0;
+    }
+    local_10a0 = local_10a0 + 1;
+    sleep(1);
+  }
+  return;
+}
+
+/* getSerialReceive(fd, buf): read all currently available serial bytes into
+ * buf (select() + 100 ms). Returns buf. Note each read overwrites the last
+ * (buf is not advanced), so only the final chunk survives. */
+char * getSerialReceive(int fd,char *buf)
+{
+  int iVar1;
+  uint local_a4;
+  fd_set fStack_94;
+  timeval local_14;
+  for (local_a4 = 0; local_a4 < 0x20; local_a4 = local_a4 + 1) {
+    fStack_94.fds_bits[local_a4] = 0;
+  }
+  fStack_94.fds_bits[(uint)fd >> 5] = fStack_94.fds_bits[(uint)fd >> 5] | 1 << (fd & 0x1fU);
+  local_14.tv_sec = 0;
+  local_14.tv_usec = 100000;
+  memset(buf,0,4);
+  while( true ) {
+    iVar1 = select(fd + 1,&fStack_94,(fd_set *)0x0,(fd_set *)0x0,&local_14);
+    if (iVar1 < 1) break;
+    read(fd,buf,0x1000);
+  }
+  return buf;
+}
+
+/* setTransmitterFlagFile(txFlag): rewrite /etc/config/transmitter radio_status
+ * (1 = on, 0 = off). Called by enableRadio/disableRadio. */
+void setTransmitterFlagFile(int txFlag)
+{
+  FILE *__s;
+  __s = fopen("/etc/config/transmitter","w+");
+  if (__s != (FILE *)0x0) {
+    fwrite(" config \'current\' \'radio_status\'\n",1,0x21,__s);
+    fprintf(__s,"\t option \'status\' \'%d\'\n",txFlag);
+  }
+  putc(10,__s);
+  fflush(__s);
+  fclose(__s);
+  return;
+}
+
+/* enableRadio(fd): send "e1\r" (DAT_0051a0a8) to turn the transmitter on and,
+ * on success, set the transmitter flag file to 1. Returns 1 ok / 0 fail. */
+int enableRadio(int fd)
+{
+  size_t __n;
+  ssize_t sVar1;
+  char acStack_1014 [4100];
+  uint local_10;
+  memcpy(acStack_1014,&DAT_0051a0a8,4);           // "e1\r"
+  __n = strlen(acStack_1014);
+  sVar1 = write(fd,acStack_1014,__n);
+  if (-1 < sVar1) {
+    setTransmitterFlagFile(1);
+  }
+  else {
+    fwrite("write() of 11 bytes failed!\n",1,0x1c,(FILE *)stderr);
+  }
+  local_10 = (uint)(-1 < sVar1);
+  return local_10;
+}
+
+/* disableRadio(fd): send "e0\r" (DAT_0051a0cc) to turn the transmitter off and,
+ * on success, set the transmitter flag file to 0. */
+int disableRadio(int fd)
+{
+  size_t __n;
+  ssize_t sVar1;
+  char acStack_1014 [4100];
+  uint local_10;
+  memcpy(acStack_1014,&DAT_0051a0cc,4);           // "e0\r"
+  __n = strlen(acStack_1014);
+  sVar1 = write(fd,acStack_1014,__n);
+  if (-1 < sVar1) {
+    setTransmitterFlagFile(0);
+  }
+  else {
+    fwrite("write() of 11 bytes failed!\n",1,0x1c,(FILE *)stderr);
+  }
+  local_10 = (uint)(-1 < sVar1);
+  return local_10;
+}
+
+/* stripOutExcessBlanks(inBuffer, len, outBuffer): copy inBuffer to outBuffer
+ * dropping spaces and newlines; returns the output length. Used to clean the
+ * FCC-ID token read from the radio. local_10 = write idx; local_c = read idx. */
+int stripOutExcessBlanks(char *inBuffer,int len,char *outBuffer)
+{
+  int local_10;                      // output index
+  int local_c;                       // input index
+  local_10 = 0;
+  for (local_c = 0; local_c < len; local_c = local_c + 1) {
+    if ((inBuffer[local_c] != ' ') && (inBuffer[local_c] != '\n')) {
+      outBuffer[local_10] = inBuffer[local_c];
+      local_10 = local_10 + 1;
+    }
+  }
+  return local_10;
+}
+
+/* recreateFccSerialMeldFile(fp, serialNumberString, fccIdString, addressString):
+ * write the three identity lines to the already-open fccidSerialInfo file.
+ * param2 = the serial number parsed to int. */
+void recreateFccSerialMeldFile
+               (FILE *fp,char *serialNumberString,char *fccIdString,char *addressString)
+{
+  int param2;                        // serial as int
+  param2 = atoi(serialNumberString);
+  fprintf((FILE *)fp,"Serial Number:%d\n",param2);
+  fprintf((FILE *)fp,"FCCID:%s\n",fccIdString);
+  fprintf((FILE *)fp,"StreamingIpAddress:%s\n",addressString);
+  fflush((FILE *)fp);
+  return;
+}
+
+/* changeChannelOnRadio(fd, channel): US path - send "c%d\r" and record the
+ * operating channel. Returns 1 ok / 0 fail. */
+int changeChannelOnRadio(int fd,int channel)
+{
+  size_t __n;
+  ssize_t sVar1;
+  char acStack_1014 [4100];
+  uint local_10;
+  sprintf(acStack_1014,"c%d\r",channel);
+  setOperatingChannelFile(channel);
+  __n = strlen(acStack_1014);
+  sVar1 = write(fd,acStack_1014,__n);
+  if (-1 >= sVar1) {
+    fwrite("write() of 11 bytes failed!\n",1,0x1c,(FILE *)stderr);
+  }
+  local_10 = (uint)(-1 < sVar1);
+  return local_10;
+}
+
+/* changeATSCChannelNumber(fd, channel): send "m#[01%08d]". DEAD CODE - never
+ * called (the US path uses changeChannelOnRadio, non-US uses changeNewFrequency). */
+int changeATSCChannelNumber(int fd,int channel)
+{
+  size_t __n;
+  ssize_t sVar1;
+  char acStack_1014 [4100];
+  uint local_10;
+  sprintf(acStack_1014,"m#[01%08d]",channel);
+  setOperatingChannelFile(channel);
+  __n = strlen(acStack_1014);
+  sVar1 = write(fd,acStack_1014,__n);
+  if (-1 >= sVar1) {
+    fwrite("write() of 11 bytes failed!\n",1,0x1c,(FILE *)stderr);
+  }
+  local_10 = (uint)(-1 < sVar1);
+  return local_10;
+}
+
+/* changeNewPowerLevel(fd, power): non-US power command "m#[02%08d]". */
+int changeNewPowerLevel(int fd,int power)
+{
+  size_t __n;
+  ssize_t sVar1;
+  char acStack_1014 [4100];
+  uint local_10;
+  sprintf(acStack_1014,"m#[02%08d]",power);
+  __n = strlen(acStack_1014);
+  sVar1 = write(fd,acStack_1014,__n);
+  if (-1 >= sVar1) {
+    fwrite("write() of 11 bytes failed!\n",1,0x1c,(FILE *)stderr);
+  }
+  local_10 = (uint)(-1 < sVar1);
+  return local_10;
+}
+
+/* changeNewModulation(fd, modulation): modulation command "m#[03%08d]". */
+int changeNewModulation(int fd,int modulation)
+{
+  size_t __n;
+  ssize_t sVar1;
+  char acStack_1014 [4100];
+  uint local_10;
+  sprintf(acStack_1014,"m#[03%08d]",modulation);
+  __n = strlen(acStack_1014);
+  sVar1 = write(fd,acStack_1014,__n);
+  if (-1 >= sVar1) {
+    fwrite("write() of 11 bytes failed!\n",1,0x1c,(FILE *)stderr);
+  }
+  local_10 = (uint)(-1 < sVar1);
+  return local_10;
+}
+
+/* changeNewFrequency(fd, channelNumber): non-US path - look up the carrier
+ * frequency for the channel and send "m#[04%08d]". param2 = frequency in
+ * 100-Hz units (or -1 for an out-of-range channel, which is rejected). */
+int changeNewFrequency(int fd,int channelNumber)
+{
+  int param2;                        // frequency (100-Hz units)
+  size_t __n;
+  ssize_t sVar1;
+  char acStack_1010 [4096];
+  int local_10;
+  setOperatingChannelFile(channelNumber);
+  param2 = convertChannelNumberToFrequency(channelNumber);
+  if (param2 < 0) {
+    fwrite("Invalid channel Number for this regulatory Domain!\n",1,0x33,(FILE *)stderr);
+    local_10 = 0;
+  }
+  else {
+    sprintf(acStack_1010,"m#[04%08d]",param2);
+    __n = strlen(acStack_1010);
+    sVar1 = write(fd,acStack_1010,__n);
+    if (sVar1 < 0) {
+      fwrite("write() of 11 bytes failed!\n",1,0x1c,(FILE *)stderr);
+      local_10 = 0;
+    }
+    else {
+      local_10 = 1;
+    }
+  }
+  return local_10;
+}
+
+/* convertIpOctetsToMeldHexFormatIpStringAndSize(ipAddress, returnString):
+ * "a.b.c.d" -> 8 hex digits "%02x%02x%02x%02x" in returnString; returns its
+ * length. local_18/14/10/c = the four parsed octets. */
+int convertIpOctetsToMeldHexFormatIpStringAndSize(char *ipAddress,char *returnString)
+{
+  size_t sVar1;
+  uint local_18;                     // octet 0
+  uint local_14;                     // octet 1
+  uint local_10;                     // octet 2
+  uint local_c;                      // octet 3
+  if (*ipAddress != '\0') {
+    sscanf(ipAddress,"%d.%d.%d.%d",(int *)&local_18,(int *)&local_14,(int *)&local_10,
+           (int *)&local_c);
+    sprintf(returnString,"%02x%02x%02x%02x",local_18,local_14,local_10,local_c);
+  }
+  sVar1 = strlen(returnString);
+  return sVar1;
+}
 
 /* isChannelInAvailableChannelMap(context, ch): returns 1 if `ch` is in the
  * available map AND is not one of 35..38 (0x23..0x26), else 0. local_18 = idx. */
@@ -1724,26 +2278,276 @@ int validateAndLoadFieldType
   return 1;
 }
 
-/* The four radio-query functions below share one shape: drain input, write a
- * one-shot query command, then select()-loop reading replies into a 4 KB
- * buffer. Only their command byte and what they do with the reply differ.
- *   queryInformationFromRadio(fd)          cmd "h"  -> copy lines to
- *       /etc/config/queryInfo until a read starts with "EOF".
- *   getMeldVersionAndOtherInfo(fd,ifp)     cmd "l\r" -> processMeldVersionNumber
- *       (writes "NXP Version:" from the "Firmware version = " line).
- *   getMeldSerialNumber(fd,ifp,wsCtx)      cmd "x"  -> validateAndLoadFieldType SERIAL
- *   getMeldFccIdInfo(fd,ifp,wsCtx)         cmd "y"  -> validateAndLoadFieldType FCCID
- *   getStreamingIpAddress(fd,ifp,wsCtx,buf) cmd "b?" -> validateAndLoadFieldType STREAMING_IP
- * In each, acStack_10xx is the reply buffer, fStack_xx the select() fd_set,
- * local_1x the 100 ms timeval, and the DAT_0051a2xx constant the command bytes.
- * Full bodies are in the raw file; they are mechanical and identical in shape.
- *
- * processMeldVersionNumber(fp,buf): local_10 = strstr(buf,"Firmware version = ")
- * + 0x13; writes "NXP Version:%s" to fp.
- *
- * setStreamingIpAddress(fd,wsCtx,ipStr): if the radio's current streaming IP
- * already matches, do nothing; else hex-encode meldStreamingIpAddress and send
- * "b#[01<hex>]\r". acStack_2c = the hex string; returns 1 on write success. */
+/* The five radio-query functions below share one shape: drain stale input
+ * (dumpAllSerialReceive), write a one-shot query command, then select()-loop
+ * (100 ms timeout) reading replies into a ~4 KB buffer. Only the command byte
+ * and what they do with the reply differ. In each: acStack_10xx = reply buffer,
+ * fStack_xx = select() fd_set, local_1x = the 100 ms timeval, local_10xx =
+ * fd_set clear index, and the DAT_0051a2xx constant = the command bytes. */
+
+/* queryInformationFromRadio(fd): cmd "h" (DAT_0051a15c). Copies each reply
+ * chunk to /etc/config/queryInfo until a read begins with "EOF" or input stops.
+ * __stream = the queryInfo file. Returns 1 ok / 0 on write failure. */
+int queryInformationFromRadio(int fd)
+{
+  FILE *__stream;                    // /etc/config/queryInfo
+  size_t __n;
+  ssize_t sVar1;
+  int iVar2;                         // select() result
+  uint local_10ac;                   // fd_set clear index
+  fd_set fStack_109c;
+  timeval local_101c;                // 100 ms timeout
+  char acStack_1014 [4100];          // command / reply buffer
+  int local_10;                      // return
+  memcpy(acStack_1014,&DAT_0051a15c,2);           // "h"
+  __stream = fopen("/etc/config/queryInfo","w+");
+  dumpAllSerialReceive(fd);
+  __n = strlen(acStack_1014);
+  sVar1 = write(fd,acStack_1014,__n);
+  if (sVar1 < 0) {
+    fwrite("write() of 11 bytes failed!\n",1,0x1c,(FILE *)stderr);
+    local_10 = 0;
+  }
+  else {
+    for (local_10ac = 0; local_10ac < 0x20; local_10ac = local_10ac + 1) {
+      fStack_109c.fds_bits[local_10ac] = 0;
+    }
+    fStack_109c.fds_bits[(uint)fd >> 5] = fStack_109c.fds_bits[(uint)fd >> 5] | 1 << (fd & 0x1fU);
+    local_101c.tv_sec = 0;
+    local_101c.tv_usec = 100000;
+    memset(acStack_1014,0,0x1000);
+    while( true ) {
+      iVar2 = select(fd + 1,&fStack_109c,(fd_set *)0x0,(fd_set *)0x0,&local_101c);
+      if (iVar2 < 1) break;
+      read(fd,acStack_1014,0x1000);
+      iVar2 = strncmp(acStack_1014,"EOF",3);       // radio marks end with "EOF"
+      if (iVar2 == 0) break;
+      fputs(acStack_1014,__stream);
+      fflush(__stream);
+      memset(acStack_1014,0,0x1000);
+    }
+    fclose(__stream);
+    local_10 = 1;
+  }
+  return local_10;
+}
+
+/* processMeldVersionNumber(fp, buf): find "Firmware version = " in buf and write
+ * the text after it (offset +0x13) to fp as "NXP Version:%s". local_10 = cursor. */
+void processMeldVersionNumber(FILE *fp,char *buf)
+{
+  char *local_10;                    // -> version text
+  local_10 = strstr(buf,"Firmware version = ");
+  if (local_10 != (char *)0x0) {
+    local_10 = local_10 + 0x13;                   // skip the label
+  }
+  fprintf((FILE *)fp,"NXP Version:%s\n",local_10);
+  fflush((FILE *)fp);
+  return;
+}
+
+/* getMeldVersionAndOtherInfo(fd, ifp): cmd "l\r" (DAT_0051a248). Feeds each
+ * reply chunk to processMeldVersionNumber (which extracts the firmware line). */
+int getMeldVersionAndOtherInfo(int fd,FILE *ifp)
+{
+  size_t __n;
+  ssize_t sVar1;
+  int iVar2;
+  uint local_10a4;
+  char acStack_1098 [4096];
+  fd_set fStack_98;
+  timeval local_18;
+  int local_10;
+  dumpAllSerialReceive(fd);
+  memcpy(acStack_1098,&DAT_0051a248,3);           // "l\r"
+  __n = strlen(acStack_1098);
+  sVar1 = write(fd,acStack_1098,__n);
+  if (sVar1 < 0) {
+    fwrite("write() of 11 bytes for MeldVersionAndOtherInfo !\n",1,0x32,(FILE *)stderr);
+    local_10 = 0;
+  }
+  else {
+    for (local_10a4 = 0; local_10a4 < 0x20; local_10a4 = local_10a4 + 1) {
+      fStack_98.fds_bits[local_10a4] = 0;
+    }
+    fStack_98.fds_bits[(uint)fd >> 5] = fStack_98.fds_bits[(uint)fd >> 5] | 1 << (fd & 0x1fU);
+    local_18.tv_sec = 0;
+    local_18.tv_usec = 100000;
+    memset(acStack_1098,0,0x1000);
+    while( true ) {
+      iVar2 = select(fd + 1,&fStack_98,(fd_set *)0x0,(fd_set *)0x0,&local_18);
+      if (iVar2 < 1) break;
+      sVar1 = read(fd,acStack_1098,0x1000);
+      if (sVar1 < 0) {
+        fwrite("Read Meldversion query failed!\n",1,0x1f,(FILE *)stderr);
+      }
+      if (1 < sVar1) {
+        processMeldVersionNumber(ifp,acStack_1098);
+      }
+    }
+    local_10 = 1;
+  }
+  return local_10;
+}
+
+/* getMeldSerialNumber(fd, ifp, wsCtx): cmd "x" (DAT_0051a2a0). The final reply
+ * goes to validateAndLoadFieldType(SERIAL), which stores wsCtx->serialNumber.
+ * acStack_a8 = retString scratch (the parsed value). */
+int getMeldSerialNumber(int fd,FILE *ifp,WhiteSpaceContext *wsCtx)
+{
+  size_t __n;
+  ssize_t sVar1;
+  int iVar2;
+  uint local_10b4;
+  char acStack_10a8 [4096];          // reply buffer
+  char acStack_a8 [20];              // parsed-value scratch
+  fd_set fStack_94;
+  timeval local_14;
+  dumpAllSerialReceive(fd);
+  memcpy(acStack_10a8,&DAT_0051a2a0,2);           // "x"
+  __n = strlen(acStack_10a8);
+  sVar1 = write(fd,acStack_10a8,__n);
+  if (sVar1 < 0) {
+    fwrite("write() failed!\n",1,0x10,(FILE *)stderr);
+  }
+  for (local_10b4 = 0; local_10b4 < 0x20; local_10b4 = local_10b4 + 1) {
+    fStack_94.fds_bits[local_10b4] = 0;
+  }
+  fStack_94.fds_bits[(uint)fd >> 5] = fStack_94.fds_bits[(uint)fd >> 5] | 1 << (fd & 0x1fU);
+  local_14.tv_sec = 0;
+  local_14.tv_usec = 100000;
+  memset(acStack_10a8,0,0x1000);
+  while( true ) {
+    iVar2 = select(fd + 1,&fStack_94,(fd_set *)0x0,(fd_set *)0x0,&local_14);
+    if (iVar2 < 1) break;
+    sVar1 = read(fd,acStack_10a8,0x1000);
+    if (-1 < sVar1) break;                        // got a reply
+    fwrite("Read Serial Number failed!\n",1,0x1b,(FILE *)stderr);
+  }
+  if (ifp != (FILE *)0x0) {
+    validateAndLoadFieldType(wsCtx,ifp,acStack_10a8,0x1000,SERIAL,acStack_a8);
+    fflush((FILE *)ifp);
+  }
+  return 1;
+}
+
+/* getMeldFccIdInfo(fd, ifp, wsCtx): cmd "y" (DAT_0051a2d4). The reply goes to
+ * validateAndLoadFieldType(FCCID), storing wsCtx->fccID. Shape matches the
+ * serial-number reader above. */
+int getMeldFccIdInfo(int fd,FILE *ifp,WhiteSpaceContext *wsCtx)
+{
+  size_t __n;
+  ssize_t sVar1;
+  int iVar2;
+  uint local_10b4;
+  char acStack_10a8 [4096];
+  char acStack_a8 [20];
+  fd_set fStack_94;
+  timeval local_14;
+  dumpAllSerialReceive(fd);
+  memcpy(acStack_10a8,&DAT_0051a2d4,2);           // "y"
+  __n = strlen(acStack_10a8);
+  sVar1 = write(fd,acStack_10a8,__n);
+  if (sVar1 < 0) {
+    fwrite("write() failed!\n",1,0x10,(FILE *)stderr);
+  }
+  for (local_10b4 = 0; local_10b4 < 0x20; local_10b4 = local_10b4 + 1) {
+    fStack_94.fds_bits[local_10b4] = 0;
+  }
+  fStack_94.fds_bits[(uint)fd >> 5] = fStack_94.fds_bits[(uint)fd >> 5] | 1 << (fd & 0x1fU);
+  local_14.tv_sec = 0;
+  local_14.tv_usec = 100000;
+  memset(acStack_10a8,0,0x1000);
+  while( true ) {
+    iVar2 = select(fd + 1,&fStack_94,(fd_set *)0x0,(fd_set *)0x0,&local_14);
+    if (iVar2 < 1) break;
+    sVar1 = read(fd,acStack_10a8,0x1000);
+    if (-1 < sVar1) break;
+    fwrite("Read FCCID failed!\n",1,0x13,(FILE *)stderr);
+  }
+  if (ifp != (FILE *)0x0) {
+    validateAndLoadFieldType(wsCtx,ifp,acStack_10a8,0x1000,FCCID,acStack_a8);
+    fflush((FILE *)ifp);
+  }
+  return 1;
+}
+
+/* getStreamingIpAddress(fd, ifp, wsCtx, buffer): cmd "b?" (DAT_0051a2ec). The
+ * reply goes to validateAndLoadFieldType(STREAMING_IP), which writes the dotted
+ * quad into `buffer` (used by the caller to compare/set the streaming IP). */
+int getStreamingIpAddress(int fd,FILE *ifp,WhiteSpaceContext *wsCtx,char *buffer)
+{
+  size_t __n;
+  ssize_t sVar1;
+  int iVar2;
+  uint local_109c;
+  char acStack_1090 [4096];
+  fd_set fStack_90;
+  timeval local_10;
+  dumpAllSerialReceive(fd);
+  memcpy(acStack_1090,&DAT_0051a2ec,3);           // "b?"
+  __n = strlen(acStack_1090);
+  sVar1 = write(fd,acStack_1090,__n);
+  if (sVar1 < 0) {
+    fwrite("write() failed!\n",1,0x10,(FILE *)stderr);
+  }
+  for (local_109c = 0; local_109c < 0x20; local_109c = local_109c + 1) {
+    fStack_90.fds_bits[local_109c] = 0;
+  }
+  fStack_90.fds_bits[(uint)fd >> 5] = fStack_90.fds_bits[(uint)fd >> 5] | 1 << (fd & 0x1fU);
+  local_10.tv_sec = 0;
+  local_10.tv_usec = 100000;
+  memset(acStack_1090,0,0x1000);
+  while( true ) {
+    iVar2 = select(fd + 1,&fStack_90,(fd_set *)0x0,(fd_set *)0x0,&local_10);
+    if (iVar2 < 1) break;
+    sVar1 = read(fd,acStack_1090,0x1000);
+    if (-1 < sVar1) break;
+    fwrite("Read IP Address failed!\n",1,0x18,(FILE *)stderr);
+  }
+  validateAndLoadFieldType(wsCtx,ifp,acStack_1090,0x1000,STREAMING_IP,buffer);
+  fflush((FILE *)ifp);
+  return 1;
+}
+
+/* setStreamingIpAddress(fd, wsCtx, ipAddressString): if the radio's current
+ * streaming IP already matches wsCtx->meldStreamingIpAddress, do nothing (return
+ * 0); otherwise hex-encode the IP and send "b#[01<hex>]\r". acStack_2c = the
+ * 8-hex-digit string; local_18 = return (1 on write success). */
+int setStreamingIpAddress(int fd,WhiteSpaceContext *wsCtx,char *ipAddressString)
+{
+  size_t sVar1;
+  int iVar2;
+  ssize_t sVar3;
+  char acStack_102c [4096];          // command buffer
+  char acStack_2c [20];              // hex IP string
+  int local_18;                      // return
+  memset(acStack_2c,0,0x14);
+  if (wsCtx->meldStreamingIpAddress[0] != '\0') {
+    sVar1 = strlen(ipAddressString);
+    iVar2 = strncmp(wsCtx->meldStreamingIpAddress,ipAddressString,sVar1);
+    if (iVar2 == 0) {
+      return 0;                                    // already set, nothing to do
+    }
+  }
+  iVar2 = convertIpOctetsToMeldHexFormatIpStringAndSize(wsCtx->meldStreamingIpAddress,acStack_2c);
+  if (iVar2 == 0) {
+    local_18 = 0;
+  }
+  else {
+    sprintf(acStack_102c,"b#[01%s]\r",acStack_2c);
+    sVar1 = strlen(acStack_102c);
+    sVar3 = write(fd,acStack_102c,sVar1);
+    if (sVar3 < 0) {
+      fwrite("write() of 11 bytes failed!\n",1,0x1c,(FILE *)stderr);
+      local_18 = 0;
+    }
+    else {
+      local_18 = 1;
+    }
+  }
+  return local_18;
+}
 
 /* serialProcessorThread(arg): thread B entry point. arg -> whitespaceThreadData;
  * wsCtx is read from offset +8. Does a one-time radio bring-up, signals thread A,
