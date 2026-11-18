@@ -1,0 +1,15 @@
+Add device usb2
+Add device usb1
+Add device 2-0:1.0
+Add device 1-0:1.0
+Add device sr0
+Add device usb1
+Add device usb2
+Add device 2-0:1.0
+Add device 1-0:1.0
+Add device sr0
+Add device usb1
+Add device usb2
+Add device 1-0:1.0
+Add device 2-0:1.0
+Add device sr0

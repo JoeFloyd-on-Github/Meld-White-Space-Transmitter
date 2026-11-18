@@ -1,0 +1,7 @@
+METHOD=auto
+IPADDR=888.888.888.888
+SUBNET=888.888.888.888
+
+#!/bin/sh
+udhcpc -i eth1 -h $HOSTNAME -p /usr/share/udhcpc.eth1.pid -b
+sync

@@ -1,0 +1,42 @@
+#!/bin/sh
+# This is only for developer
+
+
+#echo "Bringing up Eth0"
+#ifconfig eth0 172.19.4.198 netmask 255.255.0.0 up
+#route add default gw 172.19.1.1 eth0
+#udhcpc -i eth0 -h $HOSTNAME -b
+#/etc/init.d/setipeth0
+
+#echo "Bringing up Eth1"
+#ifconfig eth0 192.168.10.200 netmask 255.255.255.0 up
+#route add default gw 172.18.1.1 eth1
+#udhcpc -i eth1 -h $HOSTNAME -b
+#/etc/init.d/setipeth1
+
+#echo "Mounting NFS"
+#mount -t nfs -o nolock 172.18.3.195:/root /nfs
+
+#echo "Starting System logger (syslogd)"
+#syslogd -O /nfs/var/log/messages 
+#echo "Starting Kernel logger (klogd)"
+#klogd
+
+#echo "Starting Telnet Daemon"
+#telnetd -l /bin/sh
+
+#echo "Increase Ethernet RX buffer"
+#sysctl -p
+
+#echo "Starting Web Server (Boa)"
+#boa -c /etc/boa
+#echo "Starting inetd"
+#inetd
+
+#echo "Enabing DMA mode of IDE driver"
+#hdparm -d1 /dev/hda
+
+#echo "Starting Samba server"
+#cd /usr/samba/smbbin-3.0.30/
+#./start_smb &
+

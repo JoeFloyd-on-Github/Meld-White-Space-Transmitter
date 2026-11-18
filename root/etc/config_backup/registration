@@ -1,0 +1,5 @@
+ config 'current' 'registration_status'
+	 option 'status' '0'
+ config 'current' 'registration_request_timestamp'
+	 option 'time_stamp' 'Thu, 17 Sep 2020 12:12:12 GMT'
+

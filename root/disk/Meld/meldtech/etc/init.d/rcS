@@ -1,0 +1,106 @@
+#!/bin/sh
+echo "rcS 20130826 Meld pja"
+trap "" SIGHUP
+echo "Mounting proc"
+mount -t proc none /proc
+echo "Mounting usbfs"
+mount -t usbfs none /proc/bus/usb
+echo "Mounting sysfs"
+mount -t sysfs none /sys
+
+#Mount Read Only Nand FS
+/bin/actimage
+actimg=$?
+echo "Active image:${actimg}"
+if [ ${actimg} == 0 ]; then
+	mount -t yaffs2 -rw /dev/mtdblock8 /disk
+elif [ ${actimg} == 1 ]; then 
+	echo "mount nand /dev/mtdblock9 to /disk"
+	mount -t yaffs2 -rw /dev/mtdblock9 /disk
+else
+	echo "Error:can't get the active image"
+	exit 1
+fi
+
+echo "Starting uevent daemon"
+/usr/bin/uevent_daemon
+
+echo "Starting Udev"
+start_udev
+
+echo "Mounting devpts"
+mount -t devpts none /dev/pts
+
+sysctl -p
+
+export HOSTNAME="MT300-AV"
+echo "Setting hostname $HOSTNAME"
+hostname $HOSTNAME
+
+echo
+cat /etc/init.d/00_boot_tar.txt
+cat /disk/Meld/00_disk_tar.txt
+echo
+
+echo "Bringing up loopback device"
+ifconfig lo 127.0.0.1 netmask 255.0.0.0 up
+route add -net 127.0.0.0 netmask 255.0.0.0 dev lo
+
+echo "Bringing up Eth0"
+/etc/init.d/setipeth0
+
+echo "Test DNS"
+#put nslookup in background, then sleep for 5sec, then kill nslookup if it hasn't finished
+#put "nslookup" in background, put "sleep 5" in background, then wait for first to finish
+/usr/bin/nslookup google.com &
+cmd_PID=$!
+sleep 5 &
+sleep_PID=$!
+loop_cnt=0
+while ( (kill -0 $cmd_PID &> /dev/null) && (kill -0 $sleep_PID &> /dev/null) ) do
+  sleep 1
+  loop_cnt=$((loop_cnt+1))
+  echo "wait $loop_cnt"
+done
+if (kill -0 $cmd_PID &> /dev/null) then
+  echo "nslookup: timed out"
+else
+  echo "nslookup: completed"
+fi
+kill -15 $cmd_PID $sleep_PID &> /dev/null
+echo
+
+#Mount SPI File System if fail 
+#mount -t jffs2 /dev/mtdblock11 /spi_disk
+#if [ $? != 0 ]; then
+#	flash_erase -j /dev/mtd11 0 0
+#	mount -t jffs2 /dev/mtdblock11 /spi_disk
+#	mkdir -p /spi_disk/pstor
+#fi
+
+echo "Starting Telnet Daemon"
+telnetd -l /bin/sh
+
+/bin/pm_daemon &
+
+echo
+echo "ntpdate setting current data from pool.ntp.org"
+#put "ntpdate" in background, put "sleep 5" in background, then wait for first to finish
+/bin/ntpdate -t 5 pool.ntp.org &
+cmd_PID=$!
+sleep 5 &
+sleep_PID=$!
+loop_cnt=0
+while ( (kill -0 $cmd_PID &> /dev/null) && (kill -0 $sleep_PID &> /dev/null) ) do
+  sleep 1
+  loop_cnt=$((loop_cnt+1))
+  echo "wait $loop_cnt"
+done
+if (kill -0 $cmd_PID &> /dev/null) then
+  echo "ntpdate: timed out"
+else
+  echo "ntpdate: completed"
+fi
+kill -15 $cmd_PID $sleep_PID &> /dev/null
+echo
+

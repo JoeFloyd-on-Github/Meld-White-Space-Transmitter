@@ -1,0 +1,5 @@
+ config 'current' 'channel_request_status'
+	 option 'status' ''
+ config 'current' 'channel_request_timestamp'
+	 option 'time_stamp' ''
+

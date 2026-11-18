@@ -1,0 +1,40 @@
+################################################################################
+#
+#       (c) 2012 Copyright Spectrum Bridge, Inc.
+#       All rights reserved.
+#
+#       This software contains confidential and proprietary information.
+#       The content or any derivative work may be used only as authorized
+#       by a licensing agreement from Spectrum Bridge, Inc.  All copies must
+#       include this header.
+#
+################################################################################
+
+#       INSTALL - $Revision: 24 $ $Date: 2012-08-14 11:01:24 -0400 (Tue, 14
+Aug 2012) $ $Author: mario $
+
+This document describes how to install the meldtech_installer_X.YZ.tgz package
+
+1) Decompress the tgz file in a directory accessible by the XC4208 by running:
+	tar -xzvf meldtech_installer_<version>.tgz
+	<version> is the version of the package as the file name indicates
+2) In the XC4208, go to the meldtech directory where the files were unpacked
+	cd <path>/meldtech
+	<path> is the path to the directory where meldtech_installer_<version>.tgz was copied to
+3) Run the installer script from the XC4208
+	./installer.sh
+4) Once the installer has finished, reboot the XC4208
+
+NOTES: The installation files can normally be accessed by mounting a USB drive or an NFS drive.
+
+****************************************************************
+NFS Example:
+
+If the installer package is in an nfs shared drive (i.e. /opt/nfs) on a Linux server and the drive was mounted to /nfs on the XC4208, do the following:
+1) On the Linux server:
+	cd /opt/nfs
+	tar -xvzf meldtech_installer_1.11.tgz
+2) On the XC4208:
+	cd /nfs/meldtech
+3) ./installer.sh
+4) reboot

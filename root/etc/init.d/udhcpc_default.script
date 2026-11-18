@@ -1,0 +1,71 @@
+#!/bin/sh
+
+[ -z "$1" ] && echo "Error: should be called from udhcpc" && exit 1
+
+RESOLV_CONF="/etc/resolv.conf"
+[ -n "$broadcast" ] && BROADCAST="broadcast $broadcast"
+[ -n "$subnet" ] && NETMASK="netmask $subnet"
+
+case "$1" in
+	leasefail)
+		IP="169.254"
+	 	ADDRESS="10"
+	 	NETMASK="netmask 255.255.0.0"
+	 	BROADCAST="broadcast 169.254.255.255"
+	 	ADD_SET=false
+	 	while [ $ADD_SET = "false" ] && [ $ADDRESS -lt 16 ]
+	 	do
+	 		arping -D -c 2 $IP.$ADDRESS.$ADDRESS
+	 		if [ $? = 0 ]
+	 		then
+	 			/sbin/ifconfig $interface $IP.$ADDRESS.$ADDRESS $BROADCAST $NETMASK
+	 			ADD_SET=true
+	 			echo "Setting APIPA style IP address $IP.$ADDRESS.$ADDRESS"
+	 		else
+	 			ADDRESS=`expr 1 + $ADDRESS`
+	 		fi
+	 	done
+	 	#if fail to set address then set if to 0.0.0.0
+	 	if [ $ADD_SET = "false" ]
+	 	then
+	 		/sbin/ifconfig $interface 0.0.0.0
+	 		echo "Setting IP address to 0.0.0.0"
+	 		echo "Setting default gw to 0.0.0.0"
+	 		/sbin/route del default gw 0.0.0.0 dev $interface 	fi
+		fi 
+		#echo "Try Auto IP ..."
+		#/bin/autoipd -wD --force-bind $interface
+		sync
+		;;
+
+	deconfig)
+		/sbin/ifconfig $interface 0.0.0.0
+		;;
+
+	renew|bound)
+		#/bin/autoipd -k $interface
+		/sbin/ifconfig $interface $ip $BROADCAST $NETMASK
+
+		if [ -n "$router" ] ; then
+			#echo "deleting routers"
+			while route del default gw 0.0.0.0 dev $interface 2>/dev/null; do
+				:
+			done
+
+			for i in $router ; do
+				echo "adding route $i"
+				route add default gw $i dev $interface
+			done
+		fi
+
+		echo -n > $RESOLV_CONF
+		[ -n "$domain" ] && echo search $domain >> $RESOLV_CONF
+		for i in $dns ; do
+			echo adding dns $i
+			echo nameserver $i >> $RESOLV_CONF
+		done
+		;;
+esac
+
+exit 0
+

@@ -1,0 +1,5 @@
+ config 'current' 'registration_status'
+	 option 'status' '99'
+ config 'current' 'registration_request_timestamp'
+	 option 'time_stamp' ''
+

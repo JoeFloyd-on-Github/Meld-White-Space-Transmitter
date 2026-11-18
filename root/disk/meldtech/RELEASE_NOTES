@@ -1,0 +1,55 @@
+Version 1.21
+- Display only channels between 21 and 51 in the Status and Advanced->Preferences web page
+- Display NXP version number on header (whitespaceagent update). NOTE: This software version will only work with NXP version 0.029d7 Tx v2 test or above
+- Point to LIVE db
+- Fix to problem with setting Streaming IP Address
+- Improved upgrade feature
+- Disabled thttpd logging
+- Removed libssl library (it is part of the whitespaceagent now)
+- Removed decompress script (no longer used by upgrade process)
+
+- UPGRADE version
+  - If the device type is 3, it leaves the WSDB server as DEMO, but if the device type is 8, it changes it to the live DB
+  - Added template_file to /etc/config
+  - Clean up of upgrade.log file before upgrades
+  - Added restart of whitespaceagent at the end of the upgrade
+
+*****************************************************************************
+Version 1.20
+- This version is a special release to get all MT300 up to speed and on the same platform.
+- Added ability to reset to factory defaults:
+  a) Registration Information is cleared
+  b) IP Address to 192.168.1.194
+  c) Streaming IP Address to 192.168.1.193
+  d) Preferred channels cleared
+  e) Transmit Power to 11
+- Added default registration information for factory
+- Added wording to pages when being submitted
+- Fixed bug with Button location
+
+*****************************************************************************
+Version 1.16
+- Added capability to read and write IP address of the NXP (radio)
+- Removed check for application type of upgrade file in upgrade.php
+- Upgraded whitespaceagent to version 26
+- Changed sbi file to point to DEMO
+- Contact Country is now readonly with code US in the sbi file. The registration API requires a 2 character Contact Country. Contact Information needs to be addressed for other countries (problem with State drop down)
+- Added killall udhcpc to setipeth0 to stop network.php from spawning more udhcpc processes. Need to look for a different way to restart the interface.
+- Registration Status update for code 99 when registration information is missing
+- Fixed text in alert when picking file of wrong extension
+- Fixed success flag bug in upgrade.php
+
+Version 1.15
+- Upgrade procedure for MELD so that the devices start acting as fixed only (change of device type from 3 to 8)
+- Updated upgrade.php to display proper error message when upgrade fails
+- upgrade.sh overrides whitespaceagent, upgrade.php, and preferences.php
+
+*****************************************************************************
+Version 1.14
+- Added wording in preferred channel section for only channels 21-51
+- Changed default ChLookupDeviceType to 8 from 3. This makes the device work as a fixed device
+- Cleared out all registration information
+- Changed default configuration on system files
+- This version of the firmware points to TEST (not DEMO) for FCC Testing purposes
+- Updated whitespaceagent to version 20 where the channel request status gets cleared when making a registration request
+- Fixed heading in Software Upgrade tab

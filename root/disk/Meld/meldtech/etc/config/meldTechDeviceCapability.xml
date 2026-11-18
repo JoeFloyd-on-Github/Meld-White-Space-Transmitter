@@ -1,0 +1,25 @@
+<DeviceCapability>
+  <HostAddress>tvws-demo.spectrumbridge.com</HostAddress>
+  <HostPortNumber>443</HostPortNumber>
+  <RegulatoryDomain>US</RegulatoryDomain>
+  <Location>
+    <Latitude></Latitude>
+    <Longitude></Longitude>
+  </Location>
+  <TvwsDeviceInfo>
+    <FccID></FccID>
+    <MfgSerialNumber></MfgSerialNumber>
+    <DeviceType>8</DeviceType>
+    <ContactCity></ContactCity>
+    <ContactCountry></ContactCountry>
+    <ContactEmail></ContactEmail>
+    <ContactName></ContactName>
+    <ContactPhone></ContactPhone>
+    <ContactState></ContactState>
+    <ContactStreet></ContactStreet>
+    <ContactZip></ContactZip>
+    <CountryCode>US</CountryCode>
+    <DeviceOwner></DeviceOwner>
+  </TvwsDeviceInfo>
+  <PreferredChannel></PreferredChannel>
+</DeviceCapability>

@@ -1,0 +1,2 @@
+ config 'channel' 'channel'
+	 option 'channels' '21'

@@ -1,0 +1,6 @@
+# These nodes have to be created manually
+fb0
+snd/controlC0
+snd/pcmC0D0p
+snd/timer
+rtc0

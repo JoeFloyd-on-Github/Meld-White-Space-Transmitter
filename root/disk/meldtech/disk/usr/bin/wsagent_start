@@ -1,0 +1,27 @@
+#!/bin/sh
+################################################################################
+#
+#       (c) 2012 Copyright Spectrum Bridge, Inc.
+#       All rights reserved.
+#
+#       This software contains confidential and proprietary information.
+#       The content or any derivative work may be used only as authorized
+#       by a licensing agreement from Spectrum Bridge, Inc.  All copies must
+#       include this header.
+#
+################################################################################
+
+#       wsagent_start - $Revision: 11 $ $Date: 2012-08-09 15:11:41 -0400 (Thu, 09 Aug 2012) $ $Author: mario $
+#       This script converts the registration information into          #
+#	XML and starts the whitespaceagent process			#
+#       This script needs to be called in /etc/init.d/rcS to start	#
+#	on device boot and also in /disk/www/registration.php		#
+
+# CONVERT CONFIG FILE INTO XML FILE
+# USAGE: awk -f <awk-script> <source-file> <xml-template> > <xml-file>
+/usr/bin/awk -f /disk/usr/bin/xml_conversion /etc/config/sbi /etc/config/template_file > /etc/config/meldTechDeviceCapability.xml &
+
+# START THE WHITE SPACE AGENT
+# USAGE ./whitespaceagent <certificat-file> <certificate-path> <xml-file> 2>&1 > /dev/null &
+# NOTE, had to get rid of 2>&1 because it was hanging thttpd
+/disk/usr/bin/whitespaceagent cafile.cert /etc/config /etc/config/meldTechDeviceCapability.xml > /dev/null &

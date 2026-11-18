@@ -1,0 +1,27 @@
+<DeviceCapability>
+  <HostAddress></HostAddress>
+  <HostPortNumber></HostPortNumber>
+  <RegulatoryDomain></RegulatoryDomain>
+  <Location>
+    <Latitude></Latitude>
+    <Longitude></Longitude>
+  </Location>
+  <TvwsDeviceInfo>
+    <DeviceType></DeviceType>
+    <ChLookupDeviceType></ChLookupDeviceType>
+    <AntennaHeightAglMeters></AntennaHeightAglMeters>
+    <ContactCity></ContactCity>
+    <ContactCountry></ContactCountry>
+    <ContactEmail></ContactEmail>
+    <ContactName></ContactName>
+    <ContactPhone></ContactPhone>
+    <ContactState></ContactState>
+    <ContactStreet></ContactStreet>
+    <ContactZip></ContactZip>
+    <CountryCode>US</CountryCode>
+    <DeviceOwner></DeviceOwner>
+  </TvwsDeviceInfo>
+  <PreferredChannel></PreferredChannel>
+  <EnumeratedTransmitPower></EnumeratedTransmitPower>
+  <StreamingIpAddress></StreamingIpAddress>
+</DeviceCapability>

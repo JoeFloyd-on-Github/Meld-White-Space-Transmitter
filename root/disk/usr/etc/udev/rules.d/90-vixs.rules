@@ -1,0 +1,5 @@
+# pass all events to the HAL daemon
+KERNEL=="sr*",SUBSYSTEM=="block", ENV{TARGETDEV}="%k", RUN+="/usr/bin/blkdev_detect.sh"
+KERNEL=="sd*",SUBSYSTEM=="block", ENV{TARGETDEV}="%k", RUN+="/usr/bin/blkdev_detect.sh"
+#KERNEL=="sd*",SUBSYSTEM=="block", ENV{TARGETDEV}="%k", RUN+="/usr/bin/xcode_uevent_client"
+KERNEL=="*",SUBSYSTEM=="usb", DRIVERS=="usb",ENV{TARGETDEV}="%k", RUN+="/usr/bin/blkdev_detect.sh"

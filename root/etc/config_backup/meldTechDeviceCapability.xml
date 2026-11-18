@@ -1,0 +1,27 @@
+<DeviceCapability>
+  <HostAddress>tvws.spectrumbridge.com</HostAddress>
+  <HostPortNumber>443</HostPortNumber>
+  <RegulatoryDomain>US</RegulatoryDomain>
+  <Location>
+    <Latitude>38.8132280</Latitude>
+    <Longitude>-77.0443610</Longitude>
+  </Location>
+  <TvwsDeviceInfo>
+    <DeviceType>3</DeviceType>
+    <ChLookupDeviceType>3</ChLookupDeviceType>
+    <AntennaHeightAglMeters>4</AntennaHeightAglMeters>
+    <ContactCity>Alexandria</ContactCity>
+    <ContactCountry>US</ContactCountry>
+    <ContactEmail>IETSupport@aaae.org</ContactEmail>
+    <ContactName>AAAE Test</ContactName>
+    <ContactPhone>7038240500</ContactPhone>
+    <ContactState>VA</ContactState>
+    <ContactStreet>601 Madison Street</ContactStreet>
+    <ContactZip>22314</ContactZip>
+    <CountryCode>US</CountryCode>
+    <DeviceOwner>AAAE</DeviceOwner>
+  </TvwsDeviceInfo>
+  <PreferredChannel>21</PreferredChannel>
+  <EnumeratedTransmitPower>11</EnumeratedTransmitPower>
+  <StreamingIpAddress>192.168.0.203</StreamingIpAddress>
+</DeviceCapability>

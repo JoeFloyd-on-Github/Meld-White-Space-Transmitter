@@ -1,0 +1,32 @@
+#!/bin/sh
+################################################################################
+#
+#       (c) 2012 Copyright Spectrum Bridge, Inc.
+#       All rights reserved.
+#
+#       This software contains confidential and proprietary information.
+#       The content or any derivative work may be used only as authorized
+#       by a licensing agreement from Spectrum Bridge, Inc.  All copies must
+#       include this header.
+#
+################################################################################
+
+#       decompress - $Revision: 42 $ $Date: 2012-08-09 15:11:41 -0400 (Thu, 0
+#       This script decompresses the uploaded tgz file according to the #
+#       name provided in the first parameter. This is called from       #
+#       upgrade.php                                                     #
+
+# DECOMPRESS THE UPLOADED TGZ FILE AND PROCESS THE UPGRADE
+# USAGE: decompress <filename.tgz>
+# BY DEFAULT THIS SCRIPT WILL LOOK IN /disk/www/resources/*.tgz AND PLACE
+# THE DECOMPRESSED DATA IN /disk/www/resources/
+
+location="/disk/www/resources/"
+upgrade_file="/disk/www/resources/meldtech/upgrade.sh"
+tar xzf ${location}${1} -C $location
+
+# TEST IF FILE EXISTS
+if [ -e "$upgrade_file" ]
+then
+  echo "File is present"
+fi

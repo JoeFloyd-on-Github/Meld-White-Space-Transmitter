@@ -1,0 +1,20 @@
+#!/bin/sh
+################################################################################
+#
+#       (c) 2012 Copyright Spectrum Bridge, Inc.
+#       All rights reserved.
+#
+#       This software contains confidential and proprietary information.
+#       The content or any derivative work may be used only as authorized
+#       by a licensing agreement from Spectrum Bridge, Inc.  All copies must
+#       include this header.
+#
+################################################################################
+
+#       wsagent_stop - $Revision: 11 $ $Date: 2012-08-09 15:11:41 -0400 (Thu, 09 Aug 2012) $ $Author: mario $
+#       This script stops the whitespace agent process			#
+#       This script needs to be called in				#
+#	/disk/www/registration.php					#
+
+# STOP THE WHITE SPACE AGENT
+killall whitespaceagent

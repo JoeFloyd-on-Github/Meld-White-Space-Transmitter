@@ -1,0 +1,50 @@
+Jan  1 00:06:35 xc4viper lircd: lircd(iguanaIR) ready, using /var/run/lirc/lircd
+Jan  1 00:00:15 xc4viper lircd: lircd(iguanaIR) ready, using /var/run/lirc/lircd
+Jan  1 00:01:29 xc4viper lircd: accepted new client on /var/run/lirc/lircd
+Jan  1 00:01:29 xc4viper lircd: couldn't open connection to iguanaIR daemon: No such file or directory
+Jan  1 00:01:29 xc4viper lircd: WARNING: Failed to initialize hardware
+Jan  1 00:01:35 xc4viper lircd: removed client
+Jan  1 00:02:05 xc4viper lircd: accepted new client on /var/run/lirc/lircd
+Jan  1 00:02:05 xc4viper lircd: couldn't open connection to iguanaIR daemon: No such file or directory
+Jan  1 00:02:05 xc4viper lircd: WARNING: Failed to initialize hardware
+Jan  1 00:03:31 xc4viper lircd: removed client
+Jan  1 00:04:03 xc4viper lircd: accepted new client on /var/run/lirc/lircd
+Jan  1 00:04:03 xc4viper lircd: couldn't open connection to iguanaIR daemon: No such file or directory
+Jan  1 00:04:03 xc4viper lircd: WARNING: Failed to initialize hardware
+Jan  1 00:04:10 xc4viper lircd: removed client
+Jan  1 00:00:13 xc4viper lircd: lircd(iguanaIR) ready, using /var/run/lirc/lircd
+Jan  1 00:01:13 xc4viper lircd: lircd(iguanaIR) ready, using /var/run/lirc/lircd
+Jan  1 00:01:42 xc4viper lircd: accepted new client on /var/run/lirc/lircd
+Jan  1 00:01:42 xc4viper lircd: couldn't open connection to iguanaIR daemon: No such file or directory
+Jan  1 00:01:42 xc4viper lircd: WARNING: Failed to initialize hardware
+Jan  1 00:06:58 xc4viper lircd: removed client
+Jan  1 00:01:36 xc4viper lircd: lircd(iguanaIR) ready, using /var/run/lirc/lircd
+Jan  1 00:00:11 xc4viper lircd: lircd(iguanaIR) ready, using /var/run/lirc/lircd
+Jan  1 00:00:17 xc4viper lircd: lircd(iguanaIR) ready, using /var/run/lirc/lircd
+Jan  1 00:00:24 xc4viper lircd: lircd(iguanaIR) ready, using /var/run/lirc/lircd
+Jan  1 00:00:13 xc4viper lircd: lircd(iguanaIR) ready, using /var/run/lirc/lircd
+Jan  1 00:01:34 xc4viper lircd: lircd(iguanaIR) ready, using /var/run/lirc/lircd
+Jan  1 00:00:20 xc4viper lircd: lircd(iguanaIR) ready, using /var/run/lirc/lircd
+Jan  1 00:01:08 xc4viper lircd: lircd(iguanaIR) ready, using /var/run/lirc/lircd
+Jan  1 00:01:36 xc4viper lircd: accepted new client on /var/run/lirc/lircd
+Jan  1 00:01:36 xc4viper lircd: couldn't open connection to iguanaIR daemon: No such file or directory
+Jan  1 00:01:36 xc4viper lircd: WARNING: Failed to initialize hardware
+Jan  1 00:04:52 xc4viper lircd: removed client
+Jan  1 00:00:15 xc4viper lircd: lircd(iguanaIR) ready, using /var/run/lirc/lircd
+Jan  1 00:00:42 xc4viper lircd: accepted new client on /var/run/lirc/lircd
+Jan  1 00:00:42 xc4viper lircd: couldn't open connection to iguanaIR daemon: No such file or directory
+Jan  1 00:00:42 xc4viper lircd: WARNING: Failed to initialize hardware
+Jan  1 00:21:02 xc4viper lircd: removed client
+Jan  1 00:21:36 xc4viper lircd: accepted new client on /var/run/lirc/lircd
+Jan  1 00:21:36 xc4viper lircd: couldn't open connection to iguanaIR daemon: No such file or directory
+Jan  1 00:21:36 xc4viper lircd: WARNING: Failed to initialize hardware
+Jan  1 00:21:43 xc4viper lircd: removed client
+Jan  1 00:22:31 xc4viper lircd: accepted new client on /var/run/lirc/lircd
+Jan  1 00:22:31 xc4viper lircd: couldn't open connection to iguanaIR daemon: No such file or directory
+Jan  1 00:22:31 xc4viper lircd: WARNING: Failed to initialize hardware
+Jan  1 00:24:01 xc4viper lircd: removed client
+Jan  1 00:24:30 xc4viper lircd: accepted new client on /var/run/lirc/lircd
+Jan  1 00:24:30 xc4viper lircd: couldn't open connection to iguanaIR daemon: No such file or directory
+Jan  1 00:24:30 xc4viper lircd: WARNING: Failed to initialize hardware
+Jan  1 00:24:37 xc4viper lircd: removed client
+Jan  1 00:00:10 xc4viper lircd: lircd(iguanaIR) ready, using /var/run/lirc/lircd

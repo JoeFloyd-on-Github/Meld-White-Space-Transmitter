@@ -1,0 +1,67 @@
+#
+#   XCODE  RGB/ (RGBA YUV) video modes
+# 
+#   (C) 2008 ViXS Systmes Inc
+#
+#    NOTE: Currently we use the height of 1081 instead if 1080 to identify 1920x1080 PAL mode
+#	
+mode "720x480 RGB"
+    # D: 25.175 MHz, H: 31.469 kHz, V: 59.94 Hz
+    geometry 720 480 720 480 32
+    timings 39722 48 16 33 10 96 2
+    laced true
+    hsync high
+    vsync high
+endmode
+
+mode "720x480 RGB Progressive"
+    # D: 25.175 MHz, H: 31.469 kHz, V: 59.94 Hz
+    geometry 720 480 720 480 32
+    timings 39722 48 16 33 10 96 2
+    hsync high
+    vsync high
+endmode
+
+mode "720x576 RGB"
+    # D: 25.175 MHz, H: 31.469 kHz, V: 50.00 Hz
+    geometry 720 576 720 576 32
+    timings 39722 48 16 33 10 96 2
+    laced true
+    hsync high
+    vsync high
+endmode
+
+mode "720x576 RGB Progressive"
+    # D: 25.175 MHz, H: 31.469 kHz, V: 50.00 Hz
+    geometry 720 576 720 576 32
+    timings 39722 48 16 33 10 96 2
+    hsync high
+    vsync high
+endmode
+
+mode "1280x720 RGB Progressive"
+    # D: 25.175 MHz, H: 31.469 kHz, V: 50.00 Hz
+    geometry 1280 720 1280 720 32
+    timings 39722 48 16 33 10 96 2
+    hsync high
+    vsync high
+endmode
+
+mode "1920x1080 RGB"
+    # D: 25.175 MHz, H: 31.469 kHz, V: 59.94 Hz
+    geometry 1920 1080 1920 1080 32
+    timings 39722 48 16 33 10 96 2
+    laced true
+    hsync high
+    vsync high
+endmode
+
+mode "1920x1080 RGB"
+    # D: 25.175 MHz, H: 31.469 kHz, V: 59.94 Hz
+    geometry 1920 1081 1920 1081 32
+    timings 39722 48 16 33 10 96 2
+    laced true
+    hsync high
+    vsync high
+endmode
+
