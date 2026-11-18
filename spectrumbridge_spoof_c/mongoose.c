@@ -18,8 +18,8 @@
 // SPDX-License-Identifier: GPL-2.0-only or commercial
 
 #define MG_ENABLE_MBEDTLS 1
-#define MG_ENABLE_TCPIP 1
-#define MG_ENABLE_PACKET_LOG 1
+#define MG_ENABLE_TCPIP 0       /* use the OS socket API, not mongoose's built-in stack */
+#define MG_ENABLE_PACKET_LOG 0
 
 #include "mongoose.h"
 

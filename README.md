@@ -18,8 +18,9 @@ it, stand-in ("spoof") database servers, and a snapshot of a running device.
 | [`docs/wsa-overview.md`](docs/wsa-overview.md) | **behavior of the `wsa` binary** — startup, the two threads, the TLS/HTTP database protocol, the response format a server must send, the serial radio commands, and the files it writes |
 | [`docs/system-context.md`](docs/system-context.md) | **the device around it** — boot sequence, the `sbi`→XML config pipeline, the web UI, the firmware upgrade package, and the version history |
 | [`docs/boot-process.md`](docs/boot-process.md) | **the device boot + hardware** — U-Boot/kernel, `rcS`, the reset/power button, IP assignment, how the radio is tied in, and how the ViXS hardware is configured |
+| [`docs/on-device-spoof.md`](docs/on-device-spoof.md) | **running the database stand-in on the device** — redirecting the dead `tvws.spectrumbridge.com` to loopback, cross-compiling the MIPS server, and how it was tested |
 | [`oem-analysis/`](oem-analysis) | decompiled + annotated source for the **OEM hardware-control binaries** (`pm_daemon`, `actimage`, `mtd_char_op`, the uevent pair, `boxdiag`, `load_keys_good`) |
-| [`spectrumbridge_spoof_c/`](spectrumbridge_spoof_c) | a C (Mongoose + mbedTLS) stand-in for the SpectrumBridge database server, plus a `sniff` tool |
+| [`spectrumbridge_spoof_c/`](spectrumbridge_spoof_c) | a C (Mongoose + mbedTLS) stand-in for the SpectrumBridge database server — builds to a static **MIPS** binary (`sb_mips`) that runs on the device; includes `build.sh`, `test_replay.sh`, and a `sniff` tool (see [`docs/on-device-spoof.md`](docs/on-device-spoof.md)) |
 | [`spectrumbridge_spoof_python/`](spectrumbridge_spoof_python) | a Python stand-in for the same server (plain + SOAP variants) |
 | [`upgrade/`](upgrade) | the `meldtech` 1.21 firmware upgrade package (tgz + extracted); bundles an older `whitespaceagent` (v27) |
 | [`root/`](root) | a snapshot of the **running device's** root filesystem — live `/etc/config`, boot scripts, web UI, and the deployed `whitespaceagent` |

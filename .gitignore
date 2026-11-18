@@ -11,3 +11,7 @@ spectrumbridge_spoof_c/*.o
 # Private keys (keep test keys local)
 spectrumbridge_spoof_python/key.pem
 *.pem
+spectrumbridge_spoof_c/build/
+spectrumbridge_spoof_c/sb.o
+spectrumbridge_spoof_c/mongoose.o
+spectrumbridge_spoof_c/build.log
