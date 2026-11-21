@@ -2,7 +2,7 @@
 
 Persistent notes for future sessions (human or Claude): **why** this repo exists,
 what has been done, the decisions made along the way, and what is still open.
-Last updated 2026-11-18. Update this file when a goal, decision or open item
+Last updated 2026-11-21. Update this file when a goal, decision or open item
 changes.
 
 ## Goal
@@ -42,6 +42,12 @@ check. Keep that framing intact when editing the README.
    binary → emulator story plus tips and pitfalls.
 8. **README** rewrite with the overview, the e-waste/ownership essay and an
    original SVG banner (no copyrighted product photos).
+9. **Live device (2026-11-21).** A second, powered bench unit (serial **457**,
+   kernel 2.6.29-ts, Meld app v1.26) reached via its passwordless telnet root
+   shell (`docs/device-access.md`). Following `docs/on-device-test-plan.md`, with
+   `sb_mips` rebuilt to offer only channels **23,42** and the RF output in a
+   dummy load, the unmodified agent registered, took channel 23 and keyed the
+   radio; a carrier was seen at 524–530 MHz. **The approach works on hardware.**
 
 ## Key technical facts and decisions
 
@@ -75,9 +81,12 @@ check. Keep that framing intact when editing the README.
 
 ## Concerns
 
-- **Not yet tested on the physical MT300.** All on-device steps were validated
-  statically and under QEMU only. Deploying means writing to the device's
-  flash/config — be careful with the A/B kernel/rootfs slots.
+- **Proven once on hardware, not yet persistent.** The live test changed only
+  `/etc/hosts` (backup `/disk/hosts.bak`) and added `/disk/sb_mips`; the stand-in
+  was started by hand and is gone after a reboot. Any boot-time change writes the
+  device's flash/config — be careful with the A/B kernel/rootfs slots.
+- The bench unit (457) differs from the unit the repo's `root/` snapshot came
+  from (371): older kernel and app. Don't assume they match file-for-file.
 - **Regulatory:** the device is a licensed-band-adjacent transmitter; the original
   database enforced channel legality by location. A spoofed channel list removes
   that check, so real transmission needs a legally valid channel choice.
@@ -87,9 +96,8 @@ check. Keep that framing intact when editing the README.
 
 ## Open items / possible next steps
 
-- Deploy `sb_mips` + `/etc/hosts` redirect on the real device and confirm the
-  transmitter enables (watch `/etc/config/channels`, the web UI status page).
-- Make the change survive reboot/firmware upgrade (where to hook into `rcS` /
+- Make the change survive reboot/firmware upgrade: start `sb_mips` before
+  `wsagent_start` at boot (where to hook into `rcS` /
   `wsagent_start`).
 - Optionally make the stand-in choose channels from a real, current TVWS
   availability source rather than a fixed list.

@@ -112,11 +112,11 @@ With the dead database unreachable, the agent leaves its status files in the
 
 | File | Field | Observed | Meaning |
 |---|---|---|---|
-| `registration` | `status` | `99` | registration never completed |
+| `registration` | `status` | `99`, or no options at all | registration never completed |
 | `channel_status` | `status` | `99` | no channel list obtained |
 | `channels` | — | *(empty)* | no available channels |
 | `operating` | `channel` | *(empty)* | no operating channel chosen |
-| `transmitter` | `radio_status` | `0` | **RF output off** |
+| `transmitter` | `radio_status` → `status` | `0` | **RF output off** |
 
 Running processes of interest (`ps`): four `whitespaceagent cafile.cert
 /etc/config` instances, `thttpd` (web UI), and `encoder_sample -m DVO`.

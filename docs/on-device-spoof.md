@@ -169,8 +169,9 @@ So the redirect (§2) and the live register→channel cycle are confirmed with t
 database until the radio reports an FCC ID and serial (hence the radio stand-in);
 and the device's own 2.6.36 ViXS kernel — recovered from the NAND dump — cannot
 boot on qemu's malta machine (no ViXS model), so a compatible stock kernel hosts
-the userspace. Running on the physical MT300 remains the only way to also
-exercise the real radio and ViXS hardware.
+the userspace. Running on the physical MT300 is the only way to also exercise
+the real radio and ViXS hardware; that was done on 2026-11-21 and the radio keyed
+(results in [`on-device-test-plan.md`](on-device-test-plan.md#results-2026-11-21)).
 
 ### Host-side quick check (no device)
 

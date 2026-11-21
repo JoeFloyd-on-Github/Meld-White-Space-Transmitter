@@ -9,10 +9,11 @@ The protocol mechanics, the redirect options, and the cross-compile are in
 [`device-access.md`](device-access.md). This document is the live runbook and the
 **RF-safety preconditions**, which matter here in a way they do not under QEMU.
 
-**Status: planned / partially staged.** Done so far: telnet shell confirmed on the
-bench unit; `sb_mips` copied to `/disk/sb_mips` and MD5-verified against the PC
-copy. **Not yet done:** rebuild with the reduced channel list, start the server,
-restart the agent, confirm RF. The transmitter has **not** been keyed.
+**Status: passed on hardware (2026-11-21), into a dummy load.** Steps 1–6 were run
+on the bench unit (serial 457). The unmodified agent registered, got channels
+`23,42`, chose channel 23, and keyed the radio; a carrier was seen on the
+analyzer at channel 23 (524–530 MHz). See [Results](#results-2026-11-21). The
+setup does **not** yet survive a reboot (the stand-in is not started at boot).
 
 ---
 
@@ -115,11 +116,11 @@ done
 
 | File | Field | Before | After success |
 |---|---|---|---|
-| `registration` | `status` | `99` | `0` |
+| `registration` | `status` | `99` (or no options yet) | `0` |
 | `channel_status` | `status` | `99` | `0` |
 | `channels` | — | *(empty)* | `23,42` (or the subset wsa keeps) |
 | `operating` | `channel` | *(empty)* | `23` or `42` |
-| `transmitter` | `radio_status` | `0` | `1` (**RF keyed**) |
+| `transmitter` | `radio_status` → `status` | `0` | `1` (**RF keyed**) |
 
 On the server side you should see the two requests the agent makes — a
 registration `PUT` and a channel `GET` — each answered `200 / SBI-Status 0`.
@@ -130,6 +131,33 @@ With the output in a dummy load/attenuator, verify a carrier appears at the
 operating channel's band (ch 23 = 524-530 MHz, ch 42 = 638-644 MHz) on a spectrum
 analyzer or SDR. This is the end-to-end proof on real hardware that the earlier
 QEMU result ([`qemu-env/`](../qemu-env)) predicted.
+
+## Results (2026-11-21)
+
+Bench unit: serial 457, kernel `2.6.29-ts`, Meld app v1.26, RF output into a
+dummy load. Run from a PC over telnet.
+
+| Step | What happened |
+|---|---|
+| 1. Rebuild + transfer | `sb_mips` rebuilt for `23,42` (MD5 `abeee51e5ec8512d142fcdcaaa51d632`), pushed with `nc`, MD5 matched on the device. Old 11-channel build kept as `/disk/sb_mips.11ch`. A TLS 1.0 handshake against it on a spare port succeeded on the device. |
+| 2. Redirect | `/etc/hosts` backed up to `/disk/hosts.bak`, then `tvws.spectrumbridge.com` → `127.0.0.1`. |
+| 3. Stand-in | `/disk/sb_mips https://0.0.0.0:443 > /tmp/sb.log 2>&1 &` |
+| 4. Agent restart | `wsagent_stop`, then `wsagent_start`'s two commands run by hand with the agent's output sent to `/tmp/wsa.log` instead of `/dev/null` (it logged nothing). |
+| 5. Status files | all flipped within about a second of the agent starting: `registration` 0, `channel_status` 0, `channels` `23,42`, `operating` 23, `transmitter` 1. |
+| 6. RF | carrier seen at channel 23 (524–530 MHz) on the analyzer. |
+
+The stand-in logged exactly the two expected requests, a registration `PUT
+/v3/devices/US/OKVMT300/457` and a channel `GET /v3/channels/US/<lat>/<lon>/`,
+both answered `200` / `SBI-Status 0`.
+
+Notes against the plan as written:
+- On this unit `/etc/config/registration` had **no options** before the first
+  successful registration, rather than `status 99`.
+- In `transmitter`, `radio_status` is the section name; the option is `status`.
+- **Not persistent.** The `/etc/hosts` change survives a reboot (the rootfs is
+  writable yaffs2), but `sb_mips` is not started at boot, so after a power cycle
+  the agent finds nothing on 443 and RF stays off. The stand-in's reply sets
+  `RefreshIn` to 24 h, so it must also stay running for the agent's re-checks.
 
 ## 7. Rollback
 
