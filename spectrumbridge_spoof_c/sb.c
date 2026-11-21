@@ -40,8 +40,8 @@ static const char *s_default_addr = "https://0.0.0.0:443";
 /* Channels advertised to the device. All inside wsa's 21-51 capability filter
  * so every one survives reAdjustChannelMapToMeldCapabilities(). ChannelCount
  * MUST equal the number of distinct entries here. Keep the whole reply < 1 KB. */
-static const char *s_channel_list = "21,24,27,30,33,36,39,42,45,48,51";
-static const int   s_channel_count = 11;
+static const char *s_channel_list = "23,42";
+static const int   s_channel_count = 2;
 
 /* --- EMBEDDED KEY MATERIAL (self-signed, CN=tvws.spectrumbridge.com) ---
  * The CN is cosmetic: wsa does no hostname check. Trust comes from wsa
