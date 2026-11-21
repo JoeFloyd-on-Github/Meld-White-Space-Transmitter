@@ -83,10 +83,14 @@ check. Keep that framing intact when editing the README.
 
 ## Concerns
 
-- **Proven once on hardware, not yet persistent.** The live test changed only
-  `/etc/hosts` (backup `/disk/hosts.bak`) and added `/disk/sb_mips`; the stand-in
-  was started by hand and is gone after a reboot. Any boot-time change writes the
-  device's flash/config — be careful with the A/B kernel/rootfs slots.
+- **Installed permanently on the bench unit (457).** The rootfs (RootFS_0,
+  `/dev/mtdblock6`) now has `/usr/bin/sb_mips`, `/usr/bin/sb_start` (restart
+  loop, loopback only), the `/etc/hosts` redirect (original in
+  `/disk/hosts.bak`, which pointed at 192.168.1.249) and a 3-line `rcS` hook
+  (original `/etc/init.d/rcS.orig`). The transmitter keys unattended ~30 s after
+  boot. If the active image ever flips to RootFS_1/AppFS_1 (e.g. a firmware
+  upgrade), none of this is there and RF stays off: re-run
+  `spectrumbridge_spoof_c/device/install.sh`.
 - The bench unit (457) differs from the unit the repo's `root/` snapshot came
   from (371): older kernel and app. Don't assume they match file-for-file.
 - **Regulatory:** the device is a licensed-band-adjacent transmitter; the original
@@ -102,8 +106,7 @@ check. Keep that framing intact when editing the README.
 
 ## Open items / possible next steps
 
-- Make the change survive reboot/firmware upgrade: start `sb_mips` before
-  `wsagent_start` at boot (where to hook into `rcS` /
-  `wsagent_start`).
+- `device/install.sh` was written from the hand-run steps and has not itself
+  been run on a device yet; try it on the next unit or after a reflash.
 - Optionally make the stand-in choose channels from a real, current TVWS
   availability source rather than a fixed list.

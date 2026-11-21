@@ -13,7 +13,8 @@ The protocol mechanics, the redirect options, and the cross-compile are in
 on the bench unit (serial 457). The unmodified agent registered, got channels
 `23,42`, chose channel 23, and keyed the radio; a carrier was seen on the
 analyzer at channel 23 (524–530 MHz). See [Results](#results-2026-11-21). The
-setup does **not** yet survive a reboot (the stand-in is not started at boot).
+stand-in is now started at boot and the transmitter comes up unattended after a
+reboot ([`on-device-spoof.md`](on-device-spoof.md) §3).
 
 ---
 
@@ -161,10 +162,9 @@ Notes against the plan as written:
 - On this unit `/etc/config/registration` had **no options** before the first
   successful registration, rather than `status 99`.
 - In `transmitter`, `radio_status` is the section name; the option is `status`.
-- **Not persistent.** The `/etc/hosts` change survives a reboot (the rootfs is
-  writable yaffs2), but `sb_mips` is not started at boot, so after a power cycle
-  the agent finds nothing on 443 and RF stays off. The stand-in's reply sets
-  `RefreshIn` to 24 h, so it must also stay running for the agent's re-checks.
+- **Persistence** was not part of this run; it was added afterwards (third run,
+  below). The stand-in's reply sets `RefreshIn` to 24 h, so it must stay running
+  for the agent's re-checks, which `sb_start`'s restart loop takes care of.
 
 **Second run, full channel list.** `sb_mips` rebuilt to offer all of 21-51
 (MD5 `c7ed3cca44e57fcfb023d367a3ec9a06`, 210-byte reply; the 2-channel build is
@@ -173,10 +173,20 @@ kept as `/disk/sb_mips.2ch`). After restarting the stand-in and the agent,
 about 45 s after the channel reply (the first run took under 15 s), so allow up
 to a minute before calling it a failure.
 
+**Third run, start at boot.** `sb_mips` and `sb_start` installed in `/usr/bin`,
+`rcS` edited to start `sb_start` before `wsagent_start` (backup
+`/etc/init.d/rcS.orig`), server bound to `127.0.0.1` only. After `reboot`, with
+no telnet session: registration and channel list done at 13 s of uptime,
+transmitter keyed on channel 23 by about 30 s. Since the server is reachable only
+on loopback, the eth0 address plays no part.
+
 ## 7. Rollback
 
+If the boot-time install is in place, undo that first (on-device-spoof §3:
+restore `/etc/init.d/rcS.orig`), or the stand-in comes back on the next boot.
+
 ```sh
-pkill sb_mips                       # stop the stand-in
+killall sb_start sb_mips            # stop the stand-in and its restart loop
 # restore the original hosts mapping (or whatever the site used)
 sed -i 's/^127\.0\.0\.1[ \t]*tvws\.spectrumbridge\.com/192.168.1.249  tvws.spectrumbridge.com/' /etc/hosts
 wsagent_stop ; wsagent_start        # agent goes back to getting no answer; RF drops

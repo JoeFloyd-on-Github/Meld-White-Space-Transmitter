@@ -1,0 +1,12 @@
+#!/bin/sh
+# sb_start - run the SpectrumBridge database stand-in (sb_mips) for
+# whitespaceagent, and restart it if it ever exits. Started from
+# /etc/init.d/rcS before wsagent_start. /etc/hosts maps
+# tvws.spectrumbridge.com to 127.0.0.1, and the server listens on loopback
+# only, so this works whatever IP address eth0 has (or none).
+SB=/usr/bin/sb_mips
+[ -x $SB ] || exit 0
+while : ; do
+  $SB https://127.0.0.1:443 > /dev/null 2>&1
+  sleep 5
+done

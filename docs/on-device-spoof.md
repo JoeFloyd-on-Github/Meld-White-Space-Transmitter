@@ -75,26 +75,65 @@ needed — the self-signed leaf is already trusted.)
 
 ### Persistence
 
-The web UI writes `/etc/config/sbi`, so `/etc` is a writable, persistent NAND
-root — both edits should survive a reboot. Confirm on the unit with `mount`
-(look for a read-write rootfs / `/etc` overlay); if the rootfs is mounted
-read-only, place the change on whatever writable overlay holds `/etc/config`.
+Confirmed on the bench unit: the root filesystem is read-write yaffs2
+(`/dev/mtdblock6`, "RootFS_0"), so edits to `/etc/hosts` and `/etc/init.d/rcS`
+survive a reboot. Nothing in the boot scripts rewrites `/etc/hosts`.
+
+Option A is also what makes the setup **independent of the device's IP
+address**: the name resolves to `127.0.0.1`, the stand-in listens on loopback
+only, and `rcS` brings `lo` up before `eth0`. A new static address, a DHCP lease,
+or no network at all changes nothing on that path.
 
 ## 3. Deploying the stand-in on the device
 
-1. Copy the static binary `spectrumbridge_spoof_c/sb_mips` to the device
-   (e.g. into `/disk`), `chmod +x` it.
-2. Apply one redirect from §2.
-3. Run it (needs root for port 443 — the device's shell is already root):
-   ```sh
-   /disk/sb_mips https://0.0.0.0:443 &
-   ```
-   It serves the same 200 / `SBI-Status: 0` / channel-list reply to every
-   request. The certificate and key are embedded, so there are no files to
-   install. Edit `s_channel_list` / `s_channel_count` in `sb.c` (keep them in
-   21–51 and in sync) to change which channels are offered, then rebuild.
-4. Restart the agent if it was already running (`wsagent_stop; wsagent_start`)
-   so it picks up the redirect, and watch `/etc/config/channels` populate.
+### Permanent install (starts at every boot)
+
+`spectrumbridge_spoof_c/device/` holds two small device-side scripts:
+
+| File | Installed as | Does |
+|---|---|---|
+| `sb_start` | `/usr/bin/sb_start` | runs `/usr/bin/sb_mips https://127.0.0.1:443` and restarts it 5 s after it ever exits |
+| `install.sh` | (run once) | copies `sb_mips` + `sb_start` to `/usr/bin`, points `tvws.spectrumbridge.com` at `127.0.0.1` in `/etc/hosts`, and adds `/usr/bin/sb_start &` just before `wsagent_start` in `/etc/init.d/rcS`. Backs up `/etc/hosts.orig` and `/etc/init.d/rcS.orig` first; safe to run again. |
+
+1. Copy `sb_mips`, `device/sb_start` and `device/install.sh` to `/disk` with
+   `nc` and check their MD5s ([`device-access.md`](device-access.md) §4).
+2. On the device: `sh /disk/install.sh`
+3. Reboot. The agent registers, lists channels and keys the radio with no
+   further action.
+
+The binaries go on the **root filesystem** (`/usr/bin`), not `/disk`, because
+`/disk` is either AppFS_0 or AppFS_1 depending on the active image; the rootfs
+also holds `/etc/hosts` and `rcS`, so the whole change lives in one place.
+
+Verified on the bench unit (2026-11-21, done by hand with the same steps as
+`install.sh`; the script itself has not been run on a device yet): after
+`reboot`, telnet was back in about 16 s, the agent had registered and stored
+all channels by 13 s of uptime, and the transmitter was keyed on channel 23 by
+about 30 s.
+
+The rcS change is three lines:
+
+```sh
+# SpectrumBridge stand-in (local database for whitespaceagent); see /usr/bin/sb_start
+/usr/bin/sb_start &
+sleep 2
+wsagent_start
+```
+
+To undo: `cp /etc/init.d/rcS.orig /etc/init.d/rcS`, restore `/etc/hosts` from
+its backup, `rm /usr/bin/sb_start /usr/bin/sb_mips`, reboot.
+
+### Running it by hand (testing)
+
+1. Copy `spectrumbridge_spoof_c/sb_mips` to the device (e.g. `/disk`),
+   `chmod +x` it, and apply one redirect from §2.
+2. `/disk/sb_mips https://127.0.0.1:443 &` (or `0.0.0.0:443` to reach it from
+   the LAN for testing). It serves the same 200 / `SBI-Status: 0` /
+   channel-list reply to every request; certificate and key are embedded.
+   To change the channels, edit `s_channel_list` in `sb.c` (21–51;
+   `ChannelCount` is computed) and rebuild.
+3. Restart the agent (`wsagent_stop; wsagent_start`) and watch
+   `/etc/config/channels` populate.
 
 No clock change is required: wsa accepts expired/not-yet-valid certs, and the
 `Date` header the server sends is used only for display.
