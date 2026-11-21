@@ -37,11 +37,36 @@
 
 static const char *s_default_addr = "https://0.0.0.0:443";
 
-/* Channels advertised to the device. All inside wsa's 21-51 capability filter
- * so every one survives reAdjustChannelMapToMeldCapabilities(). ChannelCount
- * MUST equal the number of distinct entries here. Keep the whole reply < 1 KB. */
-static const char *s_channel_list = "23,42";
-static const int   s_channel_count = 2;
+/* Channels advertised to the device: the whole 21-51 range wsa's capability
+ * filter (reAdjustChannelMapToMeldCapabilities) accepts. Keep the whole reply
+ * < 1 KB (this list makes it about 210 bytes).
+ *
+ * US regulatory note: since the 600 MHz repack, channels 38-51 (614-698 MHz)
+ * are licensed mobile spectrum and channel 37 is radio astronomy. Only 21-36
+ * remain TV band, and only where no TV station is on the channel. This list is
+ * for bench testing into a dummy load; narrow it before connecting an antenna.
+ *
+ * ChannelCount MUST equal the number of distinct entries; it is computed from
+ * the list at start-up (count_channels) so the two can't drift apart. */
+static const char *s_channel_list =
+    "21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,"
+    "37,38,39,40,41,42,43,44,45,46,47,48,49,50,51";
+static int s_channel_count;
+
+/* Count distinct channel numbers in s_channel_list, the way wsa does (a
+ * presence table indexed by atoi of each comma-separated token, 0-89). */
+static int count_channels(const char *list) {
+  unsigned char seen[90] = {0};
+  int n = 0;
+  const char *p = list;
+  while (*p) {
+    int ch = atoi(p);
+    if (ch >= 0 && ch < 90 && !seen[ch]) { seen[ch] = 1; n++; }
+    while (*p && *p != ',') p++;
+    if (*p == ',') p++;
+  }
+  return n;
+}
 
 /* --- EMBEDDED KEY MATERIAL (self-signed, CN=tvws.spectrumbridge.com) ---
  * The CN is cosmetic: wsa does no hostname check. Trust comes from wsa
@@ -112,7 +137,7 @@ static void fn(struct mg_connection *c, int ev, void *ev_data) {
     struct mg_http_message *hm = (struct mg_http_message *) ev_data;
     char date[40];
     char headers[128];
-    char body[256];
+    char body[512];
     time_t now = time(NULL);
     struct tm *g = gmtime(&now);
 
@@ -157,6 +182,7 @@ int main(int argc, char *argv[]) {
   const char *addr = (argc > 1) ? argv[1] : s_default_addr;
 
   setvbuf(stdout, NULL, _IONBF, 0);  /* unbuffered: logs survive if killed */
+  s_channel_count = count_channels(s_channel_list);
   mg_mgr_init(&mgr);
   printf("Meld white-space DB stand-in (SpectrumBridge spoof)\n");
   printf("listening on %s\n", addr);

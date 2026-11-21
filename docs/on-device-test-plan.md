@@ -32,20 +32,27 @@ So, before keying the radio:
 1. **Terminate the RF output into a dummy load or a high-value attenuator**, not
    an antenna, for the first bring-up. Confirm the chain on a spectrum analyzer or
    SDR before anything radiates.
-2. **Offer only channels you have verified are vacant at your location.** This
-   plan uses **channels 23 and 42** (`sb.c`: `s_channel_list = "23,42"`,
-   `s_channel_count = 2`), matching the unit's `PreferredChannel`. Confirm both
-   are clear via the FCC TV-query / white-space tools and a local scan before use.
-   - UHF center bands for reference: **ch 23 = 524-530 MHz**, **ch 42 = 638-644
-     MHz**.
+2. **Know which channels are legal before anything radiates.** The firmware's
+   21-51 range predates the FCC's 600 MHz repack (completed 2020). In the US today:
+   - **channels 38-51 (614-698 MHz) are licensed mobile broadband** (617-652 MHz
+     downlink, 663-698 MHz uplink); ch 42 (638-644 MHz), for example, is inside a
+     carrier's downlink;
+   - **channel 37 (608-614 MHz)** is reserved for radio astronomy;
+   - **only 21-36 (512-608 MHz) remain TV band**, and of those only channels with
+     no TV station at your location (FCC TV query plus a local scan).
+
+   For bench work into a load the stand-in currently offers **all of 21-51**
+   (`sb.c`); the agent still picks the unit's `PreferredChannel` (23) when it is
+   listed. **Narrow the list to vacant channels in 21-36 before connecting an
+   antenna.** Reference: ch 23 = 524-530 MHz.
 3. Treat the whole thing as bench testing of your own hardware into a load, not as
    putting a station on the air.
 
-## 1. Rebuild `sb_mips` for the reduced channel list
+## 1. Rebuild `sb_mips` after changing the channel list
 
-The `sb_mips` committed in the repo (and the copy already on the device) is the
-**11-channel** build (`21..51`). After narrowing `sb.c` to `23,42` it must be
-rebuilt — the server's channel list is compiled in, not configurable at runtime:
+The channel list is compiled in (`s_channel_list` in `sb.c`), not configurable at
+runtime, so any change needs a rebuild. `ChannelCount` is computed from the list
+at start-up, so only the list needs editing:
 
 ```sh
 cd spectrumbridge_spoof_c
@@ -118,8 +125,8 @@ done
 |---|---|---|---|
 | `registration` | `status` | `99` (or no options yet) | `0` |
 | `channel_status` | `status` | `99` | `0` |
-| `channels` | — | *(empty)* | `23,42` (or the subset wsa keeps) |
-| `operating` | `channel` | *(empty)* | `23` or `42` |
+| `channels` | — | *(empty)* | the offered list, filtered to 21-51 |
+| `operating` | `channel` | *(empty)* | `23` (the preferred channel) |
 | `transmitter` | `radio_status` → `status` | `0` | `1` (**RF keyed**) |
 
 On the server side you should see the two requests the agent makes — a
@@ -128,7 +135,7 @@ registration `PUT` and a channel `GET` — each answered `200 / SBI-Status 0`.
 ## 6. Confirm RF (into the load)
 
 With the output in a dummy load/attenuator, verify a carrier appears at the
-operating channel's band (ch 23 = 524-530 MHz, ch 42 = 638-644 MHz) on a spectrum
+operating channel's band (ch 23 = 524-530 MHz) on a spectrum
 analyzer or SDR. This is the end-to-end proof on real hardware that the earlier
 QEMU result ([`qemu-env/`](../qemu-env)) predicted.
 
@@ -158,6 +165,13 @@ Notes against the plan as written:
   writable yaffs2), but `sb_mips` is not started at boot, so after a power cycle
   the agent finds nothing on 443 and RF stays off. The stand-in's reply sets
   `RefreshIn` to 24 h, so it must also stay running for the agent's re-checks.
+
+**Second run, full channel list.** `sb_mips` rebuilt to offer all of 21-51
+(MD5 `c7ed3cca44e57fcfb023d367a3ec9a06`, 210-byte reply; the 2-channel build is
+kept as `/disk/sb_mips.2ch`). After restarting the stand-in and the agent,
+`channels` listed all 31, `operating` stayed on 23, and `transmitter` went to 1
+about 45 s after the channel reply (the first run took under 15 s), so allow up
+to a minute before calling it a failure.
 
 ## 7. Rollback
 

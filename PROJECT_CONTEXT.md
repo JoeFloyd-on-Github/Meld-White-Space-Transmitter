@@ -48,6 +48,8 @@ check. Keep that framing intact when editing the README.
    `sb_mips` rebuilt to offer only channels **23,42** and the RF output in a
    dummy load, the unmodified agent registered, took channel 23 and keyed the
    radio; a carrier was seen at 524–530 MHz. **The approach works on hardware.**
+   The stand-in was then widened to offer **all of 21–51** (owner's choice, for
+   bench work into the load); the agent still keys on its preferred channel 23.
 
 ## Key technical facts and decisions
 
@@ -90,6 +92,10 @@ check. Keep that framing intact when editing the README.
 - **Regulatory:** the device is a licensed-band-adjacent transmitter; the original
   database enforced channel legality by location. A spoofed channel list removes
   that check, so real transmission needs a legally valid channel choice.
+  The firmware's 21–51 range predates the 600 MHz repack: in the US, channels
+  38–51 are now licensed mobile spectrum and 37 is radio astronomy, so only
+  vacant channels in **21–36** are usable on air. The stand-in currently offers
+  all of 21–51 for bench work; narrow it before an antenna goes on.
 - **Privacy:** `root/` and spoof configs carry the real registration
   (owner/contact/GPS). Treat as sensitive in anything published.
 - **Token cost:** decompiles and dumps are huge. Read slices, not whole files.
