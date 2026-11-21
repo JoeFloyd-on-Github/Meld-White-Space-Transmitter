@@ -13,9 +13,14 @@ It builds on:
 - [`../WhiteSpaceApp/ghidra/wsa_annotated.c`](../WhiteSpaceApp/ghidra/wsa_annotated.c) — the decompiled client.
 - [`../spectrumbridge_spoof_c/`](../spectrumbridge_spoof_c) — the stand-in server, build script, and tests.
 
-Everything below was derived from static analysis and tested on the host; the
-on-device deployment steps have not been run against a physical MT300 here (see
-[Testing](#5-testing-and-its-limits)).
+Everything below was derived from static analysis and tested on the host and
+under QEMU (see [Testing](#5-testing-and-its-limits)). Work against a **physical
+MT300** has since begun — shell access and the live status files are documented
+in [`device-access.md`](device-access.md), and the step-by-step hardware runbook,
+with RF-safety preconditions, is in
+[`on-device-test-plan.md`](on-device-test-plan.md). As of writing, `sb_mips` has
+been deployed and verified on a bench unit but the transmitter has not yet been
+keyed.
 
 ## 1. What wsa does, from the decompile
 

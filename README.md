@@ -94,6 +94,8 @@ cloud used to say, and say it yourself.
 | [`docs/system-context.md`](docs/system-context.md) | **the device around it** — boot sequence, the `sbi`→XML config pipeline, the web UI, the firmware upgrade package, and the version history |
 | [`docs/boot-process.md`](docs/boot-process.md) | **boot + hardware** — U-Boot/kernel, `rcS`, the reset/power button, IP assignment, how the radio is tied in, and how the ViXS hardware is configured |
 | [`docs/on-device-spoof.md`](docs/on-device-spoof.md) | **running the database stand-in on the device** — redirecting the dead host to loopback, cross-compiling the MIPS server, and how it was tested |
+| [`docs/device-access.md`](docs/device-access.md) | **reaching a live MT300** — the serial boot monitor (and why it is not a shell), the no-password telnet root shell, moving files with `nc`, and the device's status files before the fix |
+| [`docs/on-device-test-plan.md`](docs/on-device-test-plan.md) | **the live runbook** — RF-safety preconditions, deploying `sb_mips`, redirecting the host, restarting the agent, and watching the status files key the transmitter on real hardware |
 | [`qemu-env/`](qemu-env) | a **QEMU test bench** that boots the device userspace on a stock malta kernel and drives the real `whitespaceagent` through a full register→channel cycle against `sb_mips` (with a stand-in radio); the end-to-end proof |
 | [`spectrumbridge_spoof_c/`](spectrumbridge_spoof_c) | a C (Mongoose + mbedTLS) stand-in for the SpectrumBridge database server — builds to a static **MIPS** binary (`sb_mips`) that runs on the device; includes `build.sh`, `test_replay.sh`, and a `sniff` tool |
 | [`spectrumbridge_spoof_python/`](spectrumbridge_spoof_python) | a Python stand-in for the same server (plain + SOAP variants) |
