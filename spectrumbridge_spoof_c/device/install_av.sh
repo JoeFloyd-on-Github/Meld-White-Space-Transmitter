@@ -16,32 +16,42 @@
 #      exists (otherwise it runs "MeldAgent -O", a radio read that never contacts
 #      the database). A pristine, never-web-registered unit lacks that file, so we
 #      create it - this is what the web UI's "register" does.
+#   4. The stock firmware only sends the TX-enable on a video-CONNECT event, so a
+#      cold power cycle with the source already synced comes up registered +
+#      channel-set + powered but TX DISABLED (no RF). sb_txkeepalive re-asserts the
+#      enable once the radio is armed, and keeps it enabled. See
+#      docs/av-tx-enable-flaw.md.
 #
-# See docs/on-device-spoof.md and docs/units/mt300-av-677.md.
+# See docs/on-device-spoof.md, docs/units/mt300-av-677.md, docs/av-tx-enable-flaw.md.
 set -e
 SRC=${1:-/disk}
 
-for f in sb_mips sb_start; do
+for f in sb_mips sb_start sb_txkeepalive; do
   [ -f $SRC/$f ] || { echo "missing $SRC/$f"; exit 1; }
   cp $SRC/$f /usr/bin/$f
   chmod 755 /usr/bin/$f
 done
-md5sum /usr/bin/sb_mips /usr/bin/sb_start
+md5sum /usr/bin/sb_mips /usr/bin/sb_start /usr/bin/sb_txkeepalive
 
 # /etc/hosts: reverse-name trick for the v45 resolver (see header note 2).
 [ -f /etc/hosts.orig ] || cp -p /etc/hosts /etc/hosts.orig
 printf '127.0.0.1\t127.0.0.1 localhost\n127.0.0.1\ttvws.spectrumbridge.com\n' > /etc/hosts
 echo "hosts now:"; cat /etc/hosts
 
-# boot hook: start sb_start just before wsagent_start in setipeth0 (not rcS).
+# boot hook: start sb_start and sb_txkeepalive just before wsagent_start in
+# setipeth0 (not rcS). sb_txkeepalive sleeps first, so hook order vs wsagent_start
+# does not matter.
 HOOK=/etc/init.d/setipeth0
 if grep -q '/usr/bin/sb_start' $HOOK; then
   echo "setipeth0 already hooks sb_start"
+  grep -q '/usr/bin/sb_txkeepalive' $HOOK || echo "WARN: sb_start hooked but sb_txkeepalive missing - add '/usr/bin/sb_txkeepalive &' to $HOOK by hand"
 else
   [ -f /etc/init.d/setipeth0.presb ] || cp -p $HOOK /etc/init.d/setipeth0.presb
   awk '/^wsagent_start$/ {
          print "# SpectrumBridge stand-in (local database for whitespaceagent); see /usr/bin/sb_start"
          print "/usr/bin/sb_start &"
+         print "# keep the transmitter enabled after a cold boot; see /usr/bin/sb_txkeepalive"
+         print "/usr/bin/sb_txkeepalive &"
          print "sleep 2" }
        { print }' $HOOK > $HOOK.new
   grep -q '/usr/bin/sb_start' $HOOK.new || { echo "no wsagent_start line in setipeth0"; rm $HOOK.new; exit 1; }
@@ -56,4 +66,4 @@ fi
 echo "WSAgentRestart present: $(ls -l /etc/config/WSAgentRestart)"
 
 sync
-echo "done - reboot, or: killall sb_mips sb_start whitespaceagent; /usr/bin/sb_start & ; wsagent_stop; wsagent_start"
+echo "done - reboot, or: killall sb_mips sb_start sb_txkeepalive whitespaceagent; /usr/bin/sb_start & ; /usr/bin/sb_txkeepalive & ; wsagent_stop; wsagent_start"

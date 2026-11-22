@@ -116,7 +116,8 @@ or no network at all changes nothing on that path.
 |---|---|---|
 | `sb_start` | `/usr/bin/sb_start` | runs `/usr/bin/sb_mips https://127.0.0.1:443` and restarts it 5 s after it ever exits |
 | `install.sh` | (run once) | copies `sb_mips` + `sb_start` to `/usr/bin`, points `tvws.spectrumbridge.com` at `127.0.0.1` in `/etc/hosts`, and adds `/usr/bin/sb_start &` just before `wsagent_start` in `/etc/init.d/rcS`. Backs up `/etc/hosts.orig` and `/etc/init.d/rcS.orig` first; safe to run again. |
-| `install_av.sh` | (run once, **MT300-AV / v45 agent**) | same idea, but hooks `/etc/init.d/setipeth0` (AV firmware starts the agent there, not `rcS`), writes the reverse-name `/etc/hosts` the v45 resolver needs (see the caveat above), and `touch`es `/etc/config/WSAgentRestart` so `wsagent_start` actually launches `whitespaceagent`. Backs up `/etc/hosts.orig` and `/etc/init.d/setipeth0.presb`; safe to run again. |
+| `sb_txkeepalive` | `/usr/bin/sb_txkeepalive` | **AV only.** Keeps the transmitter enabled after a cold boot: once the radio is armed (registered + an `operating` channel) it asserts `MeldAgent -T`, re-asserting if TX drops. Works around the firmware only sending the TX-enable on a video-connect event — see [`av-tx-enable-flaw.md`](av-tx-enable-flaw.md). |
+| `install_av.sh` | (run once, **MT300-AV / v45 agent**) | same idea, but hooks `/etc/init.d/setipeth0` (AV firmware starts the agent there, not `rcS`), writes the reverse-name `/etc/hosts` the v45 resolver needs (see the caveat above), `touch`es `/etc/config/WSAgentRestart` so `wsagent_start` launches `whitespaceagent`, and installs + hooks `sb_txkeepalive`. Needs `sb_mips`, `sb_start` **and** `sb_txkeepalive` in `/disk` first. Backs up `/etc/hosts.orig` and `/etc/init.d/setipeth0.presb`; safe to run again. |
 
 1. Copy `sb_mips`, `device/sb_start` and `device/install.sh` to `/disk` with
    `nc` and check their MD5s ([`device-access.md`](device-access.md) §4).

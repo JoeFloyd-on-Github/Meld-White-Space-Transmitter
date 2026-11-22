@@ -1,0 +1,49 @@
+#!/bin/sh
+# sb_txkeepalive - keep the MT300-AV transmitter enabled after boot, regardless
+# of whether the HDMI source was already synced at power-up.
+#
+# THE BUG THIS WORKS AROUND
+#   The stock AV firmware only sends the transmitter-enable ("MeldAgent -T", the
+#   NXP 'e1' command) in response to a video-CONNECT event. whitespaceagent, on
+#   boot, registers with the database, selects the operating channel and sets the
+#   TX power LEVEL -- but it is a one-shot that then exits WITHOUT enabling TX,
+#   leaving that to the connect-event path. So after a cold power cycle with the
+#   source already attached (no connect transition), the radio comes up:
+#       registered + channel-selected + power set,  but  TX DISABLED  -> no RF.
+#   Reconnecting the HDMI cable keys it; a power cycle alone does not.
+#
+# WHAT THIS DOES
+#   Once the radio is armed (registration succeeded AND an operating channel is
+#   set by the database), it asserts "MeldAgent -T" and re-asserts it any time
+#   the radio reports "TX disabled". If a boot pass left the device un-armed
+#   (e.g. the agent ran before the stand-in was ready), it re-runs wsagent_start
+#   to arm it. It NEVER enables TX without a channel grant, so it can only key an
+#   authorized channel.
+#
+#   Launched in the background from /etc/init.d/setipeth0 (see install_av.sh).
+#   See docs/units/mt300-av-677.md for the full debugging story.
+
+VAL() { sed -n "s/.*option '$1' '\\([^']*\\)'.*/\\1/p" "$2" 2>/dev/null | head -1; }
+
+sleep 45                       # let the boot register/arm pass run first
+
+while : ; do
+  # Stay off /dev/ttyS1 while whitespaceagent's own serial thread may hold it.
+  if ! pgrep -f whitespaceagent >/dev/null 2>&1 ; then
+    reg=$(VAL status /etc/config/registration)
+    op=$(VAL channel /etc/config/operating)
+    if [ "$reg" = "0" ] && [ -n "$op" ] ; then
+      # Armed + registered: ensure the transmitter is actually enabled.
+      if MeldAgent -q 2>/dev/null | grep -q "TX disabled" ; then
+        logger "sb_txkeepalive: radio armed (ch $op) but TX disabled -- enabling"
+        MeldAgent -T >/dev/null 2>&1
+      fi
+    else
+      # Not armed yet this boot: make sure the stand-in is up and (re)arm.
+      pgrep -f sb_mips >/dev/null 2>&1 || { [ -x /usr/bin/sb_start ] && /usr/bin/sb_start & }
+      logger "sb_txkeepalive: radio not armed yet (reg=$reg ch=$op) -- running wsagent_start"
+      wsagent_start >/dev/null 2>&1
+    fi
+  fi
+  sleep 30
+done

@@ -89,6 +89,17 @@ documented ATSC default `0xab` appears in the write notes, i.e. the comment and
 the stated range disagree in the OEM source — treat the exact default as
 unverified and read it back with `m07?` on a live unit.
 
+**Transmitter enable is separate from channel + power, and the AV firmware only
+sends it on a video-connect event.** `e1` (enable) / `e0` (disable) are their own
+commands; the firmware's tool for them is `MeldAgent -T` / `-O`, with `MeldAgent
+-q` the authoritative on/off readback (the NXP must be in *automatic mode*). On
+the AV units `whitespaceagent` registers, sets the channel and the power *level*,
+then exits **without** sending `e1` — the enable is tied to plugging in the video
+source. So a cold power cycle with the source already synced comes up
+armed-but-disabled (no RF). The fix and the full diagnosis are in
+[`av-tx-enable-flaw.md`](av-tx-enable-flaw.md); note that `TX power = 0xNN` in a
+status dump is a *power level*, not proof the transmitter is enabled.
+
 ### 2.2 Power-level map (`m02`)
 
 Power is set as a hex "value," not dBm. The OEM map of level → value:

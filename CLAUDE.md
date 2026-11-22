@@ -17,6 +17,8 @@ sessions — the things that are not obvious from the code or the git log.
   rules), `docs/wsa-overview.md` (agent behavior and protocol),
   `docs/radio-and-video.md` (the NXP radio, its serial control + modulation
   formats, and the ADV7842→ViXS video path),
+  `docs/av-tx-enable-flaw.md` (why an AV unit comes up with no RF after a power
+  cycle, and the `sb_txkeepalive` boot supervisor that fixes it),
   `docs/device-backup.md` (full-device backup over nc; scripts in `tools/backup/`),
   `docs/device-access.md` (reaching a live unit), `docs/bootloader.md` (U-Boot,
   the 11-partition flash map, the A/B firmware-bank model, and recovering a unit

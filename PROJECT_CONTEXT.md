@@ -236,6 +236,29 @@ check. Keep that framing intact when editing the README.
     would gate `avs_start.sh` on `queryInfo` matching `/etc/config/operating`).
     Written up in `docs/units/mt300-av-677.md` and `docs/radio-and-video.md` §4.1.
 
+22. **Cold-boot TX-enable flaw found and fixed on unit 677 (2026-11-22).** After a
+    hard power cycle the unit booted, registered against `sb_mips`, selected
+    channel 31 and set TX power — but produced **no RF**. Debugging deep-dive
+    (full narrative in `docs/av-tx-enable-flaw.md`): the status sources disagreed
+    (`registration` fresh-success, `channel_status` stale, `operating` empty,
+    `radio_status` 0, `queryInfo` `TX disabled`), registration against the
+    stand-in was proven working, and video eventually locked — yet it still would
+    not key. The key findings: (a) `whitespaceagent` is a **one-shot** that
+    registers, selects the channel and sets the power *level*, then exits
+    **without enabling TX**; (b) the actual enable is `e1` / `MeldAgent -T`, and
+    the stock AV firmware only sends it on a video-**connect event**, so a cold
+    boot with the source already synced never keys; (c) `queryInfo: TX power =
+    0xNN` is a level, not "enabled" — the authoritative state is `MeldAgent -q`.
+    `MeldAgent -T` restored RF immediately. **Fix:** a boot supervisor
+    `spectrumbridge_spoof_c/device/sb_txkeepalive` (hooked into `setipeth0` by
+    `install_av.sh`) that asserts `MeldAgent -T` once the radio is armed
+    (registered + an `operating` channel) and re-asserts if TX drops; it never
+    keys without a channel grant. **Tested:** reboot (comes up keyed) + `MeldAgent
+    -O` fault-injection (keepalive re-enabled TX both times, with log proof);
+    `MeldAgent -O` reproduces the hard-cycle state, and a hard power cycle is the
+    final bench confirmation. This makes the unit transmit automatically at
+    power-up — a deliberate posture change from stock.
+
 ## Key technical facts and decisions
 
 - **Why the redirect is easy:** `wsa` uses `gethostbyname` (honors `/etc/hosts`),

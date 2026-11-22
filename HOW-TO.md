@@ -421,6 +421,15 @@ instead (`sh /disk/install_av.sh`). It handles three differences:
   database). The installer `touch`es that file — the same thing the web UI's
   "register" button does. On an AV unit the transmitter also will not **key**
   until a live video source is connected, even once registration succeeds.
+- **The AV firmware only sends the TX-enable on a video-*connect* event**, so a
+  cold power cycle with the source already attached comes up registered and
+  powered but with TX disabled (no RF). `install_av.sh` also installs
+  [`sb_txkeepalive`](spectrumbridge_spoof_c/device/sb_txkeepalive), a boot
+  supervisor that re-asserts `MeldAgent -T` once the radio is armed, so the unit
+  comes up transmitting regardless of video-sync timing. Transfer
+  `device/sb_txkeepalive` to `/disk` alongside `sb_mips` and `sb_start` before
+  running `install_av.sh`. Full story:
+  [`docs/av-tx-enable-flaw.md`](docs/av-tx-enable-flaw.md).
 
 Background and the full trace are in
 [`docs/on-device-spoof.md`](docs/on-device-spoof.md) (the v45 caveat) and
