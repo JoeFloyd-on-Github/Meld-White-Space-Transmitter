@@ -192,6 +192,33 @@ check. Keep that framing intact when editing the README.
     `fccidSerialInfo` has no `FCCID:` line, so the auto-named dir came out `meld-`
     and was renamed `mt300-` for consistency.
 
+20. **`sb_mips` installed on unit 677 + the v45-agent quirks (2026-11-22).** After
+    the pristine backup above, the stand-in was installed on unit **677** and now
+    starts, registers and gets a channel grant at every boot (verified across a
+    real power-cycle: `queryInfo` flips from `TX disabled` to `TX power = 0x05`,
+    `Channel 21`; RF still needs a live video source to key, as on 601). Installing
+    on this unit surfaced **three AV/v45 differences** from the 601 install and the
+    generic `install.sh`, now all captured in a new
+    `spectrumbridge_spoof_c/device/install_av.sh` and in
+    `docs/units/mt300-av-677.md` / `docs/on-device-spoof.md`:
+    (a) **the v45 `whitespaceagent` connects to the PTR *name* of the resolved
+    host, not the dotted quad** — so a plain `127.0.0.1 tvws.spectrumbridge.com`
+    redirect (and even `HostAddress=127.0.0.1`) makes it reverse-resolve to
+    `localhost` and abort with *"localhost is not a valid IP address"*; the cure is
+    to make the first `/etc/hosts` name for `127.0.0.1` a literal dotted quad
+    (`127.0.0.1\t127.0.0.1 localhost`). The v44 `get_ip` in the decompile does a
+    clean `inet_ntop` and needs none of this. (b) **`wsagent_start` only launches
+    the agent when `/etc/config/WSAgentRestart` exists** (else it runs
+    `MeldAgent -O`, a radio read that never hits the database) — a never-registered
+    unit needs that file `touch`ed, which is what the web UI's registration does.
+    (c) the unit shipped with a **non-stock `/etc/hosts`** already redirecting the
+    `spectrumbridge.com` hosts to a now-offline LAN IP `192.168.1.248` (a
+    previous-owner local-redirect attempt). The boot hook goes in
+    `/etc/init.d/setipeth0` (as on 601, since AV `rcS` does not call
+    `wsagent_start`); `/etc/config/sbi` `HostAddress` was left stock. Backups on
+    the device: `/etc/hosts.orig`, `/etc/init.d/setipeth0.presb`,
+    `/etc/config/sbi.presb`.
+
 ## Key technical facts and decisions
 
 - **Why the redirect is easy:** `wsa` uses `gethostbyname` (honors `/etc/hosts`),

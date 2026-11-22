@@ -73,6 +73,28 @@ Because wsa does no CN check, the `127.0.0.1` literal is accepted by TLS all the
 same. (The `ln -sf … 3ef04004.0` CA-hash trick in `notes.txt` is **not**
 needed — the self-signed leaf is already trusted.)
 
+### Caveat — the v45 agent needs a reverse-resolvable numeric (AV units)
+
+The `get_ip` above is from the **v44** decompile. The **v45** agent shipped on the
+MT300-AV units (serials 601/677) behaves differently: after `gethostbyname` it
+**reverse-resolves the address and connects to the PTR name**, so it needs that
+name to itself be a valid dotted quad. With a plain `127.0.0.1
+tvws.spectrumbridge.com` line it reverse-resolves `127.0.0.1` to `localhost` and
+aborts with *"localhost is not a valid IP address"* — and pointing the config
+straight at `127.0.0.1` (Option B) fails the same way. The fix is to make the
+**first** `/etc/hosts` name for `127.0.0.1` a literal dotted quad:
+
+```sh
+printf '127.0.0.1\t127.0.0.1 localhost\n127.0.0.1\ttvws.spectrumbridge.com\n' > /etc/hosts
+```
+
+See [`units/mt300-av-677.md`](units/mt300-av-677.md) for the full trace. On AV
+units `whitespaceagent` is also only started by `wsagent_start` when
+`/etc/config/WSAgentRestart` exists (else it runs `MeldAgent -O`, which never
+contacts the database), so a never-registered unit needs `touch
+/etc/config/WSAgentRestart`. Both steps are wired into
+[`../spectrumbridge_spoof_c/device/install_av.sh`](../spectrumbridge_spoof_c/device/install_av.sh).
+
 ### Persistence
 
 Confirmed on the bench unit: the root filesystem is read-write yaffs2
@@ -94,6 +116,7 @@ or no network at all changes nothing on that path.
 |---|---|---|
 | `sb_start` | `/usr/bin/sb_start` | runs `/usr/bin/sb_mips https://127.0.0.1:443` and restarts it 5 s after it ever exits |
 | `install.sh` | (run once) | copies `sb_mips` + `sb_start` to `/usr/bin`, points `tvws.spectrumbridge.com` at `127.0.0.1` in `/etc/hosts`, and adds `/usr/bin/sb_start &` just before `wsagent_start` in `/etc/init.d/rcS`. Backs up `/etc/hosts.orig` and `/etc/init.d/rcS.orig` first; safe to run again. |
+| `install_av.sh` | (run once, **MT300-AV / v45 agent**) | same idea, but hooks `/etc/init.d/setipeth0` (AV firmware starts the agent there, not `rcS`), writes the reverse-name `/etc/hosts` the v45 resolver needs (see the caveat above), and `touch`es `/etc/config/WSAgentRestart` so `wsagent_start` actually launches `whitespaceagent`. Backs up `/etc/hosts.orig` and `/etc/init.d/setipeth0.presb`; safe to run again. |
 
 1. Copy `sb_mips`, `device/sb_start` and `device/install.sh` to `/disk` with
    `nc` and check their MD5s ([`device-access.md`](device-access.md) §4).
