@@ -219,6 +219,23 @@ check. Keep that framing intact when editing the README.
     the device: `/etc/hosts.orig`, `/etc/init.d/setipeth0.presb`,
     `/etc/config/sbi.presb`.
 
+21. **PSIP virtual channel vs RF channel latch on unit 677 (2026-11-22).** With
+    the unit transmitting (video connected, RF confirmed on ch31 / ~574 MHz on a
+    spectrum analyzer), a receiving TV displayed the program as virtual channel
+    **`21-1`** — an unintended mismatch, not an RF error. Cause: the RF channel and
+    the ATSC virtual channel are set by two subsystems that never reconcile.
+    `whitespaceagent` sets the **RF** channel (the granted/preferred **31**);
+    `av_streamer` reads `/etc/config/queryInfo` **once at startup** and uses its
+    `Channel =` value as the PSIP `major_channel_number` (minor defaults to 1, no
+    `-M`). `avs_start.sh` launches the encoder as soon as `queryInfo` is non-empty
+    — which first happens at the radio's **power-on default channel 21** (lowest in
+    the grant) before the agent moves it to 31 — so the PSIP **latches 21** while
+    the RF ends on 31. Confirmed by restarting `av_streamer` with `queryInfo`
+    already at 31 (video re-locked 1080i@60, `radio_status` stayed 1); it re-stamps
+    the PSIP so the TV rescans as `31-1`. **Decided not to fix** (a durable fix
+    would gate `avs_start.sh` on `queryInfo` matching `/etc/config/operating`).
+    Written up in `docs/units/mt300-av-677.md` and `docs/radio-and-video.md` §4.1.
+
 ## Key technical facts and decisions
 
 - **Why the redirect is easy:** `wsa` uses `gethostbyname` (honors `/etc/hosts`),

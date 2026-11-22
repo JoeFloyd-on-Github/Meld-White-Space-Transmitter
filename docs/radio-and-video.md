@@ -203,6 +203,29 @@ transport stream over UDP to the network — it is a video-over-IP encoder as we
 as a transmitter. The default MPEG-2 at a ~19 Mbit/s remux rate is exactly an
 ATSC payload.
 
+### 4.1 The PSIP virtual channel is decoupled from the RF channel
+
+`av_streamer` also builds the stream's **PSIP** (the ATSC `TVCT`, which carries
+the `major-minor` *virtual channel* a TV displays). The virtual channel is
+independent of the RF channel — on a real station that is deliberate, but on this
+firmware the two are set by **different subsystems that never reconcile**, so they
+can disagree:
+
+- `whitespaceagent` sets the **RF channel** on the NXP radio (the database's
+  granted/preferred channel).
+- `av_streamer` reads **`/etc/config/queryInfo`** at startup, takes its
+  `Channel = ` value as the PSIP **`major_channel_number`**, and defaults the
+  **minor** to `1` (`avs_start.sh` passes no `-M`).
+
+Because `avs_start.sh` launches the encoder as soon as `queryInfo` is non-empty —
+which first happens at the radio's **power-on default channel** (the lowest in the
+grant), *before* `whitespaceagent` moves it to the preferred channel — the PSIP
+**latches that early default and never re-reads it**. The result is a TV that
+shows the default channel as its virtual number while the RF is on the preferred
+one. Restarting `av_streamer` after the RF channel has settled makes it re-latch
+the current channel. A worked example (RF 31 / virtual `21-1`, confirmed by
+restart) is in [`units/mt300-av-677.md`](units/mt300-av-677.md).
+
 ---
 
 ## 5. Inputs and resolution
