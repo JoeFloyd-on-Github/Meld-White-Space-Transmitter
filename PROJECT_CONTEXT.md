@@ -175,6 +175,22 @@ check. Keep that framing intact when editing the README.
     **192.168.1.196** in `/etc/init.d/setipeth0` (DHCP=0; original saved as
     `setipeth0.orig`) and verified across a reboot. The **serial console gives a
     root shell** on this unit.
+19. **Full backup of unit 677 + backup-script hardening (2026-11-22).** A fresh,
+    verified backup of unit **677** was streamed over `nc` with `tools/backup/` to
+    `backup-mt300-sn677-v1.38-2026-11-22/` on the share (541 MB; pristine OEM — no
+    `sb_mips`). This unit boots a **mixed A/B state**: `root=/dev/mtdblock6`
+    (RootFS_0, bank A) but `/disk` is mounted from `/dev/mtdblock9` (AppFS_1, bank
+    B) — the backup read the live partitions from cmdline + mount, so the cpio
+    captured the right filesystems. It also surfaced a real **`nc` race bug**: a
+    lingering listener misaligned the last partitions (`mtd9` came back empty,
+    `mtd10` held `mtd9`'s 221 MB). Both were re-pulled and verified, and
+    **`backup-meld.sh` was hardened** — it now `killall nc` on the device before
+    each pull, reads the received byte count back and **compares it to the
+    partition's `/proc/mtd` size, retrying on a short read** (same guard added to
+    the live-fs cpio pulls). The lesson is written up in `docs/device-backup.md` §6
+    and the per-unit doc `docs/units/mt300-av-677.md`. The unit's
+    `fccidSerialInfo` has no `FCCID:` line, so the auto-named dir came out `meld-`
+    and was renamed `mt300-` for consistency.
 
 ## Key technical facts and decisions
 
@@ -220,10 +236,12 @@ check. Keep that framing intact when editing the README.
 - Same share: `cpio-hds-pb100-sn371`, `backup2_with_mtdblocks/`,
   `OnDeviceSpoofingServer/` (musl toolchain + mbedTLS used for `sb_mips`).
 - **Verified full backups** made with `tools/backup/`:
-  `backup-mt300-sn457-v1.26-sbmips-spoofed-2026-11-21/` (bench unit 457) and
-  `backup-mt300-sn601-v1.38-2026-11-22/` (AV unit 601) — each has `mtd/` (11 raw
-  images + MD5SUMS), `rootfs-live/` (rootfs + `/disk` cpio), `meta/`, `README.txt`.
-  Unredacted owner PII; kept off the repo.
+  `backup-mt300-sn457-v1.26-sbmips-spoofed-2026-11-21/` (bench unit 457),
+  `backup-mt300-sn601-v1.38-2026-11-22/` (AV unit 601) and
+  `backup-mt300-sn677-v1.38-2026-11-22/` (AV unit 677, pristine) — each has `mtd/`
+  (11 raw images + MD5SUMS), `rootfs-live/` (rootfs + `/disk` cpio), `meta/`
+  (incl. `verification-notes.txt`), `README.txt`. Unredacted owner PII; kept off
+  the repo.
 
 ## Concerns
 

@@ -319,9 +319,19 @@ start.
   drivers must background it in a subshell — `(nc -l -p 9000 < src &)` — which
   survives the session close. Interactive (hand-typed) sessions don't need this.
 
-- **One transfer at a time.** Everything uses port 9000. Let each `nc` finish
-  before starting the next, or use different ports. The helper script serialises
-  them.
+- **One transfer at a time — and verify the byte count.** Everything uses port
+  9000, so each `nc` must finish before the next starts. The real hazard is a
+  **lingering listener**: if a partition's device-side `nc -l` does not exit
+  cleanly, the next partition's host `nc` can connect to the *stale* listener and
+  receive empty or wrong-partition data. This bit unit 677 once — `mtd9` came back
+  **empty** and `mtd10` held `mtd9`'s 221 MB. `backup-meld.sh` now guards against
+  it: before each pull it runs `killall nc` on the device to clear any stale
+  listener, then **checks the received byte count against the partition's
+  `/proc/mtd` size and retries** (up to 3×) on a short read, flagging
+  `SIZE MISMATCH` if it still can't. If you pull by hand, do the same — one
+  partition at a time, and confirm the received size before moving on. (To fix one
+  bad partition after the fact: `killall nc` on the device, start a fresh
+  `(nc -l -p 9000 < /dev/mtdblockN &)`, pull it, and check the size.)
 
 - **Pulling the device-side md5 out of automated output.** `md5sum /dev/mtdblockN`
   and the *command echo* both contain the string `/dev/mtdblock`. If you grep for

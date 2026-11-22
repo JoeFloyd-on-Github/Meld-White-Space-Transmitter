@@ -70,17 +70,36 @@ dev 'if [ -f /usr/bin/sb_mips ]; then
      fi' > "$BK/meta/modifications/sb_mips-changes.txt" 2>&1
 
 # --- 2. MTD partitions ------------------------------------------------------
-# read the partition list from the device: "mtdN: SIZE ERASE "NAME""
-mapfile -t MTDS < <(dev 'cat /proc/mtd' | awk -F'[: "]+' '/^mtd[0-9]/{print $1" "$4}')
+# Read the partition list from the device, keeping each partition's SIZE too:
+#   "mtdN: SIZEHEX ERASE "NAME""  ->  "mtdN SIZEHEX NAME"
+mapfile -t MTDS < <(dev 'cat /proc/mtd' | awk -F'[: "]+' '/^mtd[0-9]/{print $1" "$2" "$4}')
 : > "$BK/mtd/MD5SUMS.txt"
 for row in "${MTDS[@]}"; do
-  devname="${row%% *}"; name="${row##* }"; n="${devname#mtd}"
+  set -- $row; devname="$1"; exp=$((16#$2)); name="$3"; n="${devname#mtd}"
   out="$BK/mtd/mtdblock${n}-${name}.img"
-  echo "[*] mtd$n ($name) ..."
-  devmd5=$(dev "md5sum /dev/mtdblock$n" "(nc -l -p $PORT < /dev/mtdblock$n &); sleep 1; echo up" | hash_of)
-  nc -w 25 "$HOST" "$PORT" > "$out"
-  sz=$(stat -c %s "$out"); pcmd5=$(md5sum "$out" | awk '{print $1}')
-  if [ "$devmd5" = "$pcmd5" ]; then v=OK; else v="SNAPSHOT/MISMATCH (live fs? verify)"; fi
+  echo "[*] mtd$n ($name, $exp bytes) ..."
+  # Pull ONE partition at a time with a clean listener handshake: kill any stale
+  # nc listener first, then read the byte count back and compare to the partition
+  # size, retrying on a short read. Without this, a lingering listener from the
+  # previous partition can misalign the stream (empty file / wrong partition's
+  # data) -- which once left mtd9 empty and mtd10 holding mtd9's bytes.
+  tries=0 sz=-1 devmd5=""
+  while : ; do
+    tries=$((tries+1))
+    devmd5=$(dev "killall nc 2>/dev/null; sleep 1" \
+                 "md5sum /dev/mtdblock$n" \
+                 "(nc -l -p $PORT < /dev/mtdblock$n &); sleep 1; echo up" | hash_of)
+    nc -w 60 "$HOST" "$PORT" > "$out"
+    sz=$(stat -c %s "$out")
+    [ "$sz" = "$exp" ] && break
+    echo "  mtd$n: got $sz bytes, expected $exp -- retry $tries"
+    [ "$tries" -ge 3 ] && { echo "  mtd$n: FAILED to read $exp bytes after $tries tries"; break; }
+    sleep 1
+  done
+  pcmd5=$(md5sum "$out" | awk '{print $1}')
+  if [ "$sz" != "$exp" ]; then v="SIZE MISMATCH ($sz != $exp) -- RE-PULL THIS PARTITION"
+  elif [ "$devmd5" = "$pcmd5" ]; then v=OK
+  else v="SNAPSHOT/MISMATCH (live or inactive fs: NAND read noise; cpio is authoritative)"; fi
   printf '  size=%-10s dev=%s pc=%s %s\n' "$sz" "$devmd5" "$pcmd5" "$v"
   echo "$pcmd5  mtdblock${n}-${name}.img  (device:$devmd5) $v" >> "$BK/mtd/MD5SUMS.txt"
 done
@@ -92,8 +111,9 @@ DISKBLK=$(dev 'mount' | awk '/\/disk /{print $1}' | grep -oE '[0-9]+' | head -1)
 pull_fs() {  # $1=device dir  $2=output basename
   local dir="$1" out="$BK/rootfs-live/$2"
   local cnt; cnt=$(dev "cd $dir && find . -xdev | wc -l" | grep -oE '[0-9]+' | tail -1)
-  dev "(cd $dir && find . -xdev | cpio -o -H newc 2>/dev/null | nc -l -p $PORT &); sleep 1; echo up" >/dev/null
-  nc -w 25 "$HOST" "$PORT" | gzip > "$out"
+  dev "killall nc 2>/dev/null; sleep 1" \
+      "(cd $dir && find . -xdev | cpio -o -H newc 2>/dev/null | nc -l -p $PORT &); sleep 1; echo up" >/dev/null
+  nc -w 60 "$HOST" "$PORT" | gzip > "$out"
   local got; got=$(zcat "$out" | cpio -t 2>/dev/null | wc -l)
   gzip -t "$out" && echo "  $2: gzip OK, device_files=$cnt archive_entries=$got"
 }
