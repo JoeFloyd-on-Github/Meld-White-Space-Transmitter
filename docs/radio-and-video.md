@@ -269,6 +269,58 @@ In other words, the 720p limit is a configuration choice (the EDID handed to
 HDMI sources), not a hardware ceiling. Audio is PCM 48 kHz in the default EDID;
 an AC-3 variant EDID is also provided.
 
+### 5.1 Cold-boot HDMI does not lock until the cable is re-plugged (OPEN)
+
+**Symptom (unit 677, observed 2026-11-22).** After a hard power cycle the RF comes
+up (the TX-enable fix keys the carrier) but the **picture is blank** — the HDMI
+input never locks — until the HDMI cable is physically **unplugged and re-plugged**,
+after which it locks at 1080i@60 and stays locked. This is separate from the
+TX-enable flaw; the transmitter is on, there is just no video in the stream.
+
+**What the boot log shows.** `av_streamer` starts late (it waits for the agent's
+`queryInfo`), then configures the ADV7842 HDMI front-end — but the source never
+hands it a signal until the manual replug:
+
+```
+00:00:35 av_streamer : Loading the EDID table from : Meld_Edid_r12_720p_pcm48.txt
+00:00:35 adv7842 : HPA_AUTO_INT_EDID is a2
+00:00:35 adv7842 : Changed HPA_AUTO_INT_EDID to 0xA4      <- arm auto Hot-Plug-Assert on internal EDID
+00:00:36 adv7842 : Load EDID into SPI EEPROM ... EDID checksum = 0x97
+00:00:40 adv7842 : NO digital video standard detected
+00:00:40 adv7842 : Enable internal EDID
+00:00:41 adv7842 : XC_INPUT_HDMI_TO_HDMI
+   ... no HDMI lock for minutes ...
+00:06:04 adv7842 : Input video is 1080i@60              <- only after the physical re-plug
+```
+
+**Reading.** This has the hallmarks of an **HPD / EDID handshake timing** problem,
+not (necessarily) a failed part. The ADV7842 deasserts Hot-Plug-Assert (HPA) to the
+source for the whole early boot (av_streamer does not even start until ~35 s in,
+after the `queryInfo` wait), loads the internal EDID, and arms auto-HPA
+(`HPA_AUTO_INT_EDID 0xA2 -> 0xA4`). By the time HPA finally asserts, the source —
+which has seen "no sink" throughout the long boot — does not re-read EDID and start
+TMDS on its own. A physical re-plug pulses HPD at the source and forces a fresh
+handshake, so it locks. The driver clearly manages this path (`ADV7842_EVT_HDMI_HPD`,
+`InitHDMI`, `LoadEDID`, the `HPA_AUTO_INT_EDID` register), which is why a firmware
+remedy is plausible.
+
+**Candidate fixes (none implemented or tested; investigation was stopped here):**
+
+- **HPA/HPD toggle after init** — once the internal EDID is enabled, deassert then
+  reassert HPA (or pulse the HPD line) so an already-connected source re-reads EDID
+  and restarts TMDS. This is the firmware equivalent of the manual re-plug.
+- **Re-init / restart `av_streamer` once, a short time after boot** — during the
+  TX-enable debugging, `av_streamer` restarts re-ran the ADV7842 init and the input
+  then locked; whether the restart *alone* (with no physical re-plug) reliably locks
+  an already-connected source was **not** isolated, so this is a hypothesis to test,
+  not a confirmed fix. (If confirmed, a watchdog like `sb_txkeepalive` could detect
+  "RF up but no HDMI lock after N seconds" and restart the encoder.)
+- **Hardware not ruled out** — a marginal HPD line, HDMI connector, or EDID EEPROM
+  could produce the same symptom. The user flagged it as possibly hardware; the log
+  evidence leans firmware/sequencing but does not exclude hardware.
+
+Tracked as an open item; see [`units/mt300-av-677.md`](units/mt300-av-677.md).
+
 ---
 
 ## 6. Kernel and modules

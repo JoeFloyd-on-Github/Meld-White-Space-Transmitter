@@ -262,6 +262,23 @@ check. Keep that framing intact when editing the README.
     injection on that boot. This makes the unit transmit automatically at power-up
     — a deliberate posture change from stock.
 
+23. **Cold-boot HDMI video-lock issue on unit 677 — documented, NOT fixed
+    (2026-11-22).** After the TX-enable fix, a hard power cycle brought RF up but
+    the **picture was blank** until the HDMI cable was physically unplugged and
+    re-inserted, after which it locked at 1080i@60. Boot log: `av_streamer` loads
+    the internal EDID and arms auto-HPA (`HPA_AUTO_INT_EDID 0xA2 -> 0xA4`) at ~35 s
+    but the source never starts TMDS (`NO digital video standard detected`) until
+    the manual re-plug minutes later — the hallmarks of an **HPD/EDID handshake
+    timing** problem (the source sees "no sink" through the long boot and does not
+    re-read EDID when HPA finally asserts), not necessarily dead hardware. Candidate
+    fixes (none implemented/tested): an HPD/HPA toggle after init, or a post-boot
+    `av_streamer` re-init (restart) — during earlier debugging av_streamer restarts
+    coincided with the input locking, but restart-alone-without-replug was not
+    isolated, so it is a hypothesis. Hardware (marginal HPD line/connector/EDID
+    EEPROM) not ruled out. The user chose to stop and document. Written up in
+    `docs/radio-and-video.md` §5.1 and `docs/units/mt300-av-677.md` (open
+    follow-ups).
+
 ## Key technical facts and decisions
 
 - **Why the redirect is easy:** `wsa` uses `gethostbyname` (honors `/etc/hosts`),
