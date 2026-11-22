@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TV White Space Finder</title>
+<style>
+  :root{
+    --bg:#0f1419; --panel:#161c24; --panel2:#1c242e; --line:#2a333f;
+    --fg:#e6edf3; --muted:#9aa7b4; --accent:#4aa3ff;
+    --ok:#2ec77a; --okbg:#10301f; --adj:#e0b020; --adjbg:#33290a;
+    --occ:#ff6b6b; --occbg:#3a1414; --mob:#b088ff; --mobbg:#241a3a; --res:#8a97a4; --resbg:#20262e;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f4f6f8; --panel:#fff; --panel2:#f0f3f6; --line:#dde3ea;
+      --fg:#111820; --muted:#5a6572; --accent:#1769c4;
+      --ok:#137a43; --okbg:#e4f6ec; --adj:#8a6a00; --adjbg:#fbf2d6;
+      --occ:#b22; --occbg:#fbe5e5; --mob:#6a3fd0; --mobbg:#efe8fc; --res:#55606c; --resbg:#eef1f4;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  .wrap{max-width:1000px;margin:0 auto;padding:16px}
+  h1{font-size:22px;margin:.2em 0}
+  h2{font-size:16px;margin:1.4em 0 .5em;border-bottom:1px solid var(--line);padding-bottom:.3em}
+  p.sub{color:var(--muted);margin:.2em 0 1em}
+  a{color:var(--accent)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin:12px 0}
+  .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+  .field{display:flex;flex-direction:column;gap:3px}
+  .field label{font-size:12px;color:var(--muted)}
+  input,select,button{font:inherit;color:var(--fg);background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:7px 9px}
+  input[type=number]{width:120px}
+  button{cursor:pointer;background:var(--accent);color:#fff;border:none;font-weight:600;padding:8px 16px}
+  button.ghost{background:var(--panel2);color:var(--fg);border:1px solid var(--line);font-weight:500}
+  button:disabled{opacity:.5;cursor:default}
+  .presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .presets button{padding:4px 9px;font-size:12px}
+  .status{font-size:13px;color:var(--muted);margin:8px 0}
+  .summary{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+  .chip{padding:5px 9px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--line)}
+  .chip.ok{background:var(--okbg);color:var(--ok)} .chip.adj{background:var(--adjbg);color:var(--adj)}
+  .chip.occ{background:var(--occbg);color:var(--occ)} .chip.mob{background:var(--mobbg);color:var(--mob)}
+  .chip.res{background:var(--resbg);color:var(--res)}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin-top:6px}
+  th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{color:var(--muted);font-weight:600;position:sticky;top:0;background:var(--panel);cursor:default}
+  td.ch{font-weight:700;white-space:nowrap}
+  .tag{display:inline-block;padding:2px 7px;border-radius:6px;font-size:11px;font-weight:700}
+  .tag.ok{background:var(--okbg);color:var(--ok)} .tag.adj{background:var(--adjbg);color:var(--adj)}
+  .tag.occ{background:var(--occbg);color:var(--occ)} .tag.mob{background:var(--mobbg);color:var(--mob)}
+  .tag.res{background:var(--resbg);color:var(--res)}
+  .nearest{color:var(--muted);font-size:12px}
+  tr.auth td.ch::after{content:" ★";color:var(--accent);font-size:10px}
+  .legend{font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+  details{margin-top:8px}
+  summary{cursor:pointer;color:var(--accent)}
+  code{background:var(--panel2);padding:1px 5px;border-radius:5px;font-size:12px}
+  .warn{background:var(--adjbg);color:var(--adj);border:1px solid var(--adj);border-radius:8px;padding:10px;font-size:13px;margin:10px 0}
+  .err{background:var(--occbg);color:var(--occ);border:1px solid var(--occ);border-radius:8px;padding:12px;margin:10px 0;display:none}
+  .adv{display:flex;flex-wrap:wrap;gap:12px;margin-top:4px}
+  .adv .field input{width:90px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>TV White Space Finder</h1>
+  <p class="sub">A first-order look at which TV channels may be open for white-space use at a location, computed from the
+  latest FCC protected-entity data mirrored in <code>./data/</code> (TV stations, 600&nbsp;MHz licensees, wireless mics,
+  BAS links, MVPD/TV receive sites). Part of the
+  <a href="../../README.md">Meld White Space Transmitter</a> project.</p>
+
+  <div class="warn">
+    <b>Informational only — not an FCC white-space determination.</b> A legal transmission still requires a
+    certified white-space database and registration, and this model is a simplified distance-based approximation of the
+    FCC §15.712 protection rules, not the real contour math. For the Meld&nbsp;MT300 specifically, its FCC grant
+    (<a href="../../docs/fcc.md">OKVMT300</a>) authorizes only channels <b>21–34 and 39–51</b>.
+  </div>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="field"><label>Latitude</label><input id="lat" type="number" step="any" value="33.4484" placeholder="e.g. 33.4484"></div>
+      <div class="field"><label>Longitude</label><input id="lon" type="number" step="any" value="-112.0740" placeholder="e.g. -112.0740"></div>
+      <button id="go">Find available channels</button>
+      <button id="geo" class="ghost" type="button">Use my location</button>
+    </div>
+    <div class="presets" id="presets"></div>
+    <div class="adv">
+      <div class="field"><label title="Co-channel separation added beyond a station's estimated protected contour (FCC fixed-device ~14.4 km for low antennas).">Co-channel margin (km)</label><input id="sepco" type="number" value="14.4" step="0.1"></div>
+      <div class="field"><label title="Protected radius of a wireless microphone / low-power aux registration.">Mic / point keep-out (km)</label><input id="keepout" type="number" value="1" step="0.1"></div>
+      <div class="field"><label>Channels to show</label>
+        <select id="range"><option value="all">All (2–51)</option><option value="dev" selected>MT300 band (21–51)</option><option value="uhf">UHF (14–36)</option></select>
+      </div>
+    </div>
+    <div class="status" id="status">Loading FCC data…</div>
+    <div class="err" id="err"></div>
+  </div>
+
+  <div id="results" style="display:none">
+    <h2>Result</h2>
+    <div class="summary" id="summary"></div>
+    <div class="legend">
+      <span><span class="tag ok">AVAILABLE</span> no nearby co-channel occupant</span>
+      <span><span class="tag adj">ADJACENT</span> clear co-channel, but a 1st-adjacent station is close</span>
+      <span><span class="tag occ">OCCUPIED</span> inside a co-channel station's protected zone</span>
+      <span><span class="tag mob">600 MHz</span> ch38–51, licensed mobile (post-repack)</span>
+      <span><span class="tag res">RESERVED</span> ch37 (radio astronomy / medical telemetry)</span>
+      <span>★ = FCC-authorized for the MT300</span>
+    </div>
+    <table id="tbl"><thead><tr>
+      <th>Ch</th><th>MHz</th><th>Band</th><th>Status</th><th>Nearest co-channel occupant</th><th>#co / #adj</th>
+    </tr></thead><tbody id="rows"></tbody></table>
+    <details>
+      <summary>Method &amp; data</summary>
+      <p class="sub">For each channel, every TV station on that channel (US/CA/MX, all services) gets an estimated protected-contour
+      radius from its ERP, HAAT and band; the channel is <b>OCCUPIED</b> at your point if you fall within that radius plus the
+      co-channel margin. A first-adjacent (±1) station inside its contour flags <b>ADJACENT</b>. Wireless-mic, BAS, MVPD-receive,
+      TV-receive and land-mobile registrations add point keep-outs on their channel(s). Channel 37 is reserved; channels 38–51
+      are the repacked 600&nbsp;MHz band (licensed mobile) and are flagged regardless of TV occupancy. The contour estimate is
+      empirical, not the FCC F(50,90) curves — treat verdicts as guidance, and see <a href="README.md">README.md</a>. Data
+      snapshot in <code>./data/</code>, source <a href="https://csv.wavedb.com/">csv.wavedb.com</a>.</p>
+    </details>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const PRESETS=[
+  ["Phoenix, AZ",33.4484,-112.0740],["New York, NY",40.7128,-74.0060],["Los Angeles, CA",34.0522,-118.2437],
+  ["Chicago, IL",41.8781,-87.6298],["Rural MT (Glasgow)",48.1969,-106.6367],["Denver, CO",39.7392,-104.9903],
+];
+PRESETS.forEach(([n,la,lo])=>{const b=document.createElement("button");b.textContent=n;b.className="ghost";
+  b.onclick=()=>{$("lat").value=la;$("lon").value=lo;run();};$("presets").appendChild(b);});
+
+// ---- channel ↔ frequency ----
+function chBand(ch){
+  if(ch>=2&&ch<=4) return [54+(ch-2)*6,60+(ch-2)*6];
+  if(ch>=5&&ch<=6) return [76+(ch-5)*6,82+(ch-5)*6];
+  if(ch>=7&&ch<=13) return [174+(ch-7)*6,180+(ch-7)*6];
+  if(ch>=14&&ch<=51) return [470+(ch-14)*6,476+(ch-14)*6];
+  return null;
+}
+function bandName(ch){ if(ch<=6)return"Low-VHF"; if(ch<=13)return"High-VHF"; if(ch<=36)return"UHF";
+  if(ch===37)return"Reserved"; return"600 MHz"; }
+const AUTHORIZED=ch=>(ch>=21&&ch<=34)||(ch>=39&&ch<=51); // per the OKVMT300 grant
+
+// ---- geo ----
+function hav(la1,lo1,la2,lo2){
+  const R=6371,r=Math.PI/180,dla=(la2-la1)*r,dlo=(lo2-lo1)*r;
+  const a=Math.sin(dla/2)**2+Math.cos(la1*r)*Math.cos(la2*r)*Math.sin(dlo/2)**2;
+  return 2*R*Math.asin(Math.sqrt(a));
+}
+// first-order protected-contour radius (km) from ERP (kW), HAAT (m), channel
+function protRadius(erp_kw,haat_m,ch){
+  const erp=Math.max(erp_kw||0.001,0.001), haat=Math.max(haat_m||30,10);
+  const base = ch>=14?16.5 : ch>=7?22 : 26;           // UHF < High-VHF < Low-VHF for same ERP
+  let r = base*Math.pow(erp,0.23)*Math.pow(haat/150,0.16);
+  return Math.min(Math.max(r,3),140);
+}
+
+// ---- tiny CSV parser (RFC-4180-ish; handles quotes, embedded commas/newlines) ----
+function parseCSV(text){
+  const rows=[]; let row=[],f="",q=false,i=0,c;
+  while(i<text.length){
+    c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+    else { if(c==='"')q=true;
+      else if(c===','){row.push(f);f="";}
+      else if(c==='\n'){row.push(f);rows.push(row);row=[];f="";}
+      else if(c==='\r'){}
+      else f+=c; }
+    i++;
+  }
+  if(f.length||row.length){row.push(f);rows.push(row);}
+  const hdr=rows.shift().map(h=>h.trim());
+  return rows.filter(r=>r.length>1).map(r=>{const o={};hdr.forEach((h,j)=>o[h]=r[j]);return o;});
+}
+
+const FILES={
+  tv:"data/fcc_tv_station.csv", mic:"data/licensed_low_power_auxiliary_station.csv",
+  mvpd:"data/mvpd_receive_site.csv", tvrx:"data/tv_receive_site.csv",
+  pbas:"data/permanent_bas_link.csv", tbas:"data/temporary_bas_link.csv",
+  mobile:"data/mobile_radio_base_station.csv", sixh:"data/active_600Mhz_user.csv",
+};
+let DATA=null;
+
+async function load(){
+  try{
+    const out={};
+    await Promise.all(Object.entries(FILES).map(async([k,u])=>{
+      const r=await fetch(u); if(!r.ok) throw new Error(u+" → HTTP "+r.status);
+      out[k]=parseCSV(await r.text());
+    }));
+    // TV stations: keep rows with a numeric channel + coords
+    out.tv=out.tv.map(s=>({ch:+s.channel, lat:+s.latitude, lon:+s.longitude, erp:+s.erp_kw,
+       haat:+s.height_aat, call:s.callsign, svc:s.service_type, cc:s.country_code,
+       city:s.city, st:s.state})).filter(s=>s.ch>=2&&s.ch<=51&&isFinite(s.lat)&&isFinite(s.lon));
+    for(const s of out.tv) s.r=protRadius(s.erp,s.haat,s.ch);
+    // 600 MHz channels that are licensed somewhere (map freq ranges → channels)
+    out.sixChannels=new Set();
+    for(const u of out.sixh){ (u.frequency_ranges||"").split(",").forEach(rg=>{
+      const m=rg.split("-").map(x=>+x/1e6); if(m.length!==2)return;
+      for(let ch=38;ch<=51;ch++){const b=chBand(ch); if(b&&m[0]<b[1]&&m[1]>b[0]) out.sixChannels.add(ch);}
+    });}
+    DATA=out;
+    $("status").textContent=`Loaded ${out.tv.length.toLocaleString()} TV stations + mics/BAS/receive-site registrations. Enter a location.`;
+    $("go").disabled=false; run();
+  }catch(e){
+    $("status").style.display="none";
+    const el=$("err"); el.style.display="block";
+    el.innerHTML=`<b>Could not load the CSV data.</b> This page must be served over HTTP (browsers block <code>fetch()</code> of local files over <code>file://</code>).<br>
+      Run a server in this folder and reload:<br><code>cd tools/whitespace-finder &amp;&amp; python3 -m http.server 8000</code><br>
+      then open <code>http://localhost:8000/</code>. <br><span class="nearest">(${e.message})</span>`;
+  }
+}
+
+function pointOccupants(list,lat,lon,getChs,keepout){
+  // returns Map channel -> nearest {call,dist}
+  const m=new Map();
+  for(const row of list){
+    const la=+(row.latitude||row.receiver_latitude||row.transmitter_latitude);
+    const lo=+(row.longitude||row.receiver_longitude||row.transmitter_longitude);
+    if(!isFinite(la)||!isFinite(lo))continue;
+    const d=hav(lat,lon,la,lo); if(d>keepout)continue;
+    for(const ch of getChs(row)){
+      if(!m.has(ch)||d<m.get(ch).dist) m.set(ch,{call:row.callsign||row.cable_company_name||"registration",dist:d});
+    }
+  }
+  return m;
+}
+
+function run(){
+  if(!DATA)return;
+  const lat=+$("lat").value, lon=+$("lon").value;
+  if(!isFinite(lat)||!isFinite(lon)){$("status").textContent="Enter a valid latitude and longitude.";return;}
+  const sepco=+$("sepco").value||0, keepout=+$("keepout").value||0;
+  const rangeSel=$("range").value;
+  const chLo = rangeSel==="uhf"?14 : rangeSel==="dev"?21 : 2;
+  const chHi = rangeSel==="uhf"?36 : 51;
+
+  // nearest co/adjacent TV station per channel
+  const co={},adj={},coCount={},adjCount={};
+  for(let ch=2;ch<=51;ch++){co[ch]=null;adj[ch]=null;coCount[ch]=0;adjCount[ch]=0;}
+  for(const s of DATA.tv){
+    const d=hav(lat,lon,s.lat,s.lon);
+    if(d<=s.r+sepco){ coCount[s.ch]++; if(!co[s.ch]||d<co[s.ch].d) co[s.ch]={d,s}; }
+    if(d<=s.r){ for(const a of [s.ch-1,s.ch+1]){ if(a>=2&&a<=51){ adjCount[a]++; if(!adj[a]||d<adj[a].d) adj[a]={d,s}; } } }
+  }
+  // point protections (mics, receive sites, BAS, mobile) → channels
+  const micM =pointOccupants(DATA.mic ,lat,lon,r=>(r.channel_numbers||"").split(",").map(x=>+x).filter(Boolean),keepout);
+  const mvpdM=pointOccupants(DATA.mvpd,lat,lon,r=>[+r.channel_number].filter(Boolean),Math.max(keepout,8));
+  const tvrxM=pointOccupants(DATA.tvrx,lat,lon,r=>[+r.channel_number].filter(Boolean),Math.max(keepout,8));
+  const pbasM=pointOccupants(DATA.pbas,lat,lon,r=>[+r.channel_number].filter(Boolean),Math.max(keepout,8));
+  const mobM =pointOccupants(DATA.mobile,lat,lon,r=>[+r.channel_number].filter(Boolean),Math.max(keepout,8));
+  const pointHit=ch=>micM.get(ch)||mvpdM.get(ch)||tvrxM.get(ch)||pbasM.get(ch)||mobM.get(ch);
+
+  const rows=$("rows"); rows.innerHTML="";
+  let nAvail=0,nOcc=0,availList=[];
+  for(let ch=chLo;ch<=chHi;ch++){
+    const b=chBand(ch); if(!b)continue;
+    let cls,label,note="";
+    const ph=pointHit(ch);
+    if(ch===37){cls="res";label="RESERVED";}
+    else if(ch>=38){ cls="mob"; label="600 MHz";
+      note = DATA.sixChannels.has(ch)?"licensed mobile":"600 MHz band"; }
+    else if(co[ch]){cls="occ";label="OCCUPIED";}
+    else if(ph){cls="occ";label="OCCUPIED";note="point registration ("+ph.call+", "+ph.dist.toFixed(1)+" km)";}
+    else if(adj[ch]){cls="adj";label="ADJACENT";}
+    else {cls="ok";label="AVAILABLE";nAvail++; if(ch>=21)availList.push(ch);}
+    if(cls==="occ")nOcc++;
+    const c=co[ch];
+    const near = c? `${c.s.call} · ch${c.s.ch} ${c.s.svc} · ${c.d.toFixed(0)} km · ${c.s.erp}kW${c.s.cc!=="USA"?" ("+c.s.cc+")":""}`
+                  : (ch>=38? "—" : (adj[ch]? `(adj) ${adj[ch].s.call} ch${adj[ch].s.ch} · ${adj[ch].d.toFixed(0)} km` : (note||"—")));
+    const tr=document.createElement("tr"); if(AUTHORIZED(ch))tr.className="auth";
+    tr.innerHTML=`<td class="ch">${ch}</td><td>${b[0]}–${b[1]}</td><td>${bandName(ch)}</td>
+      <td><span class="tag ${cls}">${label}</span>${note&&cls!=="occ"?` <span class="nearest">${note}</span>`:""}</td>
+      <td class="nearest">${near}</td><td class="nearest">${coCount[ch]} / ${adjCount[ch]}</td>`;
+    rows.appendChild(tr);
+  }
+  const authAvail=availList.filter(AUTHORIZED);
+  $("summary").innerHTML =
+    `<span class="chip ok">${nAvail} available</span>`+
+    `<span class="chip occ">${nOcc} occupied</span>`+
+    `<span class="chip ok">White-space candidates ≥ch21: ${availList.join(", ")||"none"}</span>`+
+    `<span class="chip ${authAvail.length?"ok":"res"}">MT300-authorized &amp; open: ${authAvail.join(", ")||"none"}</span>`;
+  $("results").style.display="block";
+  $("status").textContent=`At ${lat.toFixed(4)}, ${lon.toFixed(4)} — showing channels ${chLo}–${chHi}.`;
+}
+
+$("go").onclick=run; $("go").disabled=true;
+["lat","lon"].forEach(id=>$(id).addEventListener("keydown",e=>{if(e.key==="Enter")run();}));
+["sepco","keepout","range"].forEach(id=>$(id).addEventListener("change",run));
+$("geo").onclick=()=>{ if(!navigator.geolocation){alert("No geolocation.");return;}
+  navigator.geolocation.getCurrentPosition(p=>{$("lat").value=p.coords.latitude.toFixed(5);$("lon").value=p.coords.longitude.toFixed(5);run();},
+   ()=>alert("Could not get location."));};
+load();
+</script>
+</body>
+</html>

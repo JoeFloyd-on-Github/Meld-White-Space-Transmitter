@@ -1,0 +1,2 @@
+channel_number,callsign,transmitter_latitude,transmitter_longitude,receiver_latitude,receiver_longitude,icalendar,contact_name,country,street_address,city,state,zip_code,phone_number,email_address
+18,WPZX370,42.98464,-71.466101,42.98464,-71.466101,BEGIN:VCALENDAR\nBEGIN:VEVENT\nUID:2778addb-a2eb-4910-8784-ce994489bdba\nDTSTAMP:20190131T225919Z\nDTSTART:20190201T000000Z\nDTEND:20200131T000000Z\nEND:VEVENT\nEND:VCALENDAR\n,Art Pepin WMUR-TV,USA,100 South Commercial Street,Manchester,NEW_HAMPSHIRE,03101,6036699999,apepin@hearst.com
