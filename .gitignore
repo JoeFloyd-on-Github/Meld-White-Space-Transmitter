@@ -16,3 +16,9 @@ spectrumbridge_spoof_c/sb.o
 spectrumbridge_spoof_c/mongoose.o
 spectrumbridge_spoof_c/build.log
 qemu-env/build/
+
+# Device backups are sensitive (contain the registered owner's PII) and large;
+# they live on the share, never in the repo. Guard against accidental commits.
+backup-*/
+*.img
+*.cpio.gz

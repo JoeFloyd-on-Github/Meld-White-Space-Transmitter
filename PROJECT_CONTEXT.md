@@ -48,6 +48,13 @@ check. Keep that framing intact when editing the README.
     modulation formats (8VSB/COFDM-DVB-T/QAM), MPEG-2/H.264 encoding via
     `av_streamer`, and the EDID that pins HDMI input to 720p. Drawn from the
     MT300-AV firmware on the share, not from the repo's white-space snapshot.
+11. **Device backup procedure + tooling (2026-11-21).** `docs/device-backup.md`
+    and `tools/backup/` (meld_telnet.py, backup-meld.sh): a full, verified backup
+    of a running unit (all 11 MTD partitions block-level + live rootfs/`/disk`
+    cpio) streamed over nc. A reference backup of the bench unit (sn457, v1.26,
+    sb_mips-modified) is on the share under
+    `backup-mt300-sn457-v1.26-sbmips-spoofed-2026-11-21/` (sensitive: unredacted
+    owner data; not in the repo).
 9. **Live device (2026-11-21).** A second, powered bench unit (serial **457**,
    kernel 2.6.29-ts, Meld app v1.26) reached via its passwordless telnet root
    shell (`docs/device-access.md`). Following `docs/on-device-test-plan.md`, with

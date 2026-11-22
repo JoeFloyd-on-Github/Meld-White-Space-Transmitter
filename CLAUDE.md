@@ -13,7 +13,8 @@ sessions — the things that are not obvious from the code or the git log.
 - Start points: `README.md` (overview), `HOW-TO.md` (restore a device + FCC
   rules), `docs/wsa-overview.md` (agent behavior and protocol),
   `docs/radio-and-video.md` (the NXP radio, its serial control + modulation
-  formats, and the ADV7842→ViXS video path), `docs/emulation-guide/` (binary →
+  formats, and the ADV7842→ViXS video path),
+  `docs/device-backup.md` (full-device backup over nc; scripts in `tools/backup/`), `docs/emulation-guide/` (binary →
   QEMU narrative), `docs/emulation-guide/09-tips-and-pitfalls.md` (traps already
   hit — check here before debugging).
 - The committed binaries (`wsa`, `sb_mips`, busybox, malta kernel, …) are **MIPS**,
