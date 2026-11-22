@@ -85,7 +85,10 @@
       <button id="go">Find available channels</button>
       <button id="geo" class="ghost" type="button">Use my location</button>
     </div>
-    <div class="presets" id="presets"></div>
+    <div class="field" style="margin-top:10px;max-width:460px">
+      <label>Jump to a TV market — top 5 per state / territory (core = full-power station centroid)</label>
+      <select id="market"><option value="">— choose a market —</option></select>
+    </div>
     <div class="adv">
       <div class="field"><label title="Co-channel separation added beyond a station's estimated protected contour (FCC fixed-device ~14.4 km for low antennas).">Co-channel margin (km)</label><input id="sepco" type="number" value="14.4" step="0.1"></div>
       <div class="field"><label title="Protected radius of a wireless microphone / low-power aux registration.">Mic / point keep-out (km)</label><input id="keepout" type="number" value="1" step="0.1"></div>
@@ -126,12 +129,50 @@
 
 <script>
 const $=id=>document.getElementById(id);
-const PRESETS=[
-  ["Phoenix, AZ",33.4484,-112.0740],["New York, NY",40.7128,-74.0060],["Los Angeles, CA",34.0522,-118.2437],
-  ["Chicago, IL",41.8781,-87.6298],["Rural MT (Glasgow)",48.1969,-106.6367],["Denver, CO",39.7392,-104.9903],
-];
-PRESETS.forEach(([n,la,lo])=>{const b=document.createElement("button");b.textContent=n;b.className="ghost";
-  b.onclick=()=>{$("lat").value=la;$("lon").value=lo;run();};$("presets").appendChild(b);});
+const STATES={AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",
+ CT:"Connecticut",DE:"Delaware",DC:"District of Columbia",FL:"Florida",GA:"Georgia",HI:"Hawaii",
+ ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",
+ MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",
+ MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",
+ NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",
+ RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",
+ VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming",
+ PR:"Puerto Rico",VI:"U.S. Virgin Islands",GU:"Guam",AS:"American Samoa",MP:"N. Mariana Islands"};
+const titleCase=s=>(s||"").toLowerCase().replace(/\b[a-z]/g,m=>m.toUpperCase()).replace(/\bMc(\w)/g,(_,c)=>"Mc"+c.toUpperCase());
+
+// Build the "jump to a TV market" dropdown from the loaded TV-station data:
+// cluster each state's full-power stations by proximity, rank by station count,
+// take the top 5, and use each cluster's centroid as the market's geographic core.
+function buildMarkets(){
+  const FULL=new Set(["DTV","TV","DCA","DTS"]);   // full-power / Class A (not translators)
+  const CLUSTER_KM=55;
+  const byState={};
+  for(const s of DATA.tv){ if(s.cc!=="USA"||!FULL.has(s.svc))continue;
+    (byState[s.st]||(byState[s.st]=[])).push(s); }
+  const sel=$("market");
+  const states=Object.keys(byState).filter(st=>STATES[st]).sort((a,b)=>STATES[a].localeCompare(STATES[b]));
+  for(const st of states){
+    const clusters=[];
+    for(const s of byState[st]){
+      let best=null,bd=Infinity;
+      for(const c of clusters){const d=hav(s.lat,s.lon,c.sumLat/c.n,c.sumLon/c.n); if(d<bd){bd=d;best=c;}}
+      if(best&&bd<=CLUSTER_KM){best.items.push(s);best.sumLat+=s.lat;best.sumLon+=s.lon;best.n++;}
+      else clusters.push({items:[s],sumLat:s.lat,sumLon:s.lon,n:1});
+    }
+    clusters.sort((a,b)=>b.n-a.n);
+    const og=document.createElement("optgroup"); og.label=STATES[st];
+    for(const c of clusters.slice(0,5)){
+      const freq={}; for(const it of c.items){const k=titleCase(it.city||"?"); freq[k]=(freq[k]||0)+1;}
+      const name=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0][0];
+      const la=c.sumLat/c.n, lo=c.sumLon/c.n;
+      const o=document.createElement("option");
+      o.value=la.toFixed(5)+","+lo.toFixed(5);
+      o.textContent=`${name} — ${c.n} station${c.n>1?"s":""}`;
+      og.appendChild(o);
+    }
+    sel.appendChild(og);
+  }
+}
 
 // ---- channel ↔ frequency ----
 function chBand(ch){
@@ -204,7 +245,8 @@ async function load(){
       for(let ch=38;ch<=51;ch++){const b=chBand(ch); if(b&&m[0]<b[1]&&m[1]>b[0]) out.sixChannels.add(ch);}
     });}
     DATA=out;
-    $("status").textContent=`Loaded ${out.tv.length.toLocaleString()} TV stations + mics/BAS/receive-site registrations. Enter a location.`;
+    buildMarkets();
+    $("status").textContent=`Loaded ${out.tv.length.toLocaleString()} TV stations + mics/BAS/receive-site registrations. Pick a market or enter a location.`;
     $("go").disabled=false; run();
   }catch(e){
     $("status").style.display="none";
@@ -291,6 +333,8 @@ function run(){
 $("go").onclick=run; $("go").disabled=true;
 ["lat","lon"].forEach(id=>$(id).addEventListener("keydown",e=>{if(e.key==="Enter")run();}));
 ["sepco","keepout","range"].forEach(id=>$(id).addEventListener("change",run));
+$("market").addEventListener("change",e=>{const v=e.target.value; if(!v)return;
+  const [la,lo]=v.split(",").map(Number); $("lat").value=la; $("lon").value=lo; run();});
 $("geo").onclick=()=>{ if(!navigator.geolocation){alert("No geolocation.");return;}
   navigator.geolocation.getCurrentPosition(p=>{$("lat").value=p.coords.latitude.toFixed(5);$("lon").value=p.coords.longitude.toFixed(5);run();},
    ()=>alert("Could not get location."));};

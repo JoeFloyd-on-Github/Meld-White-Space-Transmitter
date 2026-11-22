@@ -22,9 +22,15 @@ cd tools/whitespace-finder
 python3 -m http.server 8000
 ```
 
-Then open <http://localhost:8000/>. Enter a latitude/longitude (or pick a preset,
-or "Use my location") and it lists every channel with a status and the nearest
-occupant.
+Then open <http://localhost:8000/>. Enter a latitude/longitude, **pick a TV
+market from the dropdown**, or hit "Use my location" — and it lists every channel
+with a status and the nearest occupant.
+
+The **market dropdown** is built from the loaded data, not hard-coded: for each
+state / district / territory it clusters the full-power TV stations by proximity,
+ranks the clusters by station count, and lists the **top 5 markets**, each labeled
+by its principal city and jumping to that cluster's **centroid** (the market's
+geographic core). It stays correct as the data is refreshed.
 
 ## What it shows
 
