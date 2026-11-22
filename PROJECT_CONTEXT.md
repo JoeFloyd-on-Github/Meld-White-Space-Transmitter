@@ -156,7 +156,11 @@ check. Keep that framing intact when editing the README.
     `python3 -m http.server` (browsers block `fetch()` over `file://`). The CSVs
     were kept **verbatim** (including third-party contact fields) at the owner's
     explicit instruction, as public records — the one deliberate exception to
-    keeping registrant PII out of the repo.
+    keeping registrant PII out of the repo. A **"jump to a TV market" dropdown**
+    (54 states/territories, ~244 markets) is built from the data itself — it
+    clusters each state's full-power stations by proximity, ranks by station count,
+    lists the top 5, and jumps to each cluster's centroid (the market's geographic
+    core) — so no coordinates are hard-coded and it tracks the data on refresh.
 
 ## Key technical facts and decisions
 
