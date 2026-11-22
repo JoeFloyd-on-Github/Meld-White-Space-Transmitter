@@ -8,9 +8,17 @@ Spectrum Bridge white-space stack described throughout this repo, in a different
 box label.
 
 Source: the product page as archived 2013‑10‑21 (Internet Archive capture of
-`peerless-av.com/en-us/professional/products/hds-pb100`), plus its linked US
-"Sell Sheet" (`LIT0976`). The device shown is the familiar MT300 form factor — a
-small black chassis with a single vertical whip antenna.
+`peerless-av.com/en-us/professional/products/hds-pb100`) and the official US sell
+sheet **`LIT-0976` rev.2**, a copy of which is kept in this repo at
+[`datasheets/HDS-PB100_PeerAir_Pico_Broadcaster_LIT-0976-rev2.pdf`](datasheets/HDS-PB100_PeerAir_Pico_Broadcaster_LIT-0976-rev2.pdf).
+The device shown is the familiar MT300 form factor — a small black chassis with a
+single vertical whip antenna. It won a *NewBay Media Product Innovation Award
+2013* (honorable mention).
+
+**The sell sheet settles the attribution outright:** its own legal footer states
+*"Pico Broadcaster is a trademark of Meld Technologies, Inc."* while "Peerless-AV®"
+and "PeerAir™" are trademarks of Peerless Industries, Inc. So the HDS-PB100 is
+Meld's device (the MT300), carried and sold through Peerless‑AV's channel.
 
 ## Which MT300 variant this is
 
@@ -38,24 +46,38 @@ $2,249**; marked **Patented**.
 
 ## Specifications (as published)
 
+Values from the `LIT-0976` sell sheet (the web page's shorter list agrees):
+
 | Spec | Value |
 |---|---|
 | Model | HDS-PB100 (PeerAir Pico Broadcaster) |
-| Wireless technology / connection | ATSC broadcast (8VSB) |
-| Wireless frequency | 500000–700000 kHz (**500–700 MHz**, UHF TV band) |
-| Wireless range | 350 ft (106 m) radius, omnidirectional |
+| Input | Audio/Video via 10/100 LAN port (**MPEG‑2 transport stream**) |
+| Output | ATSC-modulated HD digital-TV signal; stereo / AC‑3 audio |
+| Transmit power | **40 mW** (variable, up to 40 mW) |
+| Channel selection | **White-space-database compliant** |
+| Broadcast frequency | **500–700 MHz** (UHF TV band) |
+| Channel range | **21 to 51** |
+| Broadcast range | 350 ft (106 m) maximum radius, omnidirectional |
 | Encoding | MPEG‑2 |
 | Video resolution | 720p / 1080i |
-| Audio | AC‑3, analog stereo |
 | Video streaming latency | ~1 sec |
-| Input | LAN port — IP transport-stream in (+ network control) |
-| Power supply | 12 V, 3 A wall adapter |
-| Plug type | US |
-| Operating temperature | 32–131 °F (0–55 °C) |
-| Color | Black |
-| Ship dimensions | 11.5 × 3.75 × 20.5 in (292.1 × 95.3 × 520.7 mm) |
-| Shipping weight | 4.87 lb (the page's "4.87 kg" is a typo) |
+| Control | LAN |
+| Power supply | Input 100–240 V, 50/60 Hz, 1 A → output **12 V, 3 A** wall adapter |
+| Operating temperature | +32 to +131 °F (0 to 55 °C) |
+| Compliance | Safety **UL60065**; **FCC Class B** |
+| Product dimensions | 14.19 × 7.50 × 1.74 in (360 × 190 × 44 mm) |
+| Product weight | 3.36 lb (1.52 kg) |
+| Package contents | broadcaster, AC power adapter, startup disc, quick-start guide, instruction manual |
+| Package / ship weight | 4.87 lb; box 20.5 × 11.5 × 3.75 in (521 × 292 × 70 mm) |
 | UPC | 735029292180 |
+| Color | Black |
+
+The **Channel range 21–51** and **white-space-database-compliant channel
+selection** on the sell sheet match this repo's firmware findings exactly — the
+agent offers channels 21–51 and will not transmit until the database hands it a
+list (see [`hardware-versions.md`](hardware-versions.md) and
+[`HOW-TO.md`](../HOW-TO.md)). The **40 mW** maximum is the device's rated EIRP,
+set by the adjustable power control the web UI exposes as power levels 1–11.
 
 **Features list (paraphrased):** omnidirectional broadcast to ~350 ft; serves an
 unlimited number of DTVs in range; LAN transport-stream input with local/remote
