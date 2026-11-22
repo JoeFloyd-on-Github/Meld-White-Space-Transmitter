@@ -14,9 +14,12 @@ sessions — the things that are not obvious from the code or the git log.
   rules), `docs/wsa-overview.md` (agent behavior and protocol),
   `docs/radio-and-video.md` (the NXP radio, its serial control + modulation
   formats, and the ADV7842→ViXS video path),
-  `docs/device-backup.md` (full-device backup over nc; scripts in `tools/backup/`), `docs/emulation-guide/` (binary →
-  QEMU narrative), `docs/emulation-guide/09-tips-and-pitfalls.md` (traps already
-  hit — check here before debugging).
+  `docs/device-backup.md` (full-device backup over nc; scripts in `tools/backup/`),
+  `docs/device-access.md` (reaching a live unit), `docs/bootloader.md` (U-Boot,
+  the 11-partition flash map, the A/B firmware-bank model, and recovering a unit
+  stuck on a bad bank), `docs/units/` (per-unit facts), `docs/emulation-guide/`
+  (binary → QEMU narrative), `docs/emulation-guide/09-tips-and-pitfalls.md` (traps
+  already hit — check here before debugging).
 - The committed binaries (`wsa`, `sb_mips`, busybox, malta kernel, …) are **MIPS**,
   not host executables.
 
@@ -28,6 +31,11 @@ sessions — the things that are not obvious from the code or the git log.
   truncated a copy.
 - Keep large tool output (decompiles, binwalk, hexdumps) in files and read only
   the relevant parts; whole dumps blow up context cost.
+- **Separate general from device-specific.** Reusable mechanism (protocol,
+  bootloader, flash layout, bank model, procedures) goes in the topic docs;
+  facts tied to one physical unit (NAND bad-block map, serial, MACs, which bank
+  is healthy, its web password hash) go in `docs/units/`, never in the general
+  docs. Password hashes and a unit's PII stay out of the repo entirely.
 - Don't commit private keys (`*.pem` is gitignored), Ghidra project state
   (`*.rep/`, `*.gpr`) or `build/` directories.
 - `root/` and the spoof configs contain a real device's registration details

@@ -2,7 +2,7 @@
 
 Persistent notes for future sessions (human or Claude): **why** this repo exists,
 what has been done, the decisions made along the way, and what is still open.
-Last updated 2026-11-21. Update this file when a goal, decision or open item
+Last updated 2026-11-22. Update this file when a goal, decision or open item
 changes.
 
 ## Goal
@@ -63,6 +63,20 @@ check. Keep that framing intact when editing the README.
    radio; a carrier was seen at 524–530 MHz. **The approach works on hardware.**
    The stand-in was then widened to offer **all of 21–51** (owner's choice, for
    bench work into the load); the agent still keys on its preferred channel 23.
+12. **Bootloader survey + A/B bank recovery (2026-11-22).** A *third* unit (serial
+    **00000601**, MT300-AV, app AV30, kernel 2.6.36) was brought up on serial +
+    LAN. It booted but **hung at `do_page_fault() #2: sending SIGSEGV to init`**:
+    its saved active bank was **B** (`current_active=1`), whose root filesystem
+    `RootFS_1` (`mtd7`) sits on a **destroyed NAND region** — all 209 bad blocks
+    fall in `0x3600000–0x058e0000`, exactly that partition (~75% bad). **Bank A
+    (`RootFS_0`/`mtd6`) is clean.** With the owner's authorization the default bank
+    was switched and persisted (`setenv current_active 0; saveenv`); the unit now
+    autoboots the healthy bank to a working shell and runs its AV app. New docs:
+    `docs/bootloader.md` (**general** — U-Boot, the 11-partition flash map, the A/B
+    bank model, selecting/persisting a bank, and recovering a unit stuck on a bad
+    bank, plus the kernel/hardware handoff) and `docs/units/mt300-av-00000601.md`
+    (**per-unit** — the bad-block map, bank status, and the recovery for this unit).
+    General bootloader mechanism and per-unit facts are kept separate.
 
 ## Key technical facts and decisions
 
@@ -106,6 +120,11 @@ check. Keep that framing intact when editing the README.
   `spectrumbridge_spoof_c/device/install.sh`.
 - The bench unit (457) differs from the unit the repo's `root/` snapshot came
   from (371): older kernel and app. Don't assume they match file-for-file.
+- **Unit 00000601 has a failing NAND region.** Its bank-B rootfs (`RootFS_1`,
+  `mtd7`, `0x3600000–0x058e0000`) is ~75% bad blocks and its userspace is
+  unbootable (init SIGSEGV). The default was moved to the clean **bank A** and
+  saved; **do not flip it back to bank B** (a firmware upgrade might). Details:
+  `docs/units/mt300-av-00000601.md`.
 - **Regulatory:** the device is a licensed-band-adjacent transmitter; the original
   database enforced channel legality by location. A spoofed channel list removes
   that check, so real transmission needs a legally valid channel choice.
@@ -123,3 +142,8 @@ check. Keep that framing intact when editing the README.
   been run on a device yet; try it on the next unit or after a reflash.
 - Optionally make the stand-in choose channels from a real, current TVWS
   availability source rather than a fixed list.
+- **Unit 00000601:** a full NAND backup has not been taken yet (use
+  `tools/backup/`), and the web-UI password (`admin`, DES-crypt in
+  `/disk/www/.htpasswd`) has not been recovered — crack it with `john`/`hashcat`
+  (`-m 1500`) on a machine with the tools, or reset it via the root shell. The
+  hash is kept out of the repo (crackable).

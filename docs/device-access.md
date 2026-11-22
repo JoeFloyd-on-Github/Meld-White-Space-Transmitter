@@ -32,6 +32,12 @@ Note the deployed app here is **v1.26**, older than the `WhiteSpaceApp/wsa`
 (v44, Nov 2013) the decompile describes. The TLS/HTTP database protocol is the
 same; only build metadata differs.
 
+Per-unit facts (which bank is healthy, the NAND bad-block map, serial and MACs)
+differ between physical units and live in [`units/`](units) — e.g. another unit
+(serial `00000601`, kernel 2.6.36) in
+[`units/mt300-av-00000601.md`](units/mt300-av-00000601.md). The general U-Boot,
+flash-layout and A/B-bank reference is [`bootloader.md`](bootloader.md).
+
 ## 2. The serial console will not give you a shell (by itself)
 
 The 4-pin UART is **115200 8N1, no flow control**. It is the right cable and the

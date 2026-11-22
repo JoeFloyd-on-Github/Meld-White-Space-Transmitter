@@ -1,0 +1,387 @@
+ XCode NON-USB SOC booting *<1>*
+
+Primary instruction cache 64kB, VIVT, 4-way, linesize 32 bytes.
+Primary data cache 64kB, 4-way, VIPT, cache aliases, linesize 32 bytes
+
+
+U-Boot 1.1.3 (Mar 18 2014 - 02:35:55)
+
+MELD Technology: Installed ViXs supplied Genlock patch for serial clocks
+
+ TEXT_BASE = 0x80000000, CFG_UBOOT_SIZE = 0x100000
+Flash chip at chip 1 is different:
+NAND Device found: Chip type: Micro MT29F4G08AAC, Total Size: 512 MB
+Flash: 0 kB
+Board_ID: 0x00002f00
+In: serial
+Out: serial
+Err: serial
+Use GPIO 4 to reset eth0
+Set GPIO7, GPIO6 and GPIO5 to OUTPUT
+Set GPIO7, GPIO6 to ON
+Set GPIO5 to OFF
+MMC: XCode SD/MMC: 0
+Hit any key to stop autoboot: 5 0 
+XCode_Viper# <INTERRUPT>
+XCode_Viper# 
+XCode_Viper# help
+? - alias for 'help'
+base - print or set address offset
+bootm - boot application image from memory
+bootp	- boot image via network using BootP/TFTP protocol
+cmp - memory compare
+cp - memory copy
+crc32 - checksum calculation
+dhcp	- invoke DHCP client to obtain IP/boot params
+echo - echo args to console
+erase - erase FLASH memory
+ext2load- load binary file from a Ext2 filesystem
+ext2ls- list files in a directory (default /)
+fatinfo - print information about filesystem
+fatload - load binary file from a dos filesystem
+fatls - list files in a directory (default /)
+flashboot - boot from flash
+flinfo - print FLASH memory information
+go - start application at address 'addr'
+help - print online help
+icrc32 - checksum calculation
+iloop - infinite loop on address range
+imd - i2c memory display
+imm - i2c memory modify (auto-incrementing)
+imw - memory write (fill)
+inm - memory modify (constant address)
+iprobe - probe to discover valid I2C chip addresses
+loop - infinite loop on address range
+lzo	- decompress the size of image from source to destion
+md - memory display
+mii - MII utility commands
+mm - memory modify (auto-incrementing)
+MMC sub systemdisplay MMC infomsso - sso RAM test
+mtest - simple RAM test
+mw - memory write (fill)
+nand - NAND sub-system
+nboot - boot from NAND device
+nfs	- boot image via network using NFS protocol
+nm - memory modify (constant address)
+ping	- send ICMP ECHO_REQUEST to network host
+printenv- print environment variables
+protect - enable or disable FLASH write protection
+rarpboot- boot image via network using RARP/TFTP protocol
+reset - Perform RESET of the CPU
+run - run commands in an environment variable
+saveenv - save environment variables to persistent storage
+savemenu - save Boot menu to on board EEPROM
+scsi - SCSI sub-system
+scsiboot- boot from SCSI device
+setenv - set environment variables
+tftpboot- boot image via network using TFTP protocol
+USB sub-systemusbioctl [loadAddress] - usb ioctl to fetch kernel image
+uui - memory test or fetch kernel image control by host
+version - print monitor version
+yuv - manipulate YUV Video data
+XCode_Viper# printenv
+rfsargs=rw
+bootcmd=nboot 81000000 0; bootm 81000000
+bootdelay=5
+baudrate=115200
+ethaddr=f8:22:85:0z:yy:xx
+usb0addr=00:02:03:04:05:06
+ethact=eth0
+ipaddr=192.168.1.194
+serverip=192.168.1.114
+gatewayip=192.168.1.254
+netmask=255.255.255.0
+hostname=MT300MKII
+loadaddr=0x81000000
+eth0_reset_pin=4
+Board_ID=0x2F00
+power_management_config0=0xFFFFFFFF
+power_management_config1=0xFFFFFFFF
+MELD_PLATFORM=MT300-AV
+current_active=1
+stdin=serial
+stdout=serial
+stderr=serial
+
+Environment size: 460/2044 bytes
+XCode_Viper# version
+
+U-Boot 1.1.3 (Mar 18 2014 - 02:35:55)
+XCode_Viper# bdinfo
+Unknown command 'bdinfo' - try 'help'
+XCode_Viper# nand info
+
+Device 0: Micro MT29F4G08AAC at 0x80100010 (512 MiB, 128 kB sector)
+XCode_Viper# nand bad
+
+Device 0 bad blocks:
+ 0x03600000
+ 0x03620000
+ 0x03660000
+ 0x036a0000
+ 0x036e0000
+ 0x03700000
+ 0x03720000
+ 0x03740000
+ 0x03780000
+ 0x037a0000
+ 0x037c0000
+ 0x037e0000
+ 0x03820000
+ 0x03860000
+ 0x03880000
+ 0x038c0000
+ 0x038e0000
+ 0x03920000
+ 0x03960000
+ 0x03980000
+ 0x039a0000
+ 0x039c0000
+ 0x039e0000
+ 0x03a00000
+ 0x03a20000
+ 0x03a40000
+ 0x03a80000
+ 0x03aa0000
+ 0x03ac0000
+ 0x03ae0000
+ 0x03b00000
+ 0x03b40000
+ 0x03b60000
+ 0x03ba0000
+ 0x03bc0000
+ 0x03be0000
+ 0x03c20000
+ 0x03c60000
+ 0x03cc0000
+ 0x03ce0000
+ 0x03d20000
+ 0x03d40000
+ 0x03d60000
+ 0x03d80000
+ 0x03da0000
+ 0x03dc0000
+ 0x03de0000
+ 0x03e00000
+ 0x03e60000
+ 0x03ec0000
+ 0x03ee0000
+ 0x03f00000
+ 0x03f20000
+ 0x03f40000
+ 0x03f60000
+ 0x03fa0000
+ 0x03fc0000
+ 0x04020000
+ 0x04040000
+ 0x04060000
+ 0x040a0000
+ 0x040c0000
+ 0x040e0000
+ 0x04100000
+ 0x04120000
+ 0x04140000
+ 0x04160000
+ 0x04180000
+ 0x041c0000
+ 0x041e0000
+ 0x04200000
+ 0x04220000
+ 0x04240000
+ 0x04260000
+ 0x042c0000
+ 0x042e0000
+ 0x04340000
+ 0x04360000
+ 0x04380000
+ 0x043a0000
+ 0x043c0000
+ 0x043e0000
+ 0x04420000
+ 0x04440000
+ 0x04460000
+ 0x044c0000
+ 0x044e0000
+ 0x04500000
+ 0x04520000
+ 0x04540000
+ 0x045e0000
+ 0x04600000
+ 0x04620000
+ 0x04660000
+ 0x04680000
+ 0x046c0000
+ 0x04700000
+ 0x04720000
+ 0x04740000
+ 0x04780000
+ 0x047a0000
+ 0x047c0000
+ 0x047e0000
+ 0x04800000
+ 0x04860000
+ 0x048a0000
+ 0x048e0000
+ 0x04900000
+ 0x04920000
+ 0x04940000
+ 0x04960000
+ 0x04980000
+ 0x049a0000
+ 0x04a00000
+ 0x04a60000
+ 0x04a80000
+ 0x04aa0000
+ 0x04ae0000
+ 0x04b00000
+ 0x04b20000
+ 0x04ba0000
+ 0x04bc0000
+ 0x04c00000
+ 0x04c20000
+ 0x04c60000
+ 0x04ca0000
+ 0x04cc0000
+ 0x04ce0000
+ 0x04d20000
+ 0x04d40000
+ 0x04d60000
+ 0x04d80000
+ 0x04da0000
+ 0x04dc0000
+ 0x04de0000
+ 0x04e00000
+ 0x04e20000
+ 0x04e40000
+ 0x04e60000
+ 0x04e80000
+ 0x04ea0000
+ 0x04ee0000
+ 0x04f00000
+ 0x04f20000
+ 0x04f40000
+ 0x04f60000
+ 0x04f80000
+ 0x04fc0000
+ 0x05000000
+ 0x05020000
+ 0x05040000
+ 0x05060000
+ 0x05080000
+ 0x050a0000
+ 0x050c0000
+ 0x050e0000
+ 0x05100000
+ 0x05120000
+ 0x05140000
+ 0x05160000
+ 0x05180000
+ 0x051c0000
+ 0x051e0000
+ 0x05220000
+ 0x05240000
+ 0x05260000
+ 0x05280000
+ 0x052a0000
+ 0x052c0000
+ 0x052e0000
+ 0x05300000
+ 0x05320000
+ 0x05360000
+ 0x05380000
+ 0x053e0000
+ 0x05400000
+ 0x05460000
+ 0x05480000
+ 0x054a0000
+ 0x054c0000
+ 0x054e0000
+ 0x05500000
+ 0x05520000
+ 0x05540000
+ 0x05560000
+ 0x05580000
+ 0x055c0000
+ 0x055e0000
+ 0x05600000
+ 0x05620000
+ 0x05640000
+ 0x05680000
+ 0x056a0000
+ 0x056c0000
+ 0x056e0000
+ 0x05700000
+ 0x05720000
+ 0x05740000
+ 0x05760000
+ 0x05780000
+ 0x057a0000
+ 0x057c0000
+ 0x057e0000
+ 0x05800000
+ 0x05820000
+ 0x05860000
+ 0x05880000
+ 0x058a0000
+ 0x058e0000
+
+XCode_Viper# help nand
+nand info - show available NAND devices
+nand device [dev] - show or set current device
+nand read addr off size
+nand write addr off size - read/write 'size' bytes starting
+ at offset 'off' to/from memory address `addr'
+nand read.yaffs2 addr off size
+nand write.yaffs2 addr off size - read/write 'size' bytes starting
+ at offset 'off' to/from memory address 'addr'. size=data+oob
+nand erase [clean] [off size] - erase 'size' bytes from
+ offset 'off' (entire device if not specified)
+nand bad - show bad blocks
+nand read.oob addr off size - read out-of-band data
+nand write.oob addr off size - write out-of-band data
+nand partition_show - show partition table info
+nand partition_read name addr - read partition of 'name' to memory 'addr'
+nand partition_write name addr - write partition of 'name' from memory 'addr'
+
+XCode_Viper# help nboot
+nboot loadAddr dev [offset]
+
+XCode_Viper# nand partition_show
+Partition magic doesn't match. Partition table not available
+XCode_Viper# help savemenu
+savemenu - No help available.
+
+XCode_Viper# help flashboot
+flashboot flashboot N offset address
+ - boot from offset on bank N, Image load to address
+flashboot N address
+ - automatically boot from bank N, Image load to address
+
+XCode_Viper# nand read 0x81000000 0 0x200
+
+NAND read: device 0 offset 0, size 512 ... 512 bytes read: OK
+XCode_Viper# md 0x81000000 0x20
+81000000: 000055aa 00000480 40001745 00000484 .U......E..@....
+81000010: 04800000 00000000 fffff19f 20000000 ............... 
+81000020: 00001000 40000000 40000000 40000000 .......@...@...@
+81000030: 40000000 40000000 40000000 40000000 ...@...@...@...@
+81000040: 40000000 00000000 fffff18f 20000000 ...@........... 
+81000050: 00001000 40000000 40000000 40000000 .......@...@...@
+81000060: 40000000 40000000 40000000 40000000 ...@...@...@...@
+81000070: 40000000 00000000 fffff18f 20000000 ...@........... 
+XCode_Viper# iprobe
+Valid chip addresses:
+XCode_Viper# help go
+go addr [arg ...]
+ - start application at address 'addr'
+ passing 'arg' as arguments
+
+XCode_Viper# help bootm
+bootm [addr [arg ...]]
+ - boot application image stored in memory
+	passing arguments 'arg ...'; when booting a Linux kernel,
+	'arg' can be the address of an initrd image
+
+XCode_Viper# printenv current_active
+current_active=1
+XCode_Viper# 
