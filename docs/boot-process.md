@@ -157,6 +157,10 @@ is independent of the white-space `StreamingIpAddress` (`192.168.0.203`) that
 
 ## 5. How the radio is tied to `whitespaceagent`
 
+> The radio and video hardware itself — signal chain, serial control
+> protocol, modulation formats, and video encoding — is documented in
+> [`radio-and-video.md`](radio-and-video.md).
+
 The "radio" is the **NXP TV transmitter** ("Tx v2", firmware `1.3.0 v0036`). It
 is tied to `whitespaceagent` in three layers:
 

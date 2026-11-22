@@ -267,6 +267,11 @@ Then close the connection.
 
 ## 6. Radio control (thread B, `serialProcessorThread`)
 
+> For the radio as hardware — the full NXP serial command set, the
+> modulation formats it supports and how to set them, and the ADV7842 → ViXS →
+> NXP video path — see [`radio-and-video.md`](radio-and-video.md). This section
+> covers only the subset `wsa` itself drives.
+
 ### 6.1 Port
 
 - `/dev/ttyS1`, `O_RDWR`, output speed **115200** (`cfsetospeed` only). There is no other termios setup, so the line keeps its existing raw/cooked settings.

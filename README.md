@@ -92,6 +92,7 @@ cloud used to say, and say it yourself.
 | [`WhiteSpaceApp/wsa`](WhiteSpaceApp) | the `whitespaceagent` binary (MIPS, v44, Nov 2013) — the main subject of analysis |
 | [`WhiteSpaceApp/ghidra/`](WhiteSpaceApp/ghidra) | its decompiled source: `wsa_decompiled.c` (raw Ghidra) and `wsa_annotated.c` (fully annotated), plus a variable-name legend and an ezxml explanation |
 | [`docs/wsa-overview.md`](docs/wsa-overview.md) | **behavior of the `wsa` binary** — startup, the two threads, the TLS/HTTP database protocol, the response a server must send, the serial radio commands, and the files it writes |
+| [`docs/radio-and-video.md`](docs/radio-and-video.md) | **the radio and video path** — the ADV7842 → ViXS XCode4 → NXP transmitter signal chain, the serial RF-control protocol, the modulation formats (8VSB/COFDM/QAM) and how to set them, video encoding, and what pins the input to 720p |
 | [`docs/system-context.md`](docs/system-context.md) | **the device around it** — boot sequence, the `sbi`→XML config pipeline, the web UI, the firmware upgrade package, and the version history |
 | [`docs/boot-process.md`](docs/boot-process.md) | **boot + hardware** — U-Boot/kernel, `rcS`, the reset/power button, IP assignment, how the radio is tied in, and how the ViXS hardware is configured |
 | [`docs/on-device-spoof.md`](docs/on-device-spoof.md) | **running the database stand-in on the device** — redirecting the dead host to loopback, cross-compiling the MIPS server, and how it was tested |

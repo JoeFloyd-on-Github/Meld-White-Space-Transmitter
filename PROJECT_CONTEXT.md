@@ -42,6 +42,12 @@ check. Keep that framing intact when editing the README.
    binary → emulator story plus tips and pitfalls.
 8. **README** rewrite with the overview, the e-waste/ownership essay and an
    original SVG banner (no copyrighted product photos).
+10. **Radio + video analysis (2026-11-21).** `docs/radio-and-video.md`: the
+    ADV7842 -> ViXS XCode4 -> NXP "Tx v2" signal chain, the serial RF-control
+    protocol (from the MT300-AV `RF_Control.php`), the software-selectable
+    modulation formats (8VSB/COFDM-DVB-T/QAM), MPEG-2/H.264 encoding via
+    `av_streamer`, and the EDID that pins HDMI input to 720p. Drawn from the
+    MT300-AV firmware on the share, not from the repo's white-space snapshot.
 9. **Live device (2026-11-21).** A second, powered bench unit (serial **457**,
    kernel 2.6.29-ts, Meld app v1.26) reached via its passwordless telnet root
    shell (`docs/device-access.md`). Following `docs/on-device-test-plan.md`, with

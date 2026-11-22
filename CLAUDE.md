@@ -10,10 +10,12 @@ sessions — the things that are not obvious from the code or the git log.
   (`wsa`, MIPS little-endian, uClibc, static OpenSSL 1.0.0). The device refuses to
   transmit because its database host `tvws.spectrumbridge.com` is gone; this repo
   reverse-engineers it and replaces that database locally.
-- Start points: `README.md` (overview), `docs/wsa-overview.md` (agent behavior and
-  protocol), `docs/emulation-guide/` (binary → QEMU narrative),
-  `docs/emulation-guide/09-tips-and-pitfalls.md` (traps already hit — check here
-  before debugging).
+- Start points: `README.md` (overview), `HOW-TO.md` (restore a device + FCC
+  rules), `docs/wsa-overview.md` (agent behavior and protocol),
+  `docs/radio-and-video.md` (the NXP radio, its serial control + modulation
+  formats, and the ADV7842→ViXS video path), `docs/emulation-guide/` (binary →
+  QEMU narrative), `docs/emulation-guide/09-tips-and-pitfalls.md` (traps already
+  hit — check here before debugging).
 - The committed binaries (`wsa`, `sb_mips`, busybox, malta kernel, …) are **MIPS**,
   not host executables.
 
