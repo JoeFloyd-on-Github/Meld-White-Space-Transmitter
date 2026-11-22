@@ -9,7 +9,10 @@ sessions — the things that are not obvious from the code or the git log.
 - Subject: the Meld MT300 TV white-space transmitter and its `whitespaceagent`
   (`wsa`, MIPS little-endian, uClibc, static OpenSSL 1.0.0). The device refuses to
   transmit because its database host `tvws.spectrumbridge.com` is gone; this repo
-  reverse-engineers it and replaces that database locally.
+  reverse-engineers it and replaces that database locally. The hardware shipped in
+  AV (HDMI/component video) and IT (IP/UDP transport-stream) variants and was also
+  sold rebranded by Peerless-AV as the PeerAir "Pico Broadcaster" HDS-PB100 — all
+  the same `OKVMT300`-certified radio with the same dead dependency.
 - Start points: `README.md` (overview), `HOW-TO.md` (restore a device + FCC
   rules), `docs/wsa-overview.md` (agent behavior and protocol),
   `docs/radio-and-video.md` (the NXP radio, its serial control + modulation
@@ -17,7 +20,16 @@ sessions — the things that are not obvious from the code or the git log.
   `docs/device-backup.md` (full-device backup over nc; scripts in `tools/backup/`),
   `docs/device-access.md` (reaching a live unit), `docs/bootloader.md` (U-Boot,
   the 11-partition flash map, the A/B firmware-bank model, and recovering a unit
-  stuck on a bad bank), `docs/units/` (per-unit facts), `docs/emulation-guide/`
+  stuck on a bad bank), `docs/units/` (per-unit facts),
+  `docs/hardware-versions.md` (the MT300-AV RevB/RevC and video-less MT300-IT
+  boards, how to tell them apart, and the factory serial+TFTP software update),
+  `docs/fcc.md` (the `OKVMT300` grant and its use conditions, with a mirror of all
+  24 public FCC exhibits in `docs/fcc/exhibits/`),
+  `docs/peerless-hds-pb100.md` (the same hardware resold by Peerless-AV as the
+  PeerAir "Pico Broadcaster"; its sell sheet + user manual are in
+  `docs/datasheets/`), `tools/whitespace-finder/` (a dependency-free browser app,
+  plus a mirror of the WaveDB FCC protected-entity CSVs, that estimates which TV
+  channels are open for white space at a location), `docs/emulation-guide/`
   (binary → QEMU narrative), `docs/emulation-guide/09-tips-and-pitfalls.md` (traps
   already hit — check here before debugging).
 - The committed binaries (`wsa`, `sb_mips`, busybox, malta kernel, …) are **MIPS**,
@@ -25,10 +37,16 @@ sessions — the things that are not obvious from the code or the git log.
 
 ## Working conventions
 
-- Large data lives **outside** the repo on the CIFS share
-  `/mnt/RAID2/Meld/spectrumbridge/` (full NAND dump ~618 MB). Copy locally before
-  working on it and verify the size afterwards — a CIFS `soft` mount once silently
-  truncated a copy.
+- **Device backups** live **outside** the repo on the CIFS share
+  `/mnt/RAID2/Meld/spectrumbridge/` (full NAND dumps ~0.5–0.6 GB each; they carry
+  the owner's PII, so they never go in git). Copy locally before working on one and
+  verify the size afterwards — a CIFS `soft` mount once silently truncated a copy.
+- **Public reference data, by contrast, is committed on purpose** and can be large:
+  the FCC exhibit PDFs/photos (`docs/fcc/exhibits/`, ~20 MB), the Peerless
+  datasheet + manual (`docs/datasheets/`), and the WaveDB FCC protected-entity CSVs
+  (`tools/whitespace-finder/data/`, ~7 MB, kept **verbatim** as public records at
+  the owner's instruction). These are public records with no connection to a
+  specific owned unit; mirror and refresh them freely.
 - Keep large tool output (decompiles, binwalk, hexdumps) in files and read only
   the relevant parts; whole dumps blow up context cost.
 - **Separate general from device-specific.** Reusable mechanism (protocol,
