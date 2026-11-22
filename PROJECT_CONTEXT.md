@@ -161,6 +161,20 @@ check. Keep that framing intact when editing the README.
     clusters each state's full-power stations by proximity, ranks by station count,
     lists the top 5, and jumps to each cluster's centroid (the market's geographic
     core) — so no coordinates are hard-coded and it tracks the data on refresh.
+18. **Bootloader + firmware survey of unit 677 (2026-11-22).** A fourth physical
+    unit (serial **677**, MT300-AV, app AV30, kernel 2.6.36, radio NXP **1.3.9**
+    Tx v2, real MAC `F8:22:85:0B:01:74`) documented from its serial console in
+    `docs/units/mt300-av-677.md` (+ a console capture under `docs/captures/`).
+    Unlike 601, its `bootcmd` is **hardcoded to bank A** (`nand read 81000000
+    300000 800000; bootm`, `bootargs root=/dev/mtdblock6`), so the bad-NAND cluster
+    in `RootFS_1`/`mtd7` (209 bad blocks, same bank-B zone as 601) is harmless —
+    the unit boots fine and needs no recovery. Its U-Boot `mii info` reports a
+    **real PHY** (OUI 0x4700) where 601 showed only the phantom 0x0080 (likely a
+    different board revision — see `docs/hardware-versions.md`). It shipped on
+    **DHCP** (got 192.168.1.25); switched to a persistent static
+    **192.168.1.196** in `/etc/init.d/setipeth0` (DHCP=0; original saved as
+    `setipeth0.orig`) and verified across a reboot. The **serial console gives a
+    root shell** on this unit.
 
 ## Key technical facts and decisions
 

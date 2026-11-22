@@ -154,10 +154,12 @@ unit):
   gcc 4.5.3, little-endian MIPS.
 - **CPU:** MIPS **74Kc**, ~**650 MHz**, FPU present.
 - **RAM:** 64 MiB (`memsize 0x4000000`), ~60 MiB usable.
-- **Ethernet:** Synopsys **SynopGMAC** (GMAC-UNIV); PHY reset on GPIO 4; the driver
-  logs **"Can not find phy"** and eth0 runs on the XCode internal clock — matching
-  U-Boot's `mii info`, which returns an identical phantom response at all 32 MDIO
-  addresses (no MDIO-accessible PHY). eth0 still links and passes traffic.
+- **Ethernet:** Synopsys **SynopGMAC** (GMAC-UNIV); PHY reset on GPIO 4; eth0 runs
+  on the XCode internal clock. MDIO/PHY presentation **varies by board revision**:
+  on some units U-Boot's `mii info` returns an identical *phantom* response at all
+  32 addresses (e.g. OUI `0x0080`) and the Linux driver logs **"Can not find phy"**
+  (unit 601); on others `mii info` reports a real PHY ID at every address (e.g. OUI
+  `0x4700`, unit 677). Either way eth0 links and passes traffic.
 - **Serial:** four builtin ARC UARTs `ttyS0`–`ttyS3`. `ttyS0` is the console;
   `ttyS1` (`0xbffff450`) is the NXP radio control port.
 - **USB:** ViXs On-Chip **EHCI** + **OHCI** host controllers.

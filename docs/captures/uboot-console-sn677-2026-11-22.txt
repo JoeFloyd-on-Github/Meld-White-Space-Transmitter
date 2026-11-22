@@ -1,0 +1,947 @@
+ XCode NON-USB SOC booting *<1>*
+
+Primary instruction cache 64kB, VIVT, 4-way, linesize 32 bytes.
+Primary data cache 64kB, 4-way, VIPT, cache aliases, linesize 32 bytes
+
+
+U-Boot 1.1.3 (Mar 18 2014 - 02:35:55)
+
+MELD Technology: Installed ViXs supplied Genlock patch for serial clocks
+
+ TEXT_BASE = 0x80000000, CFG_UBOOT_SIZE = 0x100000
+Flash chip at chip 1 is different:
+NAND Device found: Chip type: Micro MT29F4G08AAC, Total Size: 512 MB
+Flash: 0 kB
+Board_ID: 0x00002f00
+In: serial
+Out: serial
+Err: serial
+Use GPIO 4 to reset eth0
+Set GPIO7, GPIO6 and GPIO5 to OUTPUT
+Set GPIO7, GPIO6 to ON
+Set GPIO5 to OFF
+MMC: XCode SD/MMC: 0
+Hit any key to stop autoboot: 5 0 
+XCode_Viper# <INTERRUPT>
+XCode_Viper# 
+XCode_Viper# version
+
+U-Boot 1.1.3 (Mar 18 2014 - 02:35:55)
+XCode_Viper# printenv
+rfsargs=rw
+bootdelay=5
+baudrate=115200
+usb0addr=00:02:03:04:05:06
+ethact=eth0
+ipaddr=192.168.1.194
+serverip=192.168.1.114
+gatewayip=192.168.1.254
+netmask=255.255.255.0
+hostname=MT300MKII
+loadaddr=0x81000000
+eth0_reset_pin=4
+Board_ID=0x2F00
+power_management_config0=0xFFFFFFFF
+power_management_config1=0xFFFFFFFF
+ethaddr=F8:22:85:0B:01:74
+MELD_PLATFORM=MT300-AV
+current_active=1
+bootcmd=nand read 81000000 300000 800000; bootm 81000000
+bootargs=root=/dev/mtdblock6 rw ethaddr=F8:22:85:0B:01:74
+stdin=serial
+stdout=serial
+stderr=serial
+
+Environment size: 534/2044 bytes
+XCode_Viper# nand info
+
+Device 0: Micro MT29F4G08AAC at 0x80100010 (512 MiB, 128 kB sector)
+XCode_Viper# nand bad
+
+Device 0 bad blocks:
+ 0x03600000
+ 0x03620000
+ 0x03640000
+ 0x03660000
+ 0x03680000
+ 0x036c0000
+ 0x036e0000
+ 0x03700000
+ 0x03740000
+ 0x037a0000
+ 0x037c0000
+ 0x037e0000
+ 0x03800000
+ 0x03820000
+ 0x03840000
+ 0x03860000
+ 0x03880000
+ 0x038e0000
+ 0x03900000
+ 0x03940000
+ 0x03960000
+ 0x03980000
+ 0x039a0000
+ 0x039c0000
+ 0x039e0000
+ 0x03a20000
+ 0x03a40000
+ 0x03a60000
+ 0x03aa0000
+ 0x03ac0000
+ 0x03ae0000
+ 0x03b40000
+ 0x03b60000
+ 0x03b80000
+ 0x03bc0000
+ 0x03be0000
+ 0x03c00000
+ 0x03c40000
+ 0x03c60000
+ 0x03c80000
+ 0x03cc0000
+ 0x03ce0000
+ 0x03d00000
+ 0x03d40000
+ 0x03da0000
+ 0x03dc0000
+ 0x03e00000
+ 0x03e20000
+ 0x03e40000
+ 0x03e60000
+ 0x03e80000
+ 0x03ea0000
+ 0x03ec0000
+ 0x03ee0000
+ 0x03f00000
+ 0x03f20000
+ 0x03f40000
+ 0x03f60000
+ 0x03f80000
+ 0x03fa0000
+ 0x03fe0000
+ 0x04000000
+ 0x04020000
+ 0x04040000
+ 0x04060000
+ 0x040c0000
+ 0x04140000
+ 0x04160000
+ 0x041a0000
+ 0x041c0000
+ 0x041e0000
+ 0x04200000
+ 0x04220000
+ 0x04260000
+ 0x04280000
+ 0x042a0000
+ 0x042c0000
+ 0x042e0000
+ 0x04320000
+ 0x04340000
+ 0x04380000
+ 0x043c0000
+ 0x04400000
+ 0x04440000
+ 0x04480000
+ 0x044a0000
+ 0x044c0000
+ 0x044e0000
+ 0x04500000
+ 0x04540000
+ 0x04560000
+ 0x04580000
+ 0x045a0000
+ 0x045c0000
+ 0x045e0000
+ 0x04600000
+ 0x04620000
+ 0x04640000
+ 0x04660000
+ 0x046a0000
+ 0x046c0000
+ 0x046e0000
+ 0x04700000
+ 0x04720000
+ 0x04760000
+ 0x04780000
+ 0x047c0000
+ 0x047e0000
+ 0x04840000
+ 0x04860000
+ 0x048a0000
+ 0x048c0000
+ 0x048e0000
+ 0x04920000
+ 0x04940000
+ 0x04980000
+ 0x049c0000
+ 0x04a20000
+ 0x04a80000
+ 0x04aa0000
+ 0x04ac0000
+ 0x04ae0000
+ 0x04b00000
+ 0x04b80000
+ 0x04bc0000
+ 0x04be0000
+ 0x04c00000
+ 0x04c20000
+ 0x04c40000
+ 0x04c60000
+ 0x04ca0000
+ 0x04cc0000
+ 0x04ce0000
+ 0x04d00000
+ 0x04d40000
+ 0x04d80000
+ 0x04da0000
+ 0x04dc0000
+ 0x04de0000
+ 0x04e40000
+ 0x04e60000
+ 0x04e80000
+ 0x04ea0000
+ 0x04ec0000
+ 0x04ee0000
+ 0x04f00000
+ 0x04f20000
+ 0x04f40000
+ 0x04f80000
+ 0x04fa0000
+ 0x04fc0000
+ 0x04fe0000
+ 0x05000000
+ 0x05020000
+ 0x05040000
+ 0x05060000
+ 0x05080000
+ 0x050a0000
+ 0x050c0000
+ 0x050e0000
+ 0x05120000
+ 0x05140000
+ 0x05160000
+ 0x05180000
+ 0x051a0000
+ 0x051c0000
+ 0x051e0000
+ 0x05200000
+ 0x05220000
+ 0x05240000
+ 0x05260000
+ 0x05280000
+ 0x052a0000
+ 0x052c0000
+ 0x052e0000
+ 0x05300000
+ 0x05340000
+ 0x05360000
+ 0x05380000
+ 0x053a0000
+ 0x053c0000
+ 0x05420000
+ 0x05440000
+ 0x05480000
+ 0x054a0000
+ 0x054c0000
+ 0x054e0000
+ 0x05540000
+ 0x05560000
+ 0x05580000
+ 0x055a0000
+ 0x055c0000
+ 0x05600000
+ 0x05620000
+ 0x05640000
+ 0x05660000
+ 0x05680000
+ 0x056a0000
+ 0x056e0000
+ 0x05700000
+ 0x05720000
+ 0x05740000
+ 0x057a0000
+ 0x057c0000
+ 0x05800000
+ 0x05820000
+ 0x05840000
+ 0x05880000
+ 0x058a0000
+
+XCode_Viper# nand partition_show
+Partition magic doesn't match. Partition table not available
+XCode_Viper# mii info
+PHY 0x00: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x01: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x02: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x03: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x04: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x05: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x06: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x07: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x08: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x09: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x0A: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x0B: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x0C: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x0D: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x0E: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x0F: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x10: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x11: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x12: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x13: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x14: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x15: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x16: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x17: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x18: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x19: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x1A: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x1B: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x1C: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x1D: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x1E: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+PHY 0x1F: OUI = 0x4700, Model = 0x11, Rev = 0x0C, 10baseT, FDX
+XCode_Viper# nand read 81000000 300000 40
+
+NAND read: device 0 offset 3145728, size 64 ... 64 bytes read: OK
+XCode_Viper# md 81000000 10
+81000000: 56190527 6f5c16ca 134ed153 ac272d00 '..V..\oS.N..-'.
+81000010: 0000008c 000004ac a84f2da3 01020505 .........-O.....
+81000020: 7370694d 6e694c20 32207875 332e362e Mips Linux 2.6.3
+81000030: 654b2036 6c656e72 33544d20 00003030 6 Kernel MT300..
+XCode_Viper# run bootcmd
+
+NAND read: device 0 offset 3145728, size 8388608 ... 8388608 bytes read: OK
+## Booting image at 81000000 ...
+ Image Name: Mips Linux 2.6.36 Kernel MT300
+ Image Type: MIPS Linux Kernel Image (gzip compressed)
+ Data Size: 2959276 Bytes = 2.8 MB
+ Load Address: 8c000000
+ Entry Point: ac040000
+ Verifying Checksum ... OK
+ Uncompressing Kernel Image ... OK
+Linux version 2.6.36-ts-mipsisa32r2el (root@Dell-5150) (gcc version 4.5.3 (GCC) ) #67 Thu Jul 24 11:18:13 PDT 2014
+Console baudrate:115200
+Kernel memsize:0x4000000
+kernel mem start addr:0xc000000
+cmdline root=/dev/mtdblock6 rw ethaddr=F8:22:85:0B:01:74 ethaddr=F8:22:85:0B:01:74 appxip (null)
+!!!!!appxip start 0, size 0 
+XCode Viper SCACHE PFB enabled.
+bootconsole [early0] enabled
+CPU revision is: 0001974c (MIPS 74Kc)
+FPU revision is: 01739300
+Determined physical RAM map:
+ memory: 03c00000 @ 0c000000 (usable)
+Wasting 1572864 bytes for tracking 49152 unused pages
+This processor doesn't support highmem. -258048k highmem ignored
+Zone PFN ranges:
+ Normal 0x0000c000 -> 0x0000fc00
+ HighMem empty
+Movable zone start PFN for each node
+early_node_map[1] active PFN ranges
+ 0: 0x0000c000 -> 0x0000fc00
+Built 1 zonelists in Zone order, mobility grouping on. Total pages: 15240
+Kernel command line: root=/dev/mtdblock6 rw ethaddr=F8:22:85:0B:01:74 ethaddr=F8:22:85:0B:01:74
+Set eth0 MAC address to F8:22:85:0B:01:74
+Set eth0 MAC address to F8:22:85:0B:01:74
+PID hash table entries: 256 (order: -2, 1024 bytes)
+Dentry cache hash table entries: 8192 (order: 3, 32768 bytes)
+Inode-cache hash table entries: 4096 (order: 2, 16384 bytes)
+Primary instruction cache 64kB, VIPT, 4-way, linesize 32 bytes.
+Primary data cache 64kB, 4-way, VIPT, cache aliases, linesize 32 bytes
+Writing ErrCtl register=00000000
+Readback ErrCtl register=00000000
+Memory: 46600k/61440k available (4954k kernel code, 14840k reserved, 1147k data, 192k init, 0k highmem)
+Hierarchical RCU implementation.
+	RCU-based detection of stalled CPUs is disabled.
+	Verbose stalled-CPUs detection is disabled.
+NR_IRQS:8
+CPU frequency 649.72 MHz
+console [ttyS0] enabled, bootconsole disabled
+console [ttyS0] enabled, bootconsole disabled
+Calibrating delay loop... 324.40 BogoMIPS (lpj=1622016)
+pid_max: default: 32768 minimum: 301
+Mount-cache hash table entries: 512
+NET: Registered protocol family 16
+Viper Platform device initialized
+bio: create slab <bio-0> at 0
+SCSI subsystem initialized
+usbcore: registered new interface driver usbfs
+usbcore: registered new interface driver hub
+usbcore: registered new device driver usb
+Switching to clocksource MIPS
+NET: Registered protocol family 2
+IP route cache hash table entries: 1024 (order: 0, 4096 bytes)
+TCP established hash table entries: 2048 (order: 2, 16384 bytes)
+TCP bind hash table entries: 2048 (order: 1, 8192 bytes)
+TCP: Hash tables configured (established 2048 bind 2048)
+TCP reno registered
+UDP hash table entries: 256 (order: 0, 4096 bytes)
+UDP-Lite hash table entries: 256 (order: 0, 4096 bytes)
+NET: Registered protocol family 1
+RPC: Registered udp transport module.
+RPC: Registered tcp transport module.
+RPC: Registered tcp NFSv4.1 backchannel transport module.
+squashfs: version 4.0 (2009/01/31) Phillip Lougher
+Registering unionfs 2.5.7 (for 2.6.36)
+NTFS driver 2.1.29 [Flags: R/W].
+SGI XFS with ACLs, security attributes, realtime, large block/inode numbers, no debug enabled
+SGI XFS Quota Management subsystem
+msgmni has been set to 91
+io scheduler noop registered
+io scheduler deadline registered
+io scheduler cfq registered (default)
+PROBE UART
+XCODE_SERIAL_INIT
+Xcode serial driver version 1.00
+ttyS0 (irq = 6, address = 0xbffff400) is a builtin ARC UART
+ttyS1 (irq = 6, address = 0xbffff450) is a builtin ARC UART
+ttyS2 (irq = 6, address = 0xbffff500) is a builtin ARC UART
+ttyS3 (irq = 6, address = 0xbffff550) is a builtin ARC UART
+brd: module loaded
+loop: module loaded
+XCode AHCI clock 50MHZ
+xcode-ahci-host0 xcode-ahci-host0: forcing PORTS_IMPL to 0x1
+xcode-ahci-host0 xcode-ahci-host0: AHCI 0001.0300 32 slots 1 ports 3 Gbps 0x1 impl SATA mode
+xcode-ahci-host0 xcode-ahci-host0: flags: ncq sntf pm led clo only pmp pio slum part 
+Enter vixs_ahci_port_resume
+scsi0 : xcode-ahci
+ata1: SATA max UDMA/133 irq 6
+xcode-ahci-host1 xcode-ahci-host1: forcing PORTS_IMPL to 0x1
+ata1: SATA link down (SStatus 0 SControl 300)
+xcode-ahci-host1 xcode-ahci-host1: AHCI 0001.0300 32 slots 1 ports 3 Gbps 0x1 impl SATA mode
+xcode-ahci-host1 xcode-ahci-host1: flags: ncq sntf pm led clo only pmp pio slum part 
+Enter vixs_ahci_port_resume
+scsi1 : xcode-ahci
+ata2: SATA max UDMA/133 irq 6
+Start NAND device initializing
+NAND device: Manufacturer ID: 0x2c, Chip ID: 0xdc (Micron NAND 512MiB 3,3V 8-bit)
+Scanning device for bad blocks
+ata2: SATA link down (SStatus 0 SControl 300)
+Bad eraseblock 432 at 0x000003600000
+Bad eraseblock 433 at 0x000003620000
+Bad eraseblock 434 at 0x000003640000
+Bad eraseblock 435 at 0x000003660000
+Bad eraseblock 436 at 0x000003680000
+Bad eraseblock 438 at 0x0000036c0000
+Bad eraseblock 439 at 0x0000036e0000
+Bad eraseblock 440 at 0x000003700000
+Bad eraseblock 442 at 0x000003740000
+Bad eraseblock 445 at 0x0000037a0000
+Bad eraseblock 446 at 0x0000037c0000
+Bad eraseblock 447 at 0x0000037e0000
+Bad eraseblock 448 at 0x000003800000
+Bad eraseblock 449 at 0x000003820000
+Bad eraseblock 450 at 0x000003840000
+Bad eraseblock 451 at 0x000003860000
+Bad eraseblock 452 at 0x000003880000
+Bad eraseblock 455 at 0x0000038e0000
+Bad eraseblock 456 at 0x000003900000
+Bad eraseblock 458 at 0x000003940000
+Bad eraseblock 459 at 0x000003960000
+Bad eraseblock 460 at 0x000003980000
+Bad eraseblock 461 at 0x0000039a0000
+Bad eraseblock 462 at 0x0000039c0000
+Bad eraseblock 463 at 0x0000039e0000
+Bad eraseblock 465 at 0x000003a20000
+Bad eraseblock 466 at 0x000003a40000
+Bad eraseblock 467 at 0x000003a60000
+Bad eraseblock 469 at 0x000003aa0000
+Bad eraseblock 470 at 0x000003ac0000
+Bad eraseblock 471 at 0x000003ae0000
+Bad eraseblock 474 at 0x000003b40000
+Bad eraseblock 475 at 0x000003b60000
+Bad eraseblock 476 at 0x000003b80000
+Bad eraseblock 478 at 0x000003bc0000
+Bad eraseblock 479 at 0x000003be0000
+Bad eraseblock 480 at 0x000003c00000
+Bad eraseblock 482 at 0x000003c40000
+Bad eraseblock 483 at 0x000003c60000
+Bad eraseblock 484 at 0x000003c80000
+Bad eraseblock 486 at 0x000003cc0000
+Bad eraseblock 487 at 0x000003ce0000
+Bad eraseblock 488 at 0x000003d00000
+Bad eraseblock 490 at 0x000003d40000
+Bad eraseblock 493 at 0x000003da0000
+Bad eraseblock 494 at 0x000003dc0000
+Bad eraseblock 496 at 0x000003e00000
+Bad eraseblock 497 at 0x000003e20000
+Bad eraseblock 498 at 0x000003e40000
+Bad eraseblock 499 at 0x000003e60000
+Bad eraseblock 500 at 0x000003e80000
+Bad eraseblock 501 at 0x000003ea0000
+Bad eraseblock 502 at 0x000003ec0000
+Bad eraseblock 503 at 0x000003ee0000
+Bad eraseblock 504 at 0x000003f00000
+Bad eraseblock 505 at 0x000003f20000
+Bad eraseblock 506 at 0x000003f40000
+Bad eraseblock 507 at 0x000003f60000
+Bad eraseblock 508 at 0x000003f80000
+Bad eraseblock 509 at 0x000003fa0000
+Bad eraseblock 511 at 0x000003fe0000
+Bad eraseblock 512 at 0x000004000000
+Bad eraseblock 513 at 0x000004020000
+Bad eraseblock 514 at 0x000004040000
+Bad eraseblock 515 at 0x000004060000
+Bad eraseblock 518 at 0x0000040c0000
+Bad eraseblock 522 at 0x000004140000
+Bad eraseblock 523 at 0x000004160000
+Bad eraseblock 525 at 0x0000041a0000
+Bad eraseblock 526 at 0x0000041c0000
+Bad eraseblock 527 at 0x0000041e0000
+Bad eraseblock 528 at 0x000004200000
+Bad eraseblock 529 at 0x000004220000
+Bad eraseblock 531 at 0x000004260000
+Bad eraseblock 532 at 0x000004280000
+Bad eraseblock 533 at 0x0000042a0000
+Bad eraseblock 534 at 0x0000042c0000
+Bad eraseblock 535 at 0x0000042e0000
+Bad eraseblock 537 at 0x000004320000
+Bad eraseblock 538 at 0x000004340000
+Bad eraseblock 540 at 0x000004380000
+Bad eraseblock 542 at 0x0000043c0000
+Bad eraseblock 544 at 0x000004400000
+Bad eraseblock 546 at 0x000004440000
+Bad eraseblock 548 at 0x000004480000
+Bad eraseblock 549 at 0x0000044a0000
+Bad eraseblock 550 at 0x0000044c0000
+Bad eraseblock 551 at 0x0000044e0000
+Bad eraseblock 552 at 0x000004500000
+Bad eraseblock 554 at 0x000004540000
+Bad eraseblock 555 at 0x000004560000
+Bad eraseblock 556 at 0x000004580000
+Bad eraseblock 557 at 0x0000045a0000
+Bad eraseblock 558 at 0x0000045c0000
+Bad eraseblock 559 at 0x0000045e0000
+Bad eraseblock 560 at 0x000004600000
+Bad eraseblock 561 at 0x000004620000
+Bad eraseblock 562 at 0x000004640000
+Bad eraseblock 563 at 0x000004660000
+Bad eraseblock 565 at 0x0000046a0000
+Bad eraseblock 566 at 0x0000046c0000
+Bad eraseblock 567 at 0x0000046e0000
+Bad eraseblock 568 at 0x000004700000
+Bad eraseblock 569 at 0x000004720000
+Bad eraseblock 571 at 0x000004760000
+Bad eraseblock 572 at 0x000004780000
+Bad eraseblock 574 at 0x0000047c0000
+Bad eraseblock 575 at 0x0000047e0000
+Bad eraseblock 578 at 0x000004840000
+Bad eraseblock 579 at 0x000004860000
+Bad eraseblock 581 at 0x0000048a0000
+Bad eraseblock 582 at 0x0000048c0000
+Bad eraseblock 583 at 0x0000048e0000
+Bad eraseblock 585 at 0x000004920000
+Bad eraseblock 586 at 0x000004940000
+Bad eraseblock 588 at 0x000004980000
+Bad eraseblock 590 at 0x0000049c0000
+Bad eraseblock 593 at 0x000004a20000
+Bad eraseblock 596 at 0x000004a80000
+Bad eraseblock 597 at 0x000004aa0000
+Bad eraseblock 598 at 0x000004ac0000
+Bad eraseblock 599 at 0x000004ae0000
+Bad eraseblock 600 at 0x000004b00000
+Bad eraseblock 604 at 0x000004b80000
+Bad eraseblock 606 at 0x000004bc0000
+Bad eraseblock 607 at 0x000004be0000
+Bad eraseblock 608 at 0x000004c00000
+Bad eraseblock 609 at 0x000004c20000
+Bad eraseblock 610 at 0x000004c40000
+Bad eraseblock 611 at 0x000004c60000
+Bad eraseblock 613 at 0x000004ca0000
+Bad eraseblock 614 at 0x000004cc0000
+Bad eraseblock 615 at 0x000004ce0000
+Bad eraseblock 616 at 0x000004d00000
+Bad eraseblock 618 at 0x000004d40000
+Bad eraseblock 620 at 0x000004d80000
+Bad eraseblock 621 at 0x000004da0000
+Bad eraseblock 622 at 0x000004dc0000
+Bad eraseblock 623 at 0x000004de0000
+Bad eraseblock 626 at 0x000004e40000
+Bad eraseblock 627 at 0x000004e60000
+Bad eraseblock 628 at 0x000004e80000
+Bad eraseblock 629 at 0x000004ea0000
+Bad eraseblock 630 at 0x000004ec0000
+Bad eraseblock 631 at 0x000004ee0000
+Bad eraseblock 632 at 0x000004f00000
+Bad eraseblock 633 at 0x000004f20000
+Bad eraseblock 634 at 0x000004f40000
+Bad eraseblock 636 at 0x000004f80000
+Bad eraseblock 637 at 0x000004fa0000
+Bad eraseblock 638 at 0x000004fc0000
+Bad eraseblock 639 at 0x000004fe0000
+Bad eraseblock 640 at 0x000005000000
+Bad eraseblock 641 at 0x000005020000
+Bad eraseblock 642 at 0x000005040000
+Bad eraseblock 643 at 0x000005060000
+Bad eraseblock 644 at 0x000005080000
+Bad eraseblock 645 at 0x0000050a0000
+Bad eraseblock 646 at 0x0000050c0000
+Bad eraseblock 647 at 0x0000050e0000
+Bad eraseblock 649 at 0x000005120000
+Bad eraseblock 650 at 0x000005140000
+Bad eraseblock 651 at 0x000005160000
+Bad eraseblock 652 at 0x000005180000
+Bad eraseblock 653 at 0x0000051a0000
+Bad eraseblock 654 at 0x0000051c0000
+Bad eraseblock 655 at 0x0000051e0000
+Bad eraseblock 656 at 0x000005200000
+Bad eraseblock 657 at 0x000005220000
+Bad eraseblock 658 at 0x000005240000
+Bad eraseblock 659 at 0x000005260000
+Bad eraseblock 660 at 0x000005280000
+Bad eraseblock 661 at 0x0000052a0000
+Bad eraseblock 662 at 0x0000052c0000
+Bad eraseblock 663 at 0x0000052e0000
+Bad eraseblock 664 at 0x000005300000
+Bad eraseblock 666 at 0x000005340000
+Bad eraseblock 667 at 0x000005360000
+Bad eraseblock 668 at 0x000005380000
+Bad eraseblock 669 at 0x0000053a0000
+Bad eraseblock 670 at 0x0000053c0000
+Bad eraseblock 673 at 0x000005420000
+Bad eraseblock 674 at 0x000005440000
+Bad eraseblock 676 at 0x000005480000
+Bad eraseblock 677 at 0x0000054a0000
+Bad eraseblock 678 at 0x0000054c0000
+Bad eraseblock 679 at 0x0000054e0000
+Bad eraseblock 682 at 0x000005540000
+Bad eraseblock 683 at 0x000005560000
+Bad eraseblock 684 at 0x000005580000
+Bad eraseblock 685 at 0x0000055a0000
+Bad eraseblock 686 at 0x0000055c0000
+Bad eraseblock 688 at 0x000005600000
+Bad eraseblock 689 at 0x000005620000
+Bad eraseblock 690 at 0x000005640000
+Bad eraseblock 691 at 0x000005660000
+Bad eraseblock 692 at 0x000005680000
+Bad eraseblock 693 at 0x0000056a0000
+Bad eraseblock 695 at 0x0000056e0000
+Bad eraseblock 696 at 0x000005700000
+Bad eraseblock 697 at 0x000005720000
+Bad eraseblock 698 at 0x000005740000
+Bad eraseblock 701 at 0x0000057a0000
+Bad eraseblock 702 at 0x0000057c0000
+Bad eraseblock 704 at 0x000005800000
+Bad eraseblock 705 at 0x000005820000
+Bad eraseblock 706 at 0x000005840000
+Bad eraseblock 708 at 0x000005880000
+Bad eraseblock 709 at 0x0000058a0000
+Creating 11 MTD partitions on "NAND 512MiB 3,3V 8-bit":
+0x000000000000-0x000000080000 : "Boot_FW1_pja"
+0x000000080000-0x000000180000 : "Boot_loader_0"
+0x000000180000-0x000000280000 : "Boot_loader_1"
+0x000000280000-0x000000300000 : "UBOOT_ENV"
+0x000000300000-0x000000b00000 : "Linux_Kernel_0"
+0x000000b00000-0x000001300000 : "Linux_kernel_1"
+0x000001300000-0x000003600000 : "RootFS_0"
+0x000003600000-0x000005900000 : "RootFS_1"
+0x000005900000-0x000012c40000 : "AppFS_0"
+0x000012c40000-0x00001ff80000 : "AppFS_1"
+0x00001ff80000-0x000020000000 : "BBT"
+Xcode NAND device Driver is ready
+SynopGMAC: **********************************************************
+SynopGMAC: * Driver :This is Synopsys GMAC-UNIV PCI-Network Driver
+SynopGMAC: * Version :1.0
+SynopGMAC: * Copyright :Copyright (c) 2007-2007 Synopsys, Inc
+SynopGMAC: **********************************************************
+SynopGMAC: Initializing synopsys GMAC interfaces ..
+SynopGMAC: reset phy using GPIO pin 4
+SynopGMAC: eth0 use XCode internal clock
+SynopGMAC: eth1 use XCode internal clock
+SynopGMAC: Find ethernet phy device:0x20005c90.Phy index:1 
+SynopGMAC: Can not find phy.
+synopsis_init
+ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+Start: SDUH EHCI device registed to platform bus
+END: SDUH EHCI device registed to platform bus
+sduh-ehci sduh-ehci: initializing Xcode3-SOC USB Controller
+sduh-ehci sduh-ehci: Vixs On-Chip EHCI Host Controller
+sduh-ehci sduh-ehci: new USB bus registered, assigned bus number 1
+>>>>>>>>>>>>>>>>>>>>>Write USBD_PHY_CTRL 6218811
+sduh-ehci sduh-ehci: irq 6, io base 0xbfff2000
+sduh-ehci sduh-ehci: USB 2.0 started, EHCI 1.00
+usb usb1: New USB device found, idVendor=1d6b, idProduct=0002
+usb usb1: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+usb usb1: Product: Vixs On-Chip EHCI Host Controller
+usb usb1: Manufacturer: Linux 2.6.36-ts-mipsisa32r2el ehci_hcd
+usb usb1: SerialNumber: sduh-ehci
+hub 1-0:1.0: USB hub found
+hub 1-0:1.0: 2 ports detected
+ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
+Start: SDUH OHCI device registed to platform bus
+sduh-ohci sduh-ohci: initializing Xcode3-SOC USB OHCI Controller
+sduh-ohci sduh-ohci: Vixs On-Chip OHCI Host Controller
+sduh-ohci sduh-ohci: new USB bus registered, assigned bus number 2
+sduh-ohci sduh-ohci: irq 6, io mem 0xbfff2000
+usb usb2: New USB device found, idVendor=1d6b, idProduct=0001
+usb usb2: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+usb usb2: Product: Vixs On-Chip OHCI Host Controller
+usb usb2: Manufacturer: Linux 2.6.36-ts-mipsisa32r2el ohci_hcd
+usb usb2: SerialNumber: sduh-ohci
+hub 2-0:1.0: USB hub found
+hub 2-0:1.0: 2 ports detected
+END: SDUH OHCI device registed to platform bus
+Initializing USB Mass Storage driver...
+usbcore: registered new interface driver usb-storage
+USB Mass Storage support registered.
+usbcore: registered new interface driver usbserial
+USB Serial support registered for generic
+usbcore: registered new interface driver usbserial_generic
+usbserial: USB Serial Driver core
+USB Serial support registered for pl2303
+usbcore: registered new interface driver pl2303
+pl2303: Prolific PL2303 USB to serial adaptor driver
+vixs-rtc: probe of vixs-rtc.0 failed with error -5
+md: linear personality registered for level -1
+md: raid0 personality registered for level 0
+md: raid1 personality registered for level 1
+sdhci: Secure Digital Host Controller Interface driver
+sdhci: Copyright(c) Pierre Ossman
+xcsdh_init: Initializing XCode SD controller
+usbcore: registered new interface driver usbhid
+usbhid: USB HID core driver
+TCP bic registered
+TCP cubic registered
+TCP westwood registered
+TCP highspeed registered
+TCP htcp registered
+NET: Registered protocol family 17
+Registering the dns_resolver key type
+drivers/rtc/hctosys.c: unable to open rtc device (rtc0)
+md: Waiting for all devices to be available before autodetect
+md: If you don't use raid, use raid=noautodetect
+md: Autodetecting RAID arrays.
+md: Scanned 0 and added 0 devices.
+md: autorun ...
+md: ... autorun DONE.
+UDF-fs: No partition found (1)
+yaffs: dev is 32505862 name is "mtdblock6" rw
+yaffs: passed flags ""
+VFS: Mounted root (yaffs filesystem) on device 31:6.
+Freeing unused kernel memory: 192k freed
+rcS: MELD Technology Inc., AV30, 20140624, pja31:6.
+odetect
+
+yaffs: dev is 32505865 name is "mtdblock9" rw
+yaffs: passed flags ""
+
+Mounting proc
+Mounting usbfs
+mount: mounting none on /proc/bus/usb failed: No such file or directory
+Mounting sysfs
+Active image:1
+mount nand /dev/mtdblock9 to /disk
+Starting uevent daemon
+Starting Udev
+udevd (78): /proc/78/oom_adj is deprecated, please use /proc/78/oom_score_adj instead.
+Mounting devpts
+net.core.netdev_max_backlog = 1000
+net.core.rmem_max = 4194304
+net.core.rmem_default = 4194304
+net.ipv4.udp_mem = 4194304
+net.ipv4.tcp_rmem = 4194304
+net.ipv4.tcp_wmem = 4194304
+Setting hostname MT300-AV
+
+00_boot_tar.txt
+
+Meld Technology
+ PJA
+ 20130905
+ /var/lib/tftpboot/Mips_2_6_36/tmp_boot10_tar/etc/init.d/00_boot_tar.txt
+
+cat: can't open '/disk/Meld/00_disk_tar.txt': No such file or directory
+
+Bringing up loopback device
+Bringing up Eth0
+
+setipeth0: MELD Inc., 20140624, pja
+MT300-AV
+
+Using DHCP
+killall: udhcpc: no process killed
+udhcpc (v1.13.3) started
+SynopGMAC: Autonegotiation Complete, PHY_STATUS_REG=0x00007869
+SynopGMAC: Autonegotiation Complete, PHY_SPECIFIC_STATUS_REG=0x00000000
+SynopGMAC: take 1600 ms to auto-negotiation
+SynopGMAC: Link up
+SynopGMAC: enable HW checksum
+SynopGMAC: enable TCP segmentation offload
+Sending discover...
+Sending discover...
+Sending select for 192.168.1.25...
+Lease of 192.168.1.25 obtained, lease time 85612
+adding route 192.168.1.1
+adding dns 192.168.1.1
+Testing DNS
+Server: 192.168.1.1
+Address 1: 192.168.1.1 CR1000B.mynetworksettings.com
+
+Name: google.com
+Address 1: 2607:f8b0:4004:c21::8b pe-in-f139.1e100.net
+Address 2: 142.251.179.101 pd-in-f101.1e100.net
+Address 3: 142.251.179.138 pd-in-f138.1e100.net
+Address 4: 142.251.179.113 pd-in-f113.1e100.net
+Address 5: 142.251.179.100 pd-in-f100.1e100.net
+Address 6: 142.251.179.139 pd-in-f139.1e100.net
+Address 7: 142.251.179.102 pd-in-f102.1e100.net
+wait 1
+nslookup: completed
+
+ntpdate setting current data from pool.ntp.org
+wait 1
+wait 2
+wait 3
+wait 4
+wait 5
+wait 6
+wait 7
+wait 8
+wait 9
+wait 10
+ntpdate: timed out
+
+Re-starting: upnp_device, ll2d, thttpd, whitespaceagent
+
+killall: thttpd: no process killed
+wsagent_start : File - /etc/config/WSAgentRestart - Does Not Exist
+wsagent_start : Not Starting whitespaceagent
+wsagent_start : File - /etc/config/TXAutoEnable - Does Not Exist
+wsagent_start : Running - "MeldAgent -O"
+MeldAgent : Version : 11 : Build Date : Thu May 14 18:08:31 2015
+TX option : -o or -O >> TX Power To Be Disabled
+MeldAgent : Sending NXP Read Status "q" command
+MeldAgent : NXP TX Status --> q
+MeldAgent : NXP TX Status --> MT300-AV Firmware version = 1.3.9 Tx v2 
+MeldAgent : NXP TX Status --> S/N = 00000677
+MeldAgent : NXP TX Status --> Stream MAC addr = 0xF8-22-85-0B-01-75
+MeldAgent : NXP TX Status --> FCC ID = OKVMT300
+MeldAgent : NXP TX Status --> Channel = 21
+MeldAgent : NXP TX Status --> TX disabled
+MeldAgent : NXP TX Status --> DAC gain = 0xAB
+MeldAgent : NXP TX Status --> Modulation mode = ATSC 
+MeldAgent : NXP TX Status --> Automatic mode.
+MeldAgent : NXP TX Status : Done
+wsagent_start : Wait for file - "/etc/config/queryInfo" - to be created
+wsagent_start : Wait for file - "/etc/config/queryInfo" - to contain data
+wsagent_start : Serial Number = 00000677
+ <friendlyName>MELD_BOX_00000677</friendlyName>
+wsagent_start : S/N 00000677 at <friendlyName> already matches
+ <serialNumber>00000677</serialNumber>
+wsagent_start : S/N 00000677 at <serialNumber> already matches
+Script to create unique UUID for UPNP
+Meld Technology, Inc.
+PJA
+20140623
+
+UPnP UUID Correction script
+f822850b0174
+ <UDN>uuid:cc93d8e6-6b8b-4f60-87ca-f822850b0174</UDN>
+setipeth0: done
+
+Starting Telnet Daemon
+/disk/Meld/AV30/test_script/avs_start.sh
+
+avs_start.sh : Wait for file - "/etc/config/queryInfo" - to be created
+avs_start.sh : Wait for file - "/etc/config/queryInfo" - to contain data
+Attaching to IP/Host 127.0.0.1 on port 60672
+Attaching to IP/Host 192.168.1.25 on port 35161
+av_streamer version 2.14
+codec MPEG2
+output DVO -p 48 -g -t 1000
+scaler 
+bitrate 17000000
+rmxrate 19000000
+ipaddr 224.100.100.100
+ipport 5002
+dstttl 32
+Load AV Driver
+Found module file xcode4drv.ko
+Boxster, XCode (R) Driver Version 6.4.0.15, built at Apr 24 2013 16:58:03
+Loaded xcode4 driver module xcode4drv
+Created directory /dev/vixs
+Created device node /dev/vixs/xcodedrv
+Done! Enjoy!
+Start AVStreamer
+device = 0
+tsd_update_data = 0x3F
+tsd_sync = 0x0
+tsd_enable = 0x3F
+tsd_active_valid_high = 0x0
+tsd_negative_edge = 0x3F
+tsd_parallel_input_channel = 0x0
+tsd_packet_204_size = 0x0
+tsd_packet_192_size = 0x0
+tsd_keep_null_packet = 0x0
+dvo_update_data = 0x3
+dvo_data_mode = 0x0
+dvo_clock_invert = 0x0
+dvo_increment_disable = 0x0
+dvo_valid_high = 0x11
+dvo_clock_select = 0x11
+dvo_null_packet = 0x0
+dvo_enable_packet_spacing = 0x0
+dvo_serial_mode_sync_duration = 0x0
+dvo_packet_192_size = 0x0
+Device name =/dev/vixs/xcodedrv
+=========================> Config TSD Success 
+Use command "logread -f" to see syslog
+ (^C to stop logread)
+/ # echo SHELL_OK; uname -a
+SHELL_OK
+Linux MT300-AV 2.6.36-ts-mipsisa32r2el #67 Thu Jul 24 11:18:13 PDT 2014 mips unknown
+/ # echo '=== /proc/mtd ==='; cat /proc/mtd; echo '=== fccidSerialInfo ==='; cat
+ /etc/config/fccidSerialInfo
+=== /proc/mtd ===
+dev: size erasesize name
+mtd0: 00080000 00020000 "Boot_FW1_pja"
+mtd1: 00100000 00020000 "Boot_loader_0"
+mtd2: 00100000 00020000 "Boot_loader_1"
+mtd3: 00080000 00020000 "UBOOT_ENV"
+mtd4: 00800000 00020000 "Linux_Kernel_0"
+mtd5: 00800000 00020000 "Linux_kernel_1"
+mtd6: 02300000 00020000 "RootFS_0"
+mtd7: 02300000 00020000 "RootFS_1"
+mtd8: 0d340000 00020000 "AppFS_0"
+mtd9: 0d340000 00020000 "AppFS_1"
+mtd10: 00080000 00020000 "BBT"
+=== fccidSerialInfo ===
+NXP Version:1.3.9 Tx v2 
+Serial Number:677
+StreamingIpAddress:192.168.1.193
+/ # echo '=== Meld app dirs ==='; ls /disk/Meld; echo '=== RELEASE_NOTES ==='; c
+at /disk/Meld/*/RELEASE_NOTES /disk/Meld/meldtech/RELEASE_NOTES 2>/dev/null | he
+ad -15; echo '=== wsa/meldtech present? ==='; ls -la /usr/bin/whitespaceagent /u
+sr/bin/MeldAgent 2>/dev/null
+=== Meld app dirs ===
+[1;34mAV30[0m [1;32mmount_114_nfs.sh[0m [1;34mupnp[0m
+=== RELEASE_NOTES ===
+=== wsa/meldtech present? ===
+-rwxr-xr-x 1 root root 3115791 May 15 2015 [1;32m/usr/bin/MeldAgent[0m
+-rwxr-xr-x 1 root root 9102885 Jan 27 2016 [1;32m/usr/bin/whitespaceagent[0m
+/ # ifconfig eth0 | grep -E 'inet addr|HWaddr'; echo '--- cpu/mem ---'; grep -E 
+'cpu model|BogoMIPS|cpu MHz' /proc/cpuinfo; grep -E 'MemTotal' /proc/meminfo
+eth0 Link encap:Ethernet HWaddr F8:22:85:0B:01:74 
+ inet addr:192.168.1.25 Bcast:192.168.1.255 Mask:255.255.255.0
+--- cpu/mem ---
+cpu model		: MIPS 74Kc V4.12 FPU V0.0
+BogoMIPS		: 324.40
+MemTotal: 46792 kB
+/ # ps | grep -iE 'av_stream|encoder|thttpd|telnet|whitespace|MeldAgent|upnp' | 
+grep -v grep; echo '--- listen ---'; netstat -ln 2>/dev/null | grep -E 'LISTEN'
+ 208 root 6180 S thttpd -l /dev/null -C /disk/www/thttpd.conf 
+ 221 root 10132 S upnp_device 
+ 223 root 1560 S telnetd -l /bin/sh 
+ 481 root 70972 R ./av_streamer -e Meld_Edid_r12_720p_pcm48.txt -c MPEG
+--- listen ---
+tcp 0 0 127.0.0.1:60672 0.0.0.0:* LISTEN 
+tcp 0 0 0.0.0.0:80 0.0.0.0:* LISTEN 
+tcp 0 0 0.0.0.0:23 0.0.0.0:* LISTEN 
+tcp 0 0 192.168.1.25:35161 0.0.0.0:* LISTEN 
+unix 2 [ ACC ] STREAM LISTENING 150 @/xcodesoc/udev_event
+unix 2 [ ACC ] STREAM LISTENING 152 @/xcodesoc/uevent_reg
+/ # 
