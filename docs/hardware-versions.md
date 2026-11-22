@@ -37,6 +37,9 @@ Key points:
 - **RevB vs RevC is a board spin of the AV unit.** RevC is the later **MT350**
   board; electrically the update is identical to RevB (same `Board_ID`, kernel and
   NandScript), but the jumper/switch handling differs (§3).
+- **The `MT300-IT` was also sold rebranded** by Peerless-AV as the PeerAir™
+  "Pico Broadcaster" `HDS-PB100` — same IP-fed, video-less hardware. See
+  [`peerless-hds-pb100.md`](peerless-hds-pb100.md).
 
 ## 2. How to identify a unit
 
