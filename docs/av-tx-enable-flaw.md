@@ -153,25 +153,30 @@ installed and hooked by
 
 ## 4. Test and result
 
-Validated on unit 677 (2026-11-22):
+Validated on unit 677 (2026-11-22), ending with a real hard power cycle:
 
-1. **Reboot.** After `reboot`, `sb_txkeepalive` launches from the boot hook; the
-   unit comes up registered on ch31 with `MeldAgent -q` reporting `TX power =
-   0x05`, video locked.
-2. **Fault injection** (reproduces the hard-cycle symptom without a power cycle):
-   `MeldAgent -O` to force `TX disabled`, then watch. Done twice; both times the
-   keepalive caught it within its poll interval and re-enabled —
+1. **Soft reboot.** `sb_txkeepalive` launches from the boot hook; the unit comes
+   up registered on ch31 with `MeldAgent -q` reporting `TX power = 0x05`, video
+   locked.
+2. **Fault injection** (reproduces the armed-but-disabled symptom without a power
+   cycle): `MeldAgent -O` to force `TX disabled`. Done twice; both times the
+   keepalive caught it within its poll interval and re-enabled, returning the
+   radio to `TX power = 0x05`.
+3. **Hard power cycle — the real test.** The unit came back up **transmitting on
+   ch31 with no manual intervention**, and the keepalive log from that boot shows
+   *both* branches doing real work:
 
    ```
-   sb_txkeepalive: radio armed (ch 31) but TX disabled -- enabling
-   sb_txkeepalive: radio armed (ch 31) but TX disabled -- enabling
+   sb_txkeepalive: radio not armed yet (reg=0 ch=) -- running wsagent_start   # re-arm
+   sb_txkeepalive: radio armed (ch 31) but TX disabled -- enabling            # enable (after a fault inject on that boot)
    ```
 
-   with the radio returning to `TX power = 0x05` after each.
-
-`MeldAgent -O` leaves the radio in exactly the armed-but-disabled state a hard
-power cycle produces, so this is a faithful test. A hard power cycle remains the
-final real-world confirmation (done at the bench).
+   The first line matters: on this cold boot the stock `wsagent_start` registered
+   but **left the radio un-armed** (no committed operating channel — the flaky
+   arm seen during debugging), and the keepalive's re-arm branch recovered it by
+   re-running `wsagent_start`. Without the keepalive the unit would have stayed
+   dark. `MeldAgent -O` leaves the radio in exactly the state a hard power cycle
+   produces, so the fault-injection and the real cycle agree.
 
 ## 5. Notes and caveats
 
@@ -183,5 +188,8 @@ final real-world confirmation (done at the bench).
   -O` disables; `MeldAgent -q` prints the authoritative radio state.
 - **Don't trust these for TX state:** the `radio_status` file and `queryInfo`
   (`TX power = 0xNN` is a level, set before the enable). Use `MeldAgent -q`.
-- The `wsagent_start` re-arm branch in the keepalive is a secondary safety net for
-  a boot pass that failed to arm; the primary, tested path is the enable branch.
+- **Both keepalive branches are load-bearing, not theoretical.** On the hard-cycle
+  boot the stock `wsagent_start` left the radio un-armed, so the re-arm branch
+  (re-running `wsagent_start`) was what got a committed channel at all; the enable
+  branch then keeps TX on. The boot agent's arming is unreliable on a cold start,
+  which is why the keepalive handles both.

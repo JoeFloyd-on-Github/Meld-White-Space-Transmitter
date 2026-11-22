@@ -253,11 +253,14 @@ check. Keep that framing intact when editing the README.
     `spectrumbridge_spoof_c/device/sb_txkeepalive` (hooked into `setipeth0` by
     `install_av.sh`) that asserts `MeldAgent -T` once the radio is armed
     (registered + an `operating` channel) and re-asserts if TX drops; it never
-    keys without a channel grant. **Tested:** reboot (comes up keyed) + `MeldAgent
-    -O` fault-injection (keepalive re-enabled TX both times, with log proof);
-    `MeldAgent -O` reproduces the hard-cycle state, and a hard power cycle is the
-    final bench confirmation. This makes the unit transmit automatically at
-    power-up — a deliberate posture change from stock.
+    keys without a channel grant. **Verified on a real hard power cycle:** the unit
+    came back up transmitting on ch31 with no manual step, and the keepalive log
+    shows both branches firing — it re-ran `wsagent_start` because the cold-boot
+    agent left the radio **un-armed** (registered but no operating channel — the
+    arming is unreliable on a cold start, so the re-arm branch is load-bearing,
+    not just a safety net), then re-enabled TX after a `MeldAgent -O` fault
+    injection on that boot. This makes the unit transmit automatically at power-up
+    — a deliberate posture change from stock.
 
 ## Key technical facts and decisions
 
