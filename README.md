@@ -87,6 +87,7 @@ cloud used to say, and say it yourself.
 
 | Path | What it is |
 |---|---|
+| [`HOW-TO.md`](HOW-TO.md) | **the practical guide to making an MT300 work** — building `sb_mips`, finding the device over serial, transferring the binary, installing it to run at boot, and the FCC/white-space rules (channel-to-frequency map and what is no longer TV band) |
 | [`docs/emulation-guide/`](docs/emulation-guide) | **the definitive guide** — the full story, binary→emulator: qemu-user vs qemu-system, recovering the kernel from the NAND dump with binwalk, building the kernel and rootfs, the radio handshake, and all the tips and pitfalls |
 | [`WhiteSpaceApp/wsa`](WhiteSpaceApp) | the `whitespaceagent` binary (MIPS, v44, Nov 2013) — the main subject of analysis |
 | [`WhiteSpaceApp/ghidra/`](WhiteSpaceApp/ghidra) | its decompiled source: `wsa_decompiled.c` (raw Ghidra) and `wsa_annotated.c` (fully annotated), plus a variable-name legend and an ezxml explanation |
@@ -103,9 +104,9 @@ cloud used to say, and say it yourself.
 | [`upgrade/`](upgrade) | the `meldtech` 1.21 firmware upgrade package (tgz + extracted) |
 | [`root/`](root) | a snapshot of the **running device's** root filesystem — live `/etc/config`, boot scripts, web UI, and the deployed `whitespaceagent` |
 
-**New here?** Start with the [emulation guide](docs/emulation-guide) for the
-narrative, or [`docs/wsa-overview.md`](docs/wsa-overview.md) for how the agent
-behaves.
+**New here?** To **make a device work**, go straight to [`HOW-TO.md`](HOW-TO.md).
+For the story, start with the [emulation guide](docs/emulation-guide), or
+[`docs/wsa-overview.md`](docs/wsa-overview.md) for how the agent behaves.
 
 ## How the pieces fit
 
