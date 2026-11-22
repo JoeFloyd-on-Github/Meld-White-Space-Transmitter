@@ -180,6 +180,16 @@ no telnet session: registration and channel list done at 13 s of uptime,
 transmitter keyed on channel 23 by about 30 s. Since the server is reachable only
 on loopback, the eth0 address plays no part.
 
+> This runbook is the **non-AV bench unit** (serial 457), which keys a bare
+> carrier and uses the generic `install.sh` (`rcS` hook, plain `/etc/hosts`
+> redirect). The **MT300-AV** units (v45 agent) differ: the boot hook goes in
+> `/etc/init.d/setipeth0`, the `/etc/hosts` redirect needs a reverse-resolvable
+> dotted quad, `wsagent_start` needs `/etc/config/WSAgentRestart`, and the
+> transmitter will not key without a live video input. Use
+> [`../spectrumbridge_spoof_c/device/install_av.sh`](../spectrumbridge_spoof_c/device/install_av.sh)
+> there — see [`on-device-spoof.md`](on-device-spoof.md) and
+> [`units/mt300-av-677.md`](units/mt300-av-677.md).
+
 ## 7. Rollback
 
 If the boot-time install is in place, undo that first (on-device-spoof §3:

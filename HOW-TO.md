@@ -340,7 +340,9 @@ nc -q 2 -w 10 192.168.1.194 9000 < spectrumbridge_spoof_c/device/sb_start
 nc -q 2 -w 10 192.168.1.194 9000 < spectrumbridge_spoof_c/device/install.sh
 ```
 
-(Run a fresh `nc -l -p 9000 > <name> &` on the device before each one.)
+(Run a fresh `nc -l -p 9000 > <name> &` on the device before each one.) On an
+**MT300-AV (v45)** unit send `device/install_av.sh` instead of `install.sh` — see
+[§6](#6-make-it-run-at-every-boot).
 
 ---
 
@@ -391,6 +393,38 @@ It will:
    ```
 
 The installer is safe to run more than once — it skips any step already done.
+
+### AV units running the v45 agent (use `install_av.sh`)
+
+The MT300-**AV** (video) units carry a **v45** `whitespaceagent` and boot a
+slightly different init path, so `install.sh` above is **not** the right script
+for them — use
+[`spectrumbridge_spoof_c/device/install_av.sh`](spectrumbridge_spoof_c/device/install_av.sh)
+instead (`sh /disk/install_av.sh`). It handles three differences:
+
+- **The boot hook goes in `/etc/init.d/setipeth0`, not `rcS`.** On AV firmware
+  `rcS` only starts the encoder; it is `setipeth0` that calls `wsagent_start`.
+- **The v45 agent connects to the *reverse name* of the resolved host, not the
+  dotted IP.** A plain `127.0.0.1 tvws.spectrumbridge.com` line (and even setting
+  `HostAddress=127.0.0.1`) makes it reverse-resolve `127.0.0.1` to `localhost` and
+  abort with *"localhost is not a valid IP address."* The installer writes an
+  `/etc/hosts` whose **first** name for `127.0.0.1` is a literal dotted quad, which
+  the agent accepts:
+
+  ```
+  127.0.0.1	127.0.0.1 localhost
+  127.0.0.1	tvws.spectrumbridge.com
+  ```
+
+- **The agent only runs if `/etc/config/WSAgentRestart` exists.** Otherwise
+  `wsagent_start` runs `MeldAgent -O` (a radio read that never contacts the
+  database). The installer `touch`es that file — the same thing the web UI's
+  "register" button does. On an AV unit the transmitter also will not **key**
+  until a live video source is connected, even once registration succeeds.
+
+Background and the full trace are in
+[`docs/on-device-spoof.md`](docs/on-device-spoof.md) (the v45 caveat) and
+[`docs/units/mt300-av-677.md`](docs/units/mt300-av-677.md).
 
 `sb_start` itself is a small supervisor: it launches `sb_mips` on
 `127.0.0.1:443` and relaunches it 5 seconds after it ever exits, so the server is
