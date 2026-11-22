@@ -7,12 +7,14 @@ video line (`peerair.peerless-av.com`). It is the same hardware and the same
 Spectrum Bridge white-space stack described throughout this repo, in a different
 box label.
 
-Source: the product page as archived 2013‑10‑21 (Internet Archive capture of
-`peerless-av.com/en-us/professional/products/hds-pb100`) and the official US sell
-sheet **`LIT-0976` rev.2**, a copy of which is kept in this repo at
-[`datasheets/HDS-PB100_PeerAir_Pico_Broadcaster_LIT-0976-rev2.pdf`](datasheets/HDS-PB100_PeerAir_Pico_Broadcaster_LIT-0976-rev2.pdf).
-The device shown is the familiar MT300 form factor — a small black chassis with a
-single vertical whip antenna. It won a *NewBay Media Product Innovation Award
+Sources, both kept in this repo under [`datasheets/`](datasheets):
+the official US sell sheet **`LIT-0976` rev.2**
+([PDF](datasheets/HDS-PB100_PeerAir_Pico_Broadcaster_LIT-0976-rev2.pdf)) and the
+**User Manual and Installation Guide** (sheet `180-9044-1`, issued 2013‑11‑07)
+([PDF](datasheets/HDS-PB100_User_and_Installation_Manual_180-9044-1.pdf)); plus
+the 2013‑10‑21 Internet Archive capture of the product page. The device shown is
+the familiar MT300 form factor — a small black chassis with a single vertical whip
+antenna (US Patent 8,063,996). It won a *NewBay Media Product Innovation Award
 2013* (honorable mention).
 
 **The sell sheet settles the attribution outright:** its own legal footer states
@@ -90,6 +92,70 @@ broadcast device which includes [the] first year of FCC licensing subscription."
 over-the-air HD **receive** antenna recommended for the DTVs picking up the
 broadcast.
 
+## How you actually stream content to it
+
+The manual answers the questions the spec sheet left open — how content gets into
+the box, in what format, and with what software.
+
+**The input is IP, not A/V.** The only content input is the rear **RJ45 LAN
+port**. The device expects an **MPEG‑2 transport stream delivered over UDP** (the
+manual's FAQ is explicit: *"the only input … is an RJ45 network port as the
+Broadcaster requires a UDP stream"*). There are no HDMI/component inputs on this
+model — it is fed entirely over the network. Default addressing (all user-settable
+in the web UI):
+
+| Role | Default |
+|---|---|
+| Config / device IP (web UI) | `192.168.1.194` |
+| Streaming IP — the "digital modulator" that receives the transport stream | `192.168.1.193` |
+| Streaming (base) port | `5002` |
+
+That streaming address `192.168.1.193` is the same value that shows up as the live
+**`StreamingIpAddress`** on the bench MT300‑AV in this repo — i.e. the UDP target
+the encoder sends the transport stream to, confirming the mechanism end to end. If
+several units share a LAN, each needs a **unique** streaming IP.
+
+**Media format.** The device broadcasts **MPEG‑2 TS** with **stereo / AC‑3**
+audio at **720p / 1080i**, and each white‑space channel can carry a stream of up
+to **19.2 Mbps**. Source material in other formats must be transcoded to MPEG‑2
+first.
+
+**Special software — yes, it's bundled.** The unit ships with a **USB flash drive**
+containing the **Peerless‑AV Streaming Media Server (Lite)** application (Windows;
+`setup.exe`). It both transcodes arbitrary files to MPEG‑2 and streams them to the
+modulator. Typical flow:
+
+1. **Settings** — set a data folder and a **Channel Name + Channel Number** (the
+   virtual channel a DTV tunes to, e.g. 71), then **New Device** → enter
+   **Config IP `192.168.1.194`**, **Streaming IP `192.168.1.193`**, **Port `5002`**.
+2. **Preparation** — drag in or **Import Files**, then **Transcode** to the MPEG‑2
+   broadcast format (the app decides whether a given file needs transcoding; its
+   Help lists the accepted source types), and optionally assemble a **Playlist**.
+3. **Playback** — **Browse**, pick a file or playlist, **Play** (optionally **Loop
+   the video**).
+
+**You are not strictly locked to their app.** Because the device just consumes an
+MPEG‑2 UDP transport stream at `192.168.1.193:5002`, anything that can emit a
+compliant stream to that address will feed it — the manual's FAQ notes that while
+the bundled software streams *pre-encoded* AV files, *"there is open source
+software that has the ability to stream from a desktop,"* i.e. to push a live
+desktop/transport stream to the broadcaster. The bundled app is simply the
+supported, turnkey path.
+
+This is the same pipeline the firmware exposes: the **AV** units add an HDMI/
+component capture front end (`av_streamer` encodes to a transport stream), while
+the **IT / HDS‑PB100** has *only* this IP/UDP transport-stream input — the
+`av_streamer` UDP-output path (its `avs.config` `IPADDR` / `IPPORT`) described in
+[`radio-and-video.md`](radio-and-video.md).
+
+**It still needs the internet, and still needs the database.** The web UI and
+registration flow are exactly those documented elsewhere in this repo: browse to
+`192.168.1.194`, fill in the *Who You Are* / *Where You Are* (latitude/longitude)
+registration, and the transmitter stays disabled until the Spectrum Bridge
+database returns a channel list — polled periodically to "verify the current
+license." The manual quotes the annual FCC white-space fee at ~$55 with the first
+year included — the recurring dependency this repo exists to replace.
+
 ## Why this rebrand matters to this project
 
 - **It confirms the white-space-database dependency was baked into the product,
@@ -109,9 +175,10 @@ broadcast.
   [`HOW-TO.md`](../HOW-TO.md)); MPEG‑2 encoding and 720p/1080i match the
   `av_streamer` pipeline and EDID behaviour in
   [`radio-and-video.md`](radio-and-video.md).
-- The underlying radio is Meld's FCC-certified MT300 (FCC ID `OKVMT300`, grantee
-  code `OKV` = Meld Technology); Peerless-AV resold that certified hardware under
-  the `HDS-PB100` SKU.
+- **The manual confirms the FCC identity outright.** Its FCC interference
+  statement lists **`FCC_Model: MT300v1`** and **`FCC ID: OKVMT300`** — the same
+  Meld grant used by the units analysed in this repo. Peerless-AV resold that
+  certified hardware under the `HDS-PB100` SKU; it is a Part 15 device.
 
 The practical upshot: the local Spectrum Bridge stand-in (`sb_mips`) and the
 restore procedure in this repo apply to a Peerless **HDS-PB100** exactly as they
