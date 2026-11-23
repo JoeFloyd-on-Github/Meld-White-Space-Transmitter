@@ -1,0 +1,164 @@
+openjdk version "25.0.5.1" 2026-11-17
+OpenJDK Runtime Environment (build 25.0.5.1+2-1-26.04.1-Ubuntu)
+OpenJDK 64-Bit Server VM (build 25.0.5.1+2-1-26.04.1-Ubuntu, mixed mode)
+INFO  Using log config file: jar:file:/home/jfloyd/Downloads/ghidra_12.2/Ghidra/Framework/Generic/lib/Generic.jar!/generic.log4j.xml (LoggingInitialization)  
+INFO  Using log file: /home/jfloyd/.config/ghidra/ghidra_12.2_PUBLIC/application.log (LoggingInitialization)  
+INFO  Loading user preferences: /home/jfloyd/.config/ghidra/ghidra_12.2_PUBLIC/preferences (Preferences)  
+INFO  Searching for classes... (ClassSearcher)  
+INFO  Class search complete (2354 ms) (ClassSearcher)  
+INFO  Initializing SSL Context (DefaultSSLContextInitializer)  
+INFO  Initializing Random Number Generator... (SecureRandomFactory)  
+INFO  Random Number Generator initialization complete: NativePRNGNonBlocking (SecureRandomFactory)  
+INFO  Loaded 120 trusted CA certificate(s) from /etc/ssl/certs/ca-certificates.crt (UnixSystemTrustKeyStoreUtil)  
+INFO  Loaded 120 trusted CA certificates from the OS trust store. (DefaultTrustManagerFactory)  
+INFO  Loaded 120 trusted CA certificates from the Java default trust store. (DefaultTrustManagerFactory)  
+INFO  Starting cache cleanup: /var/tmp/jfloyd-ghidra/fscache2 (FileCacheMaintenanceDaemon)  
+INFO  Finished cache cleanup, estimated storage used: 0 (FileCacheMaintenanceDaemon)  
+INFO  Headless startup complete (7132 ms) (AnalyzeHeadless)  
+INFO  Class searcher loaded 60 extension points (19 false positives) (ClassSearcher)  
+INFO  HEADLESS Script Paths:
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/PyGhidra/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/DecompilerDependent/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/FileFormats/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/BSim/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/FunctionID/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/WildcardAssembler/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/Decompiler/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Processors/8051/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Debug/Debugger-rmi-trace/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/SystemEmulation/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Processors/Atmel/ghidra_scripts
+    /home/jfloyd/GitHub/Meld-White-Space-Transmitter/AvStreamer/ghidra/scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Processors/PIC/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/Base/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Processors/JVM/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/Swift/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Debug/Debugger/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/VersionTracking/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/GnuDemangler/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/BytePatterns/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/PDB/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Features/MicrosoftCodeAnalyzer/ghidra_scripts
+    /home/jfloyd/Downloads/ghidra_12.2/Ghidra/Processors/DATA/ghidra_scripts (HeadlessAnalyzer)  
+INFO  HEADLESS: execution starts (HeadlessAnalyzer)  
+INFO  Creating project: /home/jfloyd/GitHub/Meld-White-Space-Transmitter/AvStreamer/ghidra/project/AvStreamer (HeadlessAnalyzer)  
+INFO  Creating project: /home/jfloyd/GitHub/Meld-White-Space-Transmitter/AvStreamer/ghidra/project/AvStreamer (DefaultProject)  
+INFO  REPORT: Processing input files:  (HeadlessAnalyzer)  
+INFO       project: /home/jfloyd/GitHub/Meld-White-Space-Transmitter/AvStreamer/ghidra/project/AvStreamer (HeadlessAnalyzer)  
+INFO  IMPORTING: file:///home/jfloyd/GitHub/Meld-White-Space-Transmitter/AvStreamer/extract/Meld/AV30/test_script/av_streamer (HeadlessAnalyzer)  
+INFO  Using Loader: Executable and Linking Format (ELF) (ProgramLoader)  
+INFO  Using Language/Compiler: MIPS:LE:32:default:default (ProgramLoader)  
+INFO  Using Library Search Path: [., /bin, /lib, /lib64, /lib/x86_64-linux-gnu, /lib/aarch64-linux-gnu, /usr/bin, /usr/lib, /usr/X11R6/bin, /usr/X11R6/lib, /usr/java/packages/lib, /usr/lib/x86_64-linux-gnu/jni, /usr/lib/x86_64-linux-gnu, /usr/lib/jni] (ProgramLoader)  
+WARN  EXTERNAL Data ELF Relocation with offset: at 00436140 (External Location = _ZTVN10__cxxabiv117__class_type_infoE+0x8) (ElfRelocationHandler)  
+INFO  Additional info:
+Loading file:///home/jfloyd/GitHub/Meld-White-Space-Transmitter/AvStreamer/extract/Meld/AV30/test_script/av_streamer?MD5=65023c5fd5c3f99af36c8057e1acc75d...
+Skipping section [.mdebug.abi32] with invalid size 0x0
+Unable to place symbol due to non-loaded section: .mdebug.abi32 - value=0x170, section=.mdebug.abi32
+_mips_gp0_value=0x43f380
+------------------------------------------------
+
+Linking the External Programs of 'av_streamer' to imported libraries...
+  [libpthread.so.0] -> not found in project
+  [libstdc++.so.6] -> not found in project
+  [libm.so.6] -> not found in project
+  [libgcc_s.so.1] -> not found in project
+  [libc.so.6] -> not found in project
+------------------------------------------------
+
+Resolving External Symbols of [/av_streamer] - 79 unresolved symbols, no external libraries configured - skipping
+ (ProgramLoader)  
+INFO  IMPORTING: Loaded 0 additional files (HeadlessAnalyzer)  
+INFO  ANALYZING all memory and code: file:///home/jfloyd/GitHub/Meld-White-Space-Transmitter/AvStreamer/extract/Meld/AV30/test_script/av_streamer (HeadlessAnalyzer)  
+INFO  Added 5766 source map entries (DWARFImporter)  
+INFO  DWARF ver[2], 19 compUnits, 9139 DIES, import - total elapsed: 3728ms (DWARFImportSummary)  
+INFO  DWARF data type import - elapsed: 1255ms (DWARFImportSummary)  
+INFO  DWARF func & symbol import - elapsed: 1330ms (DWARFImportSummary)  
+INFO  DWARF types imported: 536 (DWARFImportSummary)  
+INFO  DWARF enums from macros - elapsed: 4ms (DWARFImportSummary)  
+INFO  DWARF compile dirs: [/here/workdir/factory/build_mipsisa32r2el-timesys-linux-gnu/glibc-2.13/glibc-2.13/csu, /here/workdir/factory/build_mipsisa32r2el-timesys-linux-gnu/glibc-2.13/glibc-2.13/io, /media/WD_passport/Meld_AV_Script/2p12/avstreamer/src/libadv7842, /media/WD_passport/Meld_AV_Script/2p12/avstreamer/src/libxcode4encoder, /media/WD_passport/Meld_AV_Script/2p13_a/avstreamer/src/libxcode4encoder, /media/WD_passport/Meld_AV_Script/2p14_a/avstreamer/src/avstreamer, /media/WD_passport/Meld_AV_Script/2p14_a/avstreamer/src/libadv7842, /var/lib/tftpboot/Meld_AV_Script/2p08b/avstreamer/src/libadv7842, /var/lib/tftpboot/Meld_AV_Script/2p08b/avstreamer/src/libdvbpsi-1.1.0/src] (DWARFImportSummary)  
+INFO  DWARF producers: [GNU C 4.5.3, GNU C++ 4.5.3] (DWARFImportSummary)  
+INFO  DWARF source languages: [DW_LANG_C89, DW_LANG_C_plus_plus] (DWARFImportSummary)  
+INFO  DWARF compUnit: init.c (DWARFImportSummary)  
+INFO  DWARF compUnit: main.c (DWARFImportSummary)  
+INFO  DWARF compUnit: libxcode4encoder.c (DWARFImportSummary)  
+INFO  DWARF compUnit: vixs_encoder.c (DWARFImportSummary)  
+INFO  DWARF compUnit: util_common.c (DWARFImportSummary)  
+INFO  DWARF compUnit: libadv7842.cpp (DWARFImportSummary)  
+INFO  DWARF compUnit: xcodeio.cpp (DWARFImportSummary)  
+INFO  DWARF compUnit: adv7842.cpp (DWARFImportSummary)  
+INFO  DWARF compUnit: xcodeapi.cpp (DWARFImportSummary)  
+INFO  DWARF compUnit: dvbpsi.c (DWARFImportSummary)  
+INFO  DWARF compUnit: psi.c (DWARFImportSummary)  
+INFO  DWARF compUnit: tables/sdt.c (DWARFImportSummary)  
+INFO  DWARF compUnit: tables/eit.c (DWARFImportSummary)  
+INFO  DWARF compUnit: tables/nit.c (DWARFImportSummary)  
+INFO  DWARF compUnit: tables/tot.c (DWARFImportSummary)  
+INFO  DWARF compUnit: demux.c (DWARFImportSummary)  
+INFO  DWARF compUnit: descriptor.c (DWARFImportSummary)  
+INFO  DWARF compUnit: elf-init.c (DWARFImportSummary)  
+INFO  DWARF compUnit: stat64.c (DWARFImportSummary)  
+ERROR DWARF data type remappings (DWARF data type definitions that changed meaning in different compile units): (DWARFImportSummary)  
+ERROR   Data type -> changed to -> Data Type (DWARFImportSummary)  
+ERROR   /uchar -> /uint8_t (DWARFImportSummary)  
+ERROR   /ulonglong -> /uint64_t (DWARFImportSummary)  
+ERROR   /ushort -> /uint16_t (DWARFImportSummary)  
+ERROR   /uint -> /uint32_t (DWARFImportSummary)  
+ERROR DWARF un-recoverable expressions: (DWARFImportSummary)  
+ERROR   DW_OP_reg6; DW_OP_piece; DW_OP_reg7; DW_OP_piece -> 1 (DWARFImportSummary)  
+ERROR   DW_OP_lit0; DW_OP_stack_value -> 1 (DWARFImportSummary)  
+ERROR   DW_OP_reg7 -> 22 (DWARFImportSummary)  
+ERROR   DW_OP_reg5 -> 62 (DWARFImportSummary)  
+ERROR   DW_OP_breg29 -> 214 (DWARFImportSummary)  
+ERROR   DW_OP_reg4 -> 82 (DWARFImportSummary)  
+ERROR   DW_OP_reg6 -> 41 (DWARFImportSummary)  
+ERROR   DW_OP_const1s; DW_OP_stack_value -> 1 (DWARFImportSummary)  
+ERROR   DW_OP_fbreg -> 738 (DWARFImportSummary)  
+ERROR   DW_OP_reg2 -> 13 (DWARFImportSummary)  
+WARN  Decompiling 0040245c, pcode error at 00438118: Unable to disassemble EXTERNAL block location: 00438118 (DecompileCallback)  
+INFO  Packed database cache: /var/tmp/jfloyd-ghidra/packed-db-cache (PackedDatabaseCache)  
+INFO  Applied data type archive: generic_clib (ApplyDataArchiveAnalyzer)  
+INFO  Applied data type archive: generic_clib (ApplyDataArchiveAnalyzer)  
+WARN  Unable to fully apply external demangled Address Table at 00438148: __cxxabiv1::__class_type_info::vtable (DemangledAddressTable)  
+INFO  -----------------------------------------------------
+    ASCII Strings                              0.979 secs
+    Apply Data Archives                        1.697 secs
+    Call Convention ID                         6.447 secs
+    Call-Fixup Installer                       0.105 secs
+    Create Address Tables                      0.200 secs
+    Create Address Tables - One Time           0.093 secs
+    Create Function                            0.001 secs
+    DWARF                                      4.071 secs
+    Data Reference                             0.456 secs
+    Decompiler Switch Analysis                 5.872 secs
+    Demangler GNU                              0.527 secs
+    Disassemble Entry Points                   2.315 secs
+    Embedded Media                             0.021 secs
+    External Entry References                  0.003 secs
+    Function ID                                0.080 secs
+    Function Start Search                      0.162 secs
+    GCC Exception Handlers                     0.855 secs
+    MIPS Constant Reference Analyzer           5.319 secs
+    MIPS Symbol                                0.045 secs
+    MIPS UnAlligned Instruction Fix            0.818 secs
+    Non-Returning Functions - Discovered       0.093 secs
+    Non-Returning Functions - Known            0.011 secs
+    Reference                                  0.892 secs
+    Shared Return Calls                        0.093 secs
+    Source Language Support                    0.006 secs
+    Stack                                      4.377 secs
+    Subroutine References                      0.097 secs
+    Subroutine References - One Time           0.001 secs
+    Variadic Function Signature Override       6.305 secs
+-----------------------------------------------------
+     Total Time   41 secs
+-----------------------------------------------------
+ (AutoAnalysisManager)  
+INFO  REPORT: Analysis succeeded for file: file:///home/jfloyd/GitHub/Meld-White-Space-Transmitter/AvStreamer/extract/Meld/AV30/test_script/av_streamer (HeadlessAnalyzer)  
+INFO  REPORT: Execute script: ExportDecomp.java 'ghidra'  (HeadlessAnalyzer)  
+INFO  SCRIPT: /home/jfloyd/GitHub/Meld-White-Space-Transmitter/AvStreamer/ghidra/scripts/ExportDecomp.java (HeadlessAnalyzer)  
+INFO  ExportDecomp.java> Decompiled 220 functions (GhidraScript)  
+INFO  ANALYZING changes made by post scripts: file:///home/jfloyd/GitHub/Meld-White-Space-Transmitter/AvStreamer/extract/Meld/AV30/test_script/av_streamer (HeadlessAnalyzer)  
+INFO  REPORT: Post-analysis succeeded for file: file:///home/jfloyd/GitHub/Meld-White-Space-Transmitter/AvStreamer/extract/Meld/AV30/test_script/av_streamer (HeadlessAnalyzer)  
+INFO  /av_streamer: file created (jfloyd) (LocalFileSystem)  
+INFO  REPORT: Save succeeded for: /av_streamer (AvStreamer:/av_streamer) (HeadlessAnalyzer)  
+INFO  REPORT: Import succeeded (HeadlessAnalyzer)  

@@ -1,0 +1,1374 @@
+00400154	/lib/ld.so.1
+00401365	__libc_csu_init
+00401375	__libc_csu_fini
+00401385	__libc_start_main
+00401397	__gmon_start__
+004013a6	_Jv_RegisterClasses
+004013ba	inet_addr
+004013c4	gethostbyname
+004013d2	ntohl
+004013d8	adv7842_detect_audio_mode
+004013f2	puts
+004013f7	xcode4_open_encoder
+0040140b	xcode4_update_encoder_param
+00401427	xcode4_start_encoder
+0040143c	adv7842_program_input
+00401452	adv7842_subscribe_event
+0040146a	adv7842_enum_input
+0040147d	xcode4_stop_encoder
+00401491	adv7842_unsubscribe_event
+004014ab	adv7842_detect_video_std
+004014c4	adv7842_set_freerun_mode
+004014dd	putchar
+004014e5	atof
+004014ea	memset
+004014f1	sigaction
+004014fb	memcpy
+00401502	strlen
+00401509	strcat
+00401510	syslog
+00401517	stdin
+0040151d	fileno
+00401524	isatty
+0040152b	optarg
+00401532	strcmp
+00401539	strcpy
+00401540	atoi
+00401545	setMinor
+0040154e	fopen64
+00401556	sscanf
+0040155d	strncmp
+00401565	fgets
+0040156b	getopt
+00401572	adv7842_init
+0040157f	readCfgFile
+0040158b	malloc
+00401592	perror
+00401599	fread
+0040159f	fclose
+004015a6	xcode4_get_encoder_ts_info
+004015c1	getchar
+004015c9	xcode4_close_encoder
+004015de	adv7842_deinit
+004015ed	free
+004015f2	fcloseall
+004015fc	libpthread.so.0
+0040160c	_DYNAMIC_LINKING
+0040161d	__RLD_MAP
+00401627	__errno_location
+00401638	stderr
+0040163f	fwrite
+00401646	fprintf
+0040164e	dvbpsi_new
+00401659	dvbpsi_nit_init
+00401669	dvbpsi_nit_descriptor_add
+00401683	dvbpsi_nit_ts_add
+00401695	dvbpsi_nit_ts_descriptor_add
+004016b2	dvbpsi_nit_sections_generate
+004016cf	dvbpsi_nit_empty
+004016e0	dvbpsi_DeletePSISections
+004016f9	dvbpsi_delete
+00401707	dvbpsi_sdt_init
+00401717	dvbpsi_sdt_service_add
+0040172e	dvbpsi_sdt_service_descriptor_add
+00401750	dvbpsi_sdt_sections_generate
+0040176d	dvbpsi_sdt_empty
+0040177e	gmtime
+00401785	dvbpsi_tot_init
+00401795	dvbpsi_tot_sections_generate
+004017b2	dvbpsi_tot_empty
+004017c3	dvbpsi_eit_init
+004017d3	dvbpsi_eit_event_add
+004017e8	dvbpsi_eit_event_descriptor_add
+00401808	dvbpsi_eit_sections_generate
+00401825	dvbpsi_eit_empty
+00401836	util_thread_notify_ready
+0040184f	vixs_encoder_recv_stream
+00401868	util_sendto
+00401874	strerror
+0040187d	util_destroy_thread
+00401891	util_create_thread
+004018a4	strtol
+004018ab	getline
+004018b3	strtof
+004018ba	vixs_encoder_send_stream
+004018d3	usleep
+004018da	vixs_encoder_init
+004018ec	vixs_encoder_open_stream
+00401905	vixs_encoder_close_stream
+0040191f	vixs_encoder_flush_stream
+00401939	vixs_encoder_update_stream
+00401954	vixs_encoder_get_ts_info
+0040196d	util_init_tx_udp_socket
+00401985	ioctl
+0040198b	gettimeofday
+00401998	connect
+004019a0	pthread_cond_init
+004019b2	pthread_mutex_init
+004019c5	pthread_create
+004019d4	pthread_mutex_lock
+004019e7	pthread_cond_wait
+004019f9	pthread_mutex_unlock
+00401a0e	pthread_join
+00401a1b	pthread_cond_destroy
+00401a30	pthread_mutex_destroy
+00401a46	pthread_cond_signal
+00401a5a	htonl
+00401a60	htons
+00401a66	setsockopt
+00401a71	writev
+00401a78	_ZN10xcode_io_t6get_ioEv
+00401a91	_ZNK9ADV7842_t13read_registerEjhRh
+00401ab4	_ZN10xcode_io_t19write_reg_mask_bitsEjjj
+00401add	_Znwj
+00401ae3	_ZN9ADV7842_tC1Ei
+00401af5	_ZN9ADV7842_t8LoadEDIDEPc
+00401b0f	_ZN9ADV7842_t8LoadEDIDEv
+00401b28	_ZdlPv
+00401b2f	_Unwind_Resume
+00401b3e	_ZN9ADV7842_tD1Ev
+00401b50	_ZN9ADV7842_t20program_input_sourceE20enum_xc_input_type_t
+00401b8b	_ZN9ADV7842_t21detect_video_standardER36enum_analog_digital_video_standard_t
+00401bd8	_ZN9ADV7842_t24get_current_input_sourceEv
+00401c02	_ZN9ADV7842_t17detect_audio_modeERj
+00401c26	_ZN9ADV7842_t17set_free_run_modeE23enum_xc_free_run_mode_t
+00401c61	_ZTV10xcode_io_t
+00401c72	_Z17xcode_open_handlev
+00401c89	_Z31xcode_get_frame_buffer_map_addrj
+00401cae	_Z22xcode_get_mmr_map_addrj
+00401cca	_Z18xcode_close_handlej
+00401ce2	__cxa_guard_acquire
+00401cf6	__cxa_guard_release
+00401d0a	__cxa_atexit
+00401d17	__cxa_guard_abort
+00401d29	_Z14xcode_i2c_readjiiPvjiiii
+00401d46	_Z15xcode_i2c_writejiiPKvjiiii
+00401d65	memmove
+00401d6d	SigTerm
+00401d75	_ZN10xcode_io_t9i2c_writeEiiPKvjii
+00401d98	_ZN10xcode_io_t19i2c_write_then_readEiiPKvPvjjii
+00401dc9	g_llc_delay
+00401dd5	calloc
+00401ddc	__assert_fail
+00401dea	vasprintf
+00401df4	dvbpsi_NewPSISection
+00401e09	dvbpsi_ValidPSISection
+00401e20	dvbpsi_error
+00401e2d	dvbpsi_debug
+00401e3a	dvbpsi_demuxGetSubDec
+00401e50	dvbpsi_decoder_new
+00401e63	dvbpsi_NewDemuxSubDecoder
+00401e7d	dvbpsi_AttachDemuxSubDecoder
+00401e9a	dvbpsi_decoder_delete
+00401eb0	dvbpsi_DeleteDescriptors
+00401ec9	dvbpsi_decoder_reset
+00401ede	dvbpsi_DetachDemuxSubDecoder
+00401efb	dvbpsi_DeleteDemuxSubDecoder
+00401f18	dvbpsi_NewDescriptor
+00401f2d	dvbpsi_AddDescriptor
+00401f42	dvbpsi_CheckPSISection
+00401f59	dvbpsi_decoder_psi_section_add
+00401f78	dvbpsi_decoder_psi_sections_completed
+00401f9e	dvbpsi_BuildPSISection
+00401fb5	libstdc++.so.6
+00401fc4	_ZTVN10__cxxabiv117__class_type_infoE
+00401fea	__gxx_personality_v0
+00401fff	libm.so.6
+00402009	libgcc_s.so.1
+00402017	libc.so.6
+00402021	_IO_stdin_used
+00402030	__xstat64
+0040203a	GCC_3.0
+00402042	GLIBCXX_3.4
+0040204e	CXXABI_1.3
+00402059	GLIBC_2.2
+00402063	GLIBC_2.3.2
+0040206f	GLIBC_2.0
+0041fa60	Video output scaler set to 480i
+0041fa80	Total input %d\n
+0041fa90	CVBS signal detected with video standard %d\n
+0041fac0	Component signal detected with video standard %d\n
+0041faf4	HDMI signal detected with video standard %d\n
+0041fb24	Something wrong
+0041fb34	Receive an Event ID %x  input %x info %x\n
+0041fb60	pluged
+0041fb68	unpluged
+0041fb74	HDMI is %s\n
+0041fb80	Start HDMI streaming
+0041fb98	No signal in HDMI
+0041fbac	HDMI signal is encrypted
+0041fbc8	Detected Video Standard change current %d new %d!\n
+0041fbfc	Stop Encoder
+0041fc0c	Restart Encoder with std %d\n
+0041fc2c	HDMI has no signal
+0041fc40	ADV7842_EVT_INPUT_DETECTED event registered
+0041fc6c	Select Input %d\n
+0041fc80	Detected Input Video Standard is %d\n
+0041fcec	Usage: av_streamer [options]
+0041fd0c	Options: 
+0041fd18	\t-c [Video CODEC] (MPEG2, H264)
+0041fd38	\t-m [Video Output Mode] (UDP, DVO, FILE)
+0041fd64	\t-e [EDID Filename]
+0041fd78	\t-n [IP_ADDRESS] (default 192.168.1.193)
+0041fda4	\t-P [IP_PORT] (default 5002)
+0041fdc4	\t-T [IP_TTL] (default 32, range %d to %d)\n
+0041fdf0	\t-d [Data Insertion Filename]
+0041fe10	\t-t [Data Insertion Interval(ms)]
+0041fe34	\t-r [RMX Bitrate(bps)] (default %d, range %d to %d)\n
+0041fe6c	\t-R [Bitrate(bps)] (default %d, range %d to %d)\n
+0041fea0	\t-i Enable Null Packet Insertion
+0041fec4	\t-o [Video Output Scaled To] (480i)
+0041fee8	\t-p [PCR PID]
+0041fef8	\t-M [Specify Minor Channel]
+0041ff14	\t-g Enable Table Generation
+0041ff30	\t-v Print Software Version
+0041ff4c	\t-? Print Usage
+0041ff5c	\t-h Print Usage
+0041ff6c	\t-H Print Usage
+0041ff84	av_streamer version %4.2f\n
+0041ffa0	  Output optionally scaled to 480i
+0041ffc4	  Removed fec4xcode directory
+0041ffe4	  libadv7842 version 0x%x\n
+00420000	  libxcodeencoder version 0x%x\n
+00420020	  vixs_encoder.c force avcSeiCtl while in H264 encoding
+00420058	  TTL now optional
+0042006c	  Build Time = %s\n
+00420080	Fri Oct  9 10:23:14 2015
+0042009c	  Build Host = %s\n
+004200b0	Linux Dell-5150 2.6.35.14-106.fc14.i686 #1 SMP Wed Nov 23 13:57:33 UTC 2011 i686 i686 i386 GNU/Linux
+00420118	  Build Dir  = %s\n
+0042012c	/media/WD_passport/Meld_AV_Script/2p14_a/avstreamer/src/avstreamer
+00420170	main.c :
+00420180	main.c : STDIN is a terminal
+004201a0	main.c : STDIN is a file or a pipe
+004201cc	Set Video CODEC = %s\n
+004201e4	MPEG2
+004201ec	\nError! The Video CODEC %s is not valid.\n\n
+0042021c	Set Encoder Output Mode = %s\n
+00420248	\nError! The Encoder Output Mode %s is not valid.\n\n
+0042027c	Set EDID file = %s\n
+00420290	Set Destination IP Address = %s\n
+004202b4	Set Port Number = %d\n
+004202cc	\nError! The TTL Value %d - is not within range 0 to 255.\n\n
+00420308	Set TTL Value = %d\n
+0042031c	Set Data Insertion Filename = %s\n
+00420340	Set Data Insertion Interval = %dms\n
+00420364	\nError! The RMX Bitrate %d - is not within range %d to %d.\n\n
+004203a4	Set RMX Bitrate = %d bps\n
+004203c0	\nError! The Video Data Bitrate %d - is not within range %d to %d.\n\n
+00420404	Set Video Data Bitrate = %d bps\n
+00420428	Enable NULL Packet Insertion
+00420450	Enable Video Output Scaling to %s\n
+00420474	\nError! The Video Output Scaling %s is not valid.\n\n
+004204a8	Set PCR PID = %d\n
+004204bc	Set Minor Channel Number= %d\n
+004204dc	Enable SDT/NIT Table Generation
+004204fc	Set LLC Phase = %d\n
+00420510	/proc/self/mounts
+00420528	\nError! Can't open /proc/self/mounts to check if an SDcard is mounted.\n
+00420570	%s %s
+00420578	/dev/mmcblk0p1
+00420588	/mnt/sdcard
+00420594	\nAn SDcard is mounted.\n
+004205ac	\nError! An SDcard must be inserted.\n
+004205d4	/mnt/sdcard/
+004205e4	Set Capture file = %s\n
+004205fc	\nError! The Capture file name must start with "/mnt/sdcard".\n
+0042063c	\nDebug mode - Set Capture file : %s\n
+00420664	c:m:e:n:P:T:d:t:r:R:io:p:M:gl:f:F:v?hH
+0042068c	init adv7842 failed
+004206a0	\nNo Video Signals at any inputs\n
+004206c4	Video Input Detected : Standard = %d\n
+004206ec	\nError! No capture filename was provided.\n
+00420718	\nError! Can't open data file %s\n
+0042073c	\nWarning: No data insertion
+00420764	\nWarning: empty data file
+00420780	Insert data size %d interval %d\n
+004207a4	\n  Press 'q' to Exit
+004207bc	  Press 'g' to print encoder status\n
+004207e4	inputVideoLock: %x\n
+004207f8	inputAudioLock: %x\n
+0042080c	tsOutput: %x\n
+0042081c	videoOutput: %x\n
+00420830	Caught keyboard 'q' command
+0042084c	main.c : Caught SIGTERM
+00420864	main.c : Closed encoder handles. Exiting "av_streamer"
+00420cdc	/etc/config/queryInfo
+00420dc0	Error: 
+00420dc8	Warning: 
+00420dd4	Debug: 
+00420de0	%s,%s(%s,%3.6f,%3.6f)
+00420df8	%s:Enter Encoder %x recv thread Entry \n
+00420e20	%s:Xcoder %x Receive from AV driver error\n
+00420e4c	%s:Received last frame\n
+00420e64	%s:Send error Payload %x: %s\n
+00420e84	%s:Exit recv thread Entry \n
+00420ea0	%s:Fail to terminate encode recv thread, return value %x\n
+00420edc	%s:Fail to create encode recv thread, return value %x\n
+00420f18	 v0.034 Tx v2
+00420f28	OKVMT300
+00420f34	00000467
+00420f40	Modulation mode = 
+00420f5c	DVB-T
+00420f64	MT300-AV Firmware version = 
+00420f84	S/N = 
+00420f8c	FCC ID = 
+00420f98	Channel = 
+00420fa4	Frequency = 
+00420fb4	TX power = 
+00420fc0	DAC gain = 
+00420fcc	    option 'Longitude' '
+00420fe8	    option 'Latitude' '
+00421000	Meldtech
+0042100c	/etc/config/queryInfo
+00421024	/etc/config/sbi
+00421034	/etc/config/company
+00421048	%s,%s(%s,%3.6f, %3.6f)
+00421060	%s:Enter Encoder %x send data thread Entry \n
+00421090	%s:Xcoder %x Send data to AV driver error\n
+004210bc	%s:Fail to terminate encoder send data thread, return value %x\n
+004210fc	%s:Fail to create encoder send data thread, return value %x\n
+0042113c	%s:No memory\n
+0042114c	%s:Init Encoder Sucess\n
+00421164	%s:Init Encoder Failed\n
+0042117c	%s:E\n
+00421184	%s:Invalid Handle\n
+00421198	%s:Open Encoder stream failed\n
+004211b8	%s:Launch Encode Thread failed\n
+004211d8	%s:Launch Send Thread failed\n
+004211f8	%s:X\n
+00421200	%s:Fail to terminate encode_thread, return value %x\n
+00421238	%s:Fail to terminate encoder_send_data_thread, return value %x\n
+00421278	xcode4_stop_encoder
+0042128c	xcode4_start_encoder
+004212a4	xcode4_open_encoder
+004212b8	launch_encoder_send_data_thead
+004212d8	terminate_encoder_send_data_thread
+0042130c	encoder_send_data_thread_entry
+0042132c	launch_encoder_recv_thead
+00421348	terminate_encoder_recv_thread
+00421368	encoder_recv_video_thread_entry
+004213be	>@%s:\nCalling Strm open CAPTURE !\n
+004213e4	%s:=======  CMD_SDEV_OPEN_CAPTURE arguments  =======\n
+0042141c	%s:\tmode = 0x%llX\n
+00421430	%s:\tvideo_src = 0x%X\n
+00421448	%s:\tvideo_type = 0x%X\n
+00421460	%s:\tvideo_brate = %lu\n
+00421478	%s:\tvideo_frate = %lu\n
+00421490	%s:\tvideo_in_frate = %lu\n
+004214ac	%s:\tvideo_out_frate = %lu\n
+004214c8	%s:\tin_disp_horz = %lu\n
+004214e0	%s:\tin_disp_vert = %lu\n
+004214f8	%s:\tdisp_horz = %lu\n
+00421510	%s:\tdisp_vert = %lu\n
+00421528	%s:\taudio_src = 0x%X\n
+00421540	%s:\taudio_type = 0x%X\n
+00421558	%s:\taudio_brate = %lu\n
+00421570	%s:\taudio_srate = %lu\n
+00421588	%s:\taudio_in_srate = %lu\n
+004215a4	%s:\taudio_channels = %lu\n
+004215c0	%s:\tinit_time_stamp = 0x%llX\n
+004215e0	%s:\tvideo_out_pid = 0x%lX\n
+004215fc	%s:\taudio_out_pid = 0x%lX\n
+00421618	%s:\tn_b = 0x%X\n
+00421628	%s:\tvideo_src_type = 0x%lX\n
+00421644	%s:\tstream_remux_bitrate = %lu\n
+00421664	%s:\tpeak_video_bitrate = %lu\n
+00421684	%s:\tRateContinuity = 0x%lX\n
+004216a0	%s:\tinsert_vbi_data_flags = 0x%lX\n
+004216c4	%s:\tprivate_data_size = 0x%lX\n
+004216e4	%s:\taudio_data_flags = 0x%lX\n
+00421704	%s:\tremux_ps_enum = 0x%X\n
+00421720	%s:\tremux_flags = 0x%lX\n
+0042173c	%s:\tremux_pack_size = 0x%lX\n
+0042175c	%s:\tprofile = 0x%X\n
+00421770	%s:\taspect_ratio = 0x%X\n
+0042178c	%s:\tsharpness = 0x%X\n
+004217a4	%s:\tvideo_in_flags = 0x%lX\n
+004217c0	%s:\tvideo_out_flags = 0x%lX\n
+004217e0	%s:\tthreshold = 0x%lX\n
+004217f8	%s:\tcgms_flags = 0x%lX\n
+00421810	%s:\tapstb_flags = 0x%lX\n
+0042182c	%s:\tepn = 0x%lX\n
+00421840	%s:\trdi_cci_ss = 0x%lX\n
+00421858	%s:\tlevel = 0x%X\n
+0042186c	%s:\tquanttype = 0x%X\n
+00421884	%s:\tmpeg4_insert_seq_header_freq = 0x%lX\n
+004218b0	%s:\tvideo_capture_offset = 0x%lX\n
+004218d4	%s:\tpcr_out_id = 0x%lX\n
+004218ec	%s:\tenc_quadrant = 0x%lX\n
+00421908	%s:\tout_next_atype = 0x%lX\n
+00421924	%s:\tframe_accuracy_gpio_pin = 0x%lX\n
+0042194c	%s:\tout_pmt_pid = 0x%lX\n
+00421968	%s:\tfilters_enable = 0x%lX\n
+00421984	%s:\taudio_src2 = 0x%X\n
+0042199c	%s:\taudio_type2 = 0x%X\n
+004219b4	%s:\taudio_brate2 = %lu\n
+004219cc	%s:\taudio_srate2 = %lu\n
+004219e4	%s:\taudio_in_srate2 = %lu\n
+00421a00	%s:\taudio_channels2 = %lu\n
+00421a1c	%s:\taudio_out_pid2 = 0x%lX\n
+00421a38	%s:\taudio_data_flags2 = 0x%lX\n
+00421a58	%s:\tout_next_atype2 = 0x%lX\n
+00421a78	%s:\tdiff_psi_out_time = %lu\n
+00421a98	%s:\tout_program_number = 0x%lX\n
+00421ab8	%s:\tvfr_mode = 0x%lX\n
+00421ad0	%s:\tvfr_threshold = 0x%X\n
+00421aec	%s:\tmp4_version = 0x%X\n
+00421b04	%s:\tpcr_output_duration = %lu\n
+00421b24	%s:\tIEC61937_init_ts = 0x%llX\n
+00421b44	%s:\tout_maxvbvbufferlevel = 0x%lX\n
+00421b68	%s:\tout_lang_desc_pid1 = 0x%lX\n
+00421b88	%s:\tout_lang_desc_content1 = 0x%lX\n
+00421bac	%s:\tout_lang_desc_pid2 = 0x%lX\n
+00421bcc	%s:\tout_lang_desc_content2 = 0x%lX\n
+00421bf0	%s:\tblizzard_syncbyte = 0x%X\n
+00421c10	%s:\tremux_max_vpes_size = 0x%X\n
+00421c30	%s:\tremux_fixed_apes_size = 0x%X\n
+00421c54	%s:\tremux_fixed_dma_size = 0x%X\n
+00421c78	%s:\tcomb_dot_crawl_detect = 0x%X\n
+00421c9c	%s:\tcomb_luma_motion = 0x%X\n
+00421cbc	%s:\tcomb_chroma_motion = 0x%X\n
+00421cdc	%s:\tcomb_response = 0x%X\n
+00421cf8	%s:\ttemporal_luma_motion = 0x%X\n
+00421d1c	%s:\ttemporal_chroma_motion = 0x%X\n
+00421d40	%s:\tspatial_luma_edge = 0x%X\n
+00421d60	%s:\tspatial_chroma_edge = 0x%X\n
+00421d80	%s:\tspatial_strength = 0x%X\n
+00421da0	%s:\tscaling_detail_level = 0x%X\n
+00421dc4	%s:\tenableLowMode = 0x%X\n
+00421de0	%s:\tcontent_key_slot_id = 0x%X\n
+00421e00	%s:\tavc_out_flags = 0x%X\n
+00421e1c	%s:\tavcSeiCtrl = 0x%X\n
+00421e34	%s:\tavcPVRConvergeTime = 0x%X\n
+00421e54	%s:\tavcDTSDelayOffset = 0x%X\n
+00421e74	%s:\tavcUserDataSeiInputSize = 0x%X\n
+00421e98	%s:\tavcCustFormat = 0x%X\n
+00421eb4	%s:\tavcHrdBitRate = %d\n
+00421ecc	%s:\tavcCpbSize = 0x%X\n
+00421ee4	%s:\tpmt_descriptor_size = 0x%X\n
+00421f04	%s:\tpmt_descriptor_ctrl = 0x%X\n
+00421f24	%s:\tHDCPoutEnabled = 0x%X\n
+00421f40	%s:\tremux_vr_flags = 0x%X\n
+00421f5c	%s:\trdi_cci_source = 0x%X\n
+00421f78	%s:\tprogressiveValue = 0x%X\n
+00421f98	%s:\tvideo_cropped_horz_inclusive_region = 0x%X\n
+00421fc8	%s:\tvideo_cropped_vert_inclusive_region = 0x%X\n
+00421ff8	%s:\tminimum_ats_delta = 0x%X\n
+00422018	pja - force avcSeiCtl |= AVC_SEICTRL_RP_IDR
+00422044	pja - force avc_out_flags |= AVC_OUT_FLAGS_FORCEIDR
+00422078	%s:Invalid input format\n
+00422094	/dev/vixs/xcodedrv
+004220a8	%s:Failed to open XCode driver - %d %s\n
+004220d0	%s:Failed to UDP TX socket\n
+004220ec	%s:Failed to open capture file %s\n
+00422160	%s:E\n
+00422168	%s:OPEN STREAM LOCAL IOCTL_RET_CMD_COMPLETE : %x\n
+0042219c	%s:Get %d recv video buffer from driver\n
+004221c8	%s:Video buffer %d: addr %x phy addr %x\n
+004221f4	%s:Open Send buf %x\n
+0042220c	%s:User Data Copied size 0x%x bytes\n
+00422234	%s:X OK\n
+00422240	%s:X fail\n
+0042224c	%s:OPEN STREAM LOCAL Failed, return code = 0x%lx\n
+00422280	%s:X fail %x\n
+00422290	%s:Encoder is Active!\n
+004222a8	%s:update bitrateto %d\n
+004222c0	%s:X success\n
+004222d0	%s:Encoder is NOT Active!\n
+004222ec	%s:update bitrate to %d\n
+00422308	%s:Update Input Video Format %x\n
+0042232c	%s:update output video format to %d\n
+004223a4	%s:RECEIVE STREAM Error, reason %x : result = 0x%x\n
+004223d8	%s:SDEV_TSCTRL_GET_INFO Error, reason %x\n
+00422404	%s:IOCTLSDEVSEND Error, reason %x\n
+00422428	vixs_encoder_send_stream
+00422444	vixs_encoder_get_ts_info
+00422460	vixs_encoder_recv_stream
+0042247c	vixs_encoder_flush_stream
+00422498	vixs_encoder_update_stream
+004224b4	vixs_encoder_close_stream
+004224d0	vixs_encoder_open_stream
+004224ec	vixs_encoder_init
+00422500	debug_ioctl_encoder
+00422520	util_common.c : TTL is = %d\n
+00422540	%s:Create Socket failed.\n
+0042255c	%s:Couldn't connect socket to target %x (%s)
+0042258c	%s:writev failed size %d (%s)
+004225ac	%s:Fail to createthread\n
+004225c8	%s:terminate None-active thread %x\n
+004225ec	%s:Error to terminate thread %x\n
+00422610	util_destroy_thread
+00422624	util_create_thread
+00422638	util_sendto
+00422644	util_init_tx_udp_socket
+00422660	HDMI HDMI 0x18 is %x\n
+00422678	HDMI HDMI 0x36 is %x\n
+00422690	libadv7842.cpp : I2S Audio is PCM format
+004226bc	libadv7842.cpp : I2S Audio is Compressed format
+004226ec	libadv7842.cpp : Selecting HDMI Audio - Setting GPIO 5 to HIGH
+0042272c	libadv7842.cpp : GPIO 5 set to HIGH - Using HDMI I2S Audio Clock
+00422770	libadv7842.cpp : Selecting External PCM DAC Audio - Setting GPIO 5 to LOW
+004227bc	libadv7842.cpp : GPIO 5 set to LOW - Using XC4208 Master Audio Clock
+00422804	44.1KHz
+0042280c	48.0KHz
+00422814	32.0KHz
+0042281c	88.2KHz
+00422824	96.0KHz
+0042282c	176KHz
+00422834	192KHz
+0042283c	UNKNOWN!
+00422848	libadv7842.cpp : HDMI Audio Sample Rate Changed : last = %s / current = %s
+00422894	libadv7842.cpp : HDMI Audio Sample Rate = %s
+004228c4	%s - cntr = %d\n
+004228d4	Current Input is %x\n
+00422928	Error to terminate thread %x\n
+00422948	%s: unsupported input type %d\n
+00422968	%s: unsupported Component format %d\n
+004229b8	%s: Unknown input type %d\n
+004229d4	Fail to create thread 
+004229ec	adv7842_get_input
+00422a00	adv7842_program_input_internal
+00422a20	FrameBuffer Base = %X\n
+00422a38	Get FrameBuffer Base Error!
+00422a54	MMR Base = %X\n
+00422a64	Get MMR Base Error!
+00422a80	I2C_READ failed @ %2.2X\n
+00422a9c	I2C_WRITE failed @ %2.2X\n
+00422ac0	10xcode_io_t
+00422ad0	//====== Start ADV7842_t ======
+00422af0	adv7842.cpp : Select External Audio - Setting GPIO 5 to LOW, SigTerm = %d
+00422b40	//====== Start program_input_source = %X ======\n
+00422b74	adv7842.cpp : Select External Audio - Setting GPIO 5 to LOW
+00422bb0	adv7842.cpp : Enable internal EDID
+00422bd4	adv7842.cpp : Internal EDID has been enabled for all the ports
+00422c14	adv7842.cpp : ERROR : Internal EDID not enabled
+00422c44	//=== Initial Reset. Ignore this error message!
+00422c74	//=== HDMI Init Mode Power On, Initial Mapping
+00422ca4	adv7842.cpp : Analog Init Mode Power On, Initial Mapping
+00422ce0	adv7842.cpp : HPA_AUTO_INT_EDID is %x
+00422d08	adv7842.cpp : Changed HPA_AUTO_INT_EDID to 0xA4
+00422d38	adv7842.cpp : Start Loading EDID
+00422d5c	adv7842.cpp : Check Loading EDID
+00422d80	adv7842.cpp : Internal EDID has been written to SPI EEPROM
+00422dbc	adv7842.cpp : EDID checksum = 0x%x
+00422de0	adv7842.cpp : ERROR : Writing EDID to SPI EEPROM
+00422e18	adv7842.cpp : ERROR : Can't open EDID file %s
+00422e48	%x %x %x
+00422e54	adv7842.cpp : Loading the EDID table from : %s
+00422e84	   - %02x %02x %02x
+00422e98	adv7842.cpp : Internal EDID has been stored into SPI EEPROM
+00422ed4	adv7842.cpp : ERROR : Writing EDID to SPI
+00422f00	//=== write_register i2c 0x%02x reg 0x%02x data 0x%02x   m_I2CChannel=0x%x\n
+00422f4c	//=== read_register i2c 0x%02x reg 0x%02x data 0x%02x\n
+00422f84	adv7842.cpp : Load EDID into SPI EEPROM
+00422fac	adv7842.cpp : XC_INPUT_COMPOSITE_480I
+00422fd4	adv7842.cpp : XC_INPUT_COMPOSITE_576I
+00422ffc	adv7842.cpp : XC_INPUT_S_VIDEO_480I
+00423020	adv7842.cpp : XC_INPUT_COMPONENT_480I
+00423048	adv7842.cpp : XC_INPUT_COMPONENT_576I
+00423070	adv7842.cpp : XC_INPUT_COMPONENT_480P_HD
+0042309c	adv7842.cpp : XC_INPUT_COMPONENT_576P_HD
+004230c8	adv7842.cpp : XC_INPUT_COMPONENT_720P
+004230f0	adv7842.cpp : XC_INPUT_COMPONENT_720P_50
+0042311c	adv7842.cpp : XC_INPUT_COMPONENT_1080I
+00423144	adv7842.cpp : XC_INPUT_COMPONENT_1080I_50
+00423170	adv7842.cpp : XC_INPUT_COMPONENT_1080P
+00423198	adv7842.cpp : Changing LLC DLL PHASE from %x to %x
+004231cc	adv7842.cpp : XC_INPUT_HDMI_TO_HDMI
+004231f0	adv7842.cpp : XC_INPUT_HDMI_TO_HDMI_1080P
+0042321c	adv7842.cpp : XC_INPUT_HDMI_TO_HDMI_480I
+00423248	adv7842.cpp : XC_INPUT_HDMI_TO_HDMI_576I
+00423274	//=== Has detected reset command has to wait for 300 Milisecond. 
+004232b8	//=== Has detected reset command for encoder has to wait for 300 Milisecond. 
+004233a4	adv7842.cpp : HDMI HDMI 0x18 is %x
+004233c8	adv7842.cpp : HDMI HDMI 0x36 is %x
+004233ec	adv7842.cpp : HDMI HDMI 0x39 is %x
+00423410	wait 1 second 
+00423420	ADV7842_STDI_REGISTER = %x\n
+0042343c	ADV7844_DVALID_REGISTER = %x\n
+0042345c	ADV7842_BL_REGISTER = %x\n
+00423478	BL = %d\n
+00423484	ADV7842_SCVS_LCVS_REGISTER = %x\n
+004234a8	SCVS = %d, value = 0x%x\n
+004234c4	ADV7842_SCF_LCF_REGISTER = %x, SCF = %d\n
+004234f0	SCF = %d\n
+004234fc	adv7842.cpp : Input video is 480i@60Hz
+00423524	adv7842.cpp : Input video is 576i@50Hz
+0042354c	adv7842.cpp : Input video is 480p@60Hz
+00423574	adv7842.cpp : Input video is 576p@50Hz
+0042359c	adv7842.cpp : Input video is 720p@50
+004235c4	adv7842.cpp : Input video is 720p@60
+004235ec	adv7842.cpp : Input video is 1080i@50
+00423614	adv7842.cpp : Input video is 1080i@60
+0042363c	adv7842.cpp : Input video is 1080p@50
+00423664	adv7842.cpp : Input video is 1080p@60
+0042368c	adv7842.cpp : NO digital video standard detected
+004236c0	adv7842.cpp : HDMI_SDP, 0x5A = 0x%x
+004236e4	adv7842.cpp : ERROR : Cannot detect signal
+00423710	adv7842.cpp : HDMI_SDP, 0x57 = 0x%x
+00423734	adv7842.cpp : HDMI_SDP, 0x52 = 0x%x
+00423758	adv7842.cpp : NTSC signal detected
+0042377c	adv7842.cpp : PAL signal detected
+004237a0	adv7842.cpp : 50HZ detected
+004237bc	adv7842.cpp : 60HZ detected
+004237d8	adv7842.cpp : SVIDEO detected
+004237f8	adv7842.cpp : COMPOSITE detected
+0042381c	adv7842.cpp : ERROR : The video standard cannot be determined
+00423860	/dev/vixs/xcodedrv
+00423874	ERROR: Failed to open XCode driver - %d\n
+004238a0	[%s] Buffer is not used\n
+004238bc	[%s] Commad request completed\n
+004238dc	[%s] Commad request FAILED\n
+004238f8	[%s] Commad request id INVALID\n
+00423918	[%s] Command parameter INVALID\n
+00423938	[%s] Command contains invalid device handle\n
+00423968	[%s] Command timedout\n
+00423980	[%s] The driver buffer was full\n
+004239a4	[%s] Resources are full...no space left in timer queue;\n
+004239e0	[%s] User requested that associated File handle requests be cancelled;\n
+00423a28	[%s] DMA failed because input/output request buffer exceeded the max  size\n
+00423a74	[%s] DMA failed because there was an error in the scatter list\n
+00423ab4	[%s] DMA Status states that the DMA Engine has encountered an error\n
+00423afc	[%s] I2C transfer failed at electrical level\n
+00423b2c	[%s] failed because of hardware error\n
+00423b54	[%s] TSD failed because no channels were available or Channel was invalid...depending on IOCTL\n
+00423bb4	[%s] TSD failed to allocate Frame Buffer Memory.\n
+00423be8	[%s] TSD failed to allocate a Pattern Register.\n
+00423c1c	[%s] TSD -  an application as closed the PSI slot.\n
+00423c50	[%s] TSD -  The specified TSD slot is busy...try again.\n
+00423c8c	[%s] Pointer or size needs to be aligned\n
+00423cb8	[%s] Destination buffer is full\n
+00423cdc	[%s] Source buffer is empty\n
+00423cfc	[%s] Buffer provided by user is too small to receive a pes\n
+00423d38	[%s] Device is not capable of requested operation\n
+00423d6c	[%s] No enough kernel memory\n
+00423d8c	[%s] Device has been closed\n
+00423dac	[%s] Input of this device is being shared\n
+00423dd8	[%s] There were no tuners available for request\n
+00423e0c	[%s] The device is not initialized (MIPS not enabled)\n
+00423e44	[%s] Failed but may succeed on retry\n
+00423e6c	[%s] Failure was due to runing out of TS Out resource allocation\n
+00423eb0	[%s] Stream processing has stopped for this stream, lack of HD resources\n
+00423efc	[%s] Requested data is out of Memory Range\n
+00423f28	[%s] Stream is being flushed of all input data..sends are no longer valid\n
+00423f74	[%s] Stream has been flushed of all input data..sends are no longer valid\n
+00423fc0	[%s] One of the buffer size requested is either below or above range.\n
+00424008	[%s] Multiple of 16 lines are required when sending YUV Data to XCode for encoding\n
+0042405c	[%s] SPI Master is busy and can not successfully complete the request\n
+004240a4	[%s] The Stream Context is no longer valid because the firmware is disabled\n
+004240f4	[%s] For USB DMA, must be multi. of 512 bytes\n
+00424124	[%s] For USB, indicate no FIFO avaliable\n
+00424150	[%s] The firmware has a fatal error. Driver must be reloaded to restart the operation.\n
+004241a8	[%s] No device.\n
+004241bc	[%s] Command is still being serviced\n
+004241e4	[%s] Unknown Error\n
+004241f8	GET_FBADDR
+00424204	GET_MMRADDR
+00424220	UPDATE
+00424228	CLOSE
+00424230	OPEN_CAPTURE
+00424240	OPEN_LOCAL
+0042424c	OPEN_TS
+00424254	OPEN_PASSTHROUGH
+00424268	TSD_CONFIG
+00424274	HOST_DMA_FB
+00424280	FB_DMA_HOST
+0042428c	FB_DMA_FB
+00424298	PATTERN_DMA_FB
+004242a8	TS_CTL
+004242b0	p_dvbpsi->p_decoder == ((void *)0)
+004242d4	dvbpsi.c
+004242e0	psi_size >= sizeof(dvbpsi_decoder_t)
+0042430c	p_decoder
+00424318	prev_nr < 256
+00424328	p_section
+00424334	p_section->p_next == ((void *)0)
+00424358	libdvbpsi (%s): %s
+0042436c	PSI decoder
+00424378	not a TS packet
+00424388	TS duplicate (received %d, expected %d) for PID %d
+004243bc	TS discontinuity (received %d, expected %d) for PID %d
+004243f4	PSI section too long
+0042440c	misc PSI
+00424418	Bad CRC_32 table 0x%x !!!
+00424434	table 0x%x
+00424440	dvbpsi_packet_push
+00424454	dvbpsi_decoder_delete
+0042446c	dvbpsi_decoder_psi_section_add
+0042448c	dvbpsi_decoder_psi_sections_completed
+004244b4	dvbpsi_decoder_reset
+004244cc	dvbpsi_decoder_new
+004244e0	dvbpsi_delete
+00424504	invalid section (table_id == 0x%02x expected 0x%02x)
+0042453c	invalid section (section_syntax_indicator == 0)
+0042456c	Table version %2d, i_extension %5d, section %3d up to %3d, current %1d
+004245b4	********************************************
+004245e4	* Generated PSI section has a bad CRC_32.  *
+00424614	* THIS IS A BUG, PLEASE REPORT TO THE LIST *
+00424644	*  ---  libdvbpsi-devel@videolan.org  ---  *
+00424a80	dvbpsi_CheckPSISection
+00424aa0	tables/sdt.c
+00424ab0	p_dvbpsi->p_decoder
+00424ac4	SDT decoder
+00424ad0	Already a decoder for (table_id == 0x%02x,extension == 0x%02x)
+00424b10	p_sdt
+00424b18	SDT Decoder
+00424b24	No such SDT decoder (table_id == 0x%02x,extension == 0x%02x)
+00424b64	p_subdec->p_decoder
+00424b78	p_service->p_first_descriptor
+00424b98	'transport_stream_id' differs whereas no TS discontinuity has occured
+00424be0	'version_number' differs whereas no discontinuity has occured
+00424c20	'last_section_number' differs whereas no discontinuity has occured
+00424c64	ignoring already decoded section %d
+00424c88	p_sdt_decoder
+00424c98	overwrite section number %d
+00424cb4	failed decoding section %d
+00424cd0	p_sdt_decoder->pf_sdt_callback
+00424cf0	SDT generator
+00424d00	create a new section to carry more Service descriptors
+00424d38	unable to carry all the descriptors
+00424d60	dvbpsi_sdt_sections_gather
+00424d7c	dvbpsi_AddSectionSDT
+00424d94	dvbpsi_ReInitSDT
+00424da8	dvbpsi_sdt_service_descriptor_add
+00424dcc	dvbpsi_sdt_init
+00424ddc	dvbpsi_sdt_detach
+00424df0	dvbpsi_sdt_attach
+00424e10	tables/eit.c
+00424e20	EIT decoder
+00424e2c	EIT Decoder
+00424e38	No such EIT decoder (table_id == 0x%02x,extension == 0x%02x)
+00424e78	p_event->p_first_descriptor
+00424e94	'service_id' differs whereas no TS discontinuity has occurred
+00424ed4	'version_number' differs whereas no discontinuity has occurred
+00424f14	p_eit_decoder
+00424f24	p_eit_decoder->pf_eit_callback
+00424f44	EIT generator
+00424f54	too many descriptors in event, unable to carry all the descriptors
+00424fa0	dvbpsi_eit_sections_gather
+00424fbc	dvbpsi_ReInitEIT
+00424fd0	dvbpsi_AddSectionEIT
+00424fe8	dvbpsi_eit_event_descriptor_add
+00425008	dvbpsi_eit_detach
+0042501c	dvbpsi_eit_attach
+00425030	tables/nit.c
+00425040	NIT decoder
+0042504c	NIT Decoder
+00425058	No such NIT decoder (table_id == 0x%02x,extension == 0x%02x)
+00425098	p_ts->p_first_descriptor
+004250b4	'network_id' don't match
+004250d0	p_nit_decoder->pf_nit_callback
+004250f0	NIT generator
+00425100	create a new section to carry more TS descriptors
+00425134	unable to carry all the TS descriptors
+00425160	dvbpsi_nit_sections_gather
+0042517c	dvbpsi_ReInitNIT
+00425190	dvbpsi_nit_ts_descriptor_add
+004251b0	dvbpsi_nit_attach
+004251d0	tables/tot.c
+004251e0	TDT/TOT decoder
+004251f0	p_tot
+004251f8	p_tot->p_first_descriptor
+00425214	TDT decoder
+00425220	TDT has an invalid payload size (%d bytes) !!!
+00425250	p_tot_decoder->pf_tot_callback
+00425270	TDT/TOT generator
+00425284	TOT does not fit into one section as it ought to be !!!
+004252bc	*  Generated TDT/TOT section is invalid.   *
+004252f0	dvbpsi_tot_sections_gather
+0042530c	dvbpsi_ReInitTOT
+00425320	dvbpsi_tot_descriptor_add
+0042533c	dvbpsi_tot_init
+0042534c	dvbpsi_tot_detach
+00425360	dvbpsi_tot_attach
+00425380	demux.c
+00425388	pf_gather
+00425394	pf_detach
+004253a0	p_subdec
+004253ac	p_demux
+004253b4	p_demux->p_first_subdec
+004253d0	dvbpsi_DetachDemuxSubDecoder
+004253f0	dvbpsi_AttachDemuxSubDecoder
+00425410	dvbpsi_DeleteDemuxSubDecoder
+00425430	dvbpsi_NewDemuxSubDecoder
+0042544c	dvbpsi_DetachDemux
+00425460	dvbpsi_Demux
+00425470	dvbpsi_AttachDemux
+00425490	p_descriptor
+004254a0	descriptor.c
+004254b0	dvbpsi_AddDescriptor
+00425785	zR
+004258cd	zPLR
+00436580	G�
+00436690	UNKNOWN!
+00436720	@
+004367a4	@
+004367f8	@
+0043687c	@E@
+004368c8	@
+00436918	@
+00436960	@
+004369a8	@
+004369f4	@
+00436a3c	@
+00436a88	@
+00436ad0	@
+00436b18	@
+00436b60	@
+00436ba8	@
+00436bf0	@
+00436c40	@@�@�@,@�@@@�@�@3@D�D>
+00436cb8	@@�@�@,@�@@@?@�@�@3CD�D>
+00436d34	@@�@@B@,@�@@@�@�@3@D�D>
+00436db0	@@�@@�@,@�@@@�@�@3@D�D>
+00436e30	@��@�d@�l@��@��@��@��@�|@�L@�h@�D@�HdwPdw
+00437178	current video mode unknown
+00437278	log_buff is empty
+004377c4	null
+004378c4	null
+.comment::00000000	GCC: (GNU) 4.5.3
+.debug_frame::00000009	
+.debug_frame::00000365	
+.debug_frame::00000499	
+.debug_frame::00000539	
+.debug_frame::00000689	
+.debug_frame::00000729	
+.debug_frame::000008b5	
+.debug_frame::00000a6d	
+.debug_frame::00000c09	
+.debug_frame::00000d59	
+.debug_frame::00000e31	
+.debug_frame::00000ed1	
+.debug_frame::00000f15	
+.debug_str::00000000	short unsigned int
+.shstrtab::00000001	.symtab
+.shstrtab::00000009	.strtab
+.shstrtab::00000011	.shstrtab
+.shstrtab::0000001b	.interp
+.shstrtab::00000023	.note.ABI-tag
+.shstrtab::00000031	.reginfo
+.shstrtab::0000003a	.dynamic
+.shstrtab::00000043	.hash
+.shstrtab::00000049	.dynsym
+.shstrtab::00000051	.dynstr
+.shstrtab::00000059	.gnu.version
+.shstrtab::00000066	.gnu.version_r
+.shstrtab::00000075	.rel.dyn
+.shstrtab::0000007e	.init
+.shstrtab::00000084	.text
+.shstrtab::0000008a	.MIPS.stubs
+.shstrtab::00000096	.fini
+.shstrtab::0000009c	.rodata
+.shstrtab::000000a4	.eh_frame_hdr
+.shstrtab::000000b2	.eh_frame
+.shstrtab::000000bc	.gcc_except_table
+.shstrtab::000000ce	.ctors
+.shstrtab::000000d5	.dtors
+.shstrtab::000000dc	.jcr
+.shstrtab::000000e1	.data.rel.ro
+.shstrtab::000000ee	.data
+.shstrtab::000000f4	.rld_map
+.shstrtab::000000fd	.got
+.shstrtab::00000102	.sdata
+.shstrtab::00000109	.bss
+.shstrtab::0000010e	.pdr
+.shstrtab::00000113	.comment
+.shstrtab::0000011c	.debug_aranges
+.shstrtab::0000012b	.debug_pubnames
+.shstrtab::0000013b	.debug_info
+.shstrtab::00000147	.debug_abbrev
+.shstrtab::00000155	.debug_line
+.shstrtab::00000161	.debug_frame
+.shstrtab::0000016e	.debug_str
+.shstrtab::00000179	.debug_loc
+.shstrtab::00000184	.debug_pubtypes
+.shstrtab::00000194	.debug_ranges
+.shstrtab::000001a2	.gnu.attributes
+.shstrtab::000001b2	.mdebug.abi32
+.strtab::00000001	hlt
+.strtab::00000005	init.c
+.strtab::0000000c	initfini.c
+.strtab::00000017	crtstuff.c
+.strtab::00000022	__CTOR_LIST__
+.strtab::00000030	__DTOR_LIST__
+.strtab::0000003e	__JCR_LIST__
+.strtab::0000004b	__do_global_dtors_aux
+.strtab::00000061	completed.5354
+.strtab::00000070	dtor_idx.5356
+.strtab::0000007e	frame_dummy
+.strtab::0000008a	__CTOR_END__
+.strtab::00000097	__FRAME_END__
+.strtab::000000a5	__JCR_END__
+.strtab::000000b1	__do_global_ctors_aux
+.strtab::000000c7	main.c
+.strtab::000000ce	libxcode4encoder.c
+.strtab::000000e1	message
+.strtab::000000e9	writePSI
+.strtab::000000f2	crc32_tab
+.strtab::000000fc	bswap_32
+.strtab::00000105	crc32
+.strtab::0000010b	sti_minor
+.strtab::00000115	C.97.11596
+.strtab::00000120	C.98.11597
+.strtab::0000012b	encoder_recv_video_thread_entry
+.strtab::0000014b	__FUNCTION__.9202
+.strtab::0000015d	__FUNCTION__.9210
+.strtab::0000016f	__FUNCTION__.9215
+.strtab::00000181	encoder_send_data_thread_entry
+.strtab::000001a0	C.1.11037
+.strtab::000001aa	C.2.11038
+.strtab::000001b4	__FUNCTION__.9282
+.strtab::000001c6	__FUNCTION__.9323
+.strtab::000001d8	__FUNCTION__.9328
+.strtab::000001ea	__FUNCTION__.9335
+.strtab::000001fc	__FUNCTION__.9341
+.strtab::0000020e	__FUNCTION__.9347
+.strtab::00000220	vixs_encoder.c
+.strtab::0000022f	__FUNCTION__.8526
+.strtab::00000241	__FUNCTION__.8543
+.strtab::00000253	__FUNCTION__.8564
+.strtab::00000265	__FUNCTION__.8572
+.strtab::00000277	__FUNCTION__.8579
+.strtab::00000289	__FUNCTION__.8606
+.strtab::0000029b	__FUNCTION__.8614
+.strtab::000002ad	__FUNCTION__.8619
+.strtab::000002bf	__FUNCTION__.8626
+.strtab::000002d1	util_common.c
+.strtab::000002df	__FUNCTION__.4750
+.strtab::000002f1	DummyTsPkt
+.strtab::000002fc	__FUNCTION__.4770
+.strtab::0000030e	__FUNCTION__.4781
+.strtab::00000320	__FUNCTION__.4786
+.strtab::00000332	libadv7842.cpp
+.strtab::00000341	_ZL20video_standard_array
+.strtab::0000035b	_ZL12exitMyThread
+.strtab::0000036d	_ZL10myThreadId
+.strtab::0000037d	_ZL12adv7842Mutex
+.strtab::0000038f	_ZL17my_event_callback
+.strtab::000003a6	_ZL22my_event_callback_data
+.strtab::000003c2	_ZL6curStd
+.strtab::000003cd	_ZL19my_subscribed_event
+.strtab::000003e6	_ZL14hdmi_available
+.strtab::000003fa	_ZL8msg_buff
+.strtab::00000407	_ZL15msg_sample_rate
+.strtab::0000041c	_ZL16last_sample_rate
+.strtab::00000432	_ZL14audio_msg_cntr
+.strtab::00000446	_ZL7xcodeIO
+.strtab::00000452	_ZL14adv7842_threadPv
+.strtab::00000468	_ZL33adv7842_detect_video_std_internaliP9video_std
+.strtab::0000049b	_ZL13map_video_std36enum_analog_digital_video_standard_t
+.strtab::000004d4	_ZL30adv7842_program_input_internali18ADV7842_input_typeP9video_std
+.strtab::00000518	_ZZL30adv7842_program_input_internali18ADV7842_input_typeP9video_stdE8__func__
+.strtab::00000567	_ZZ17adv7842_get_inputE8__func__
+.strtab::00000588	xcodeio.cpp
+.strtab::00000594	_ZGVZN10xcode_io_t6get_ioEvE7XocdeIO
+.strtab::000005b9	_ZZN10xcode_io_t6get_ioEvE7XocdeIO
+.strtab::000005dc	adv7842.cpp
+.strtab::000005e8	_ZL17curr_vidmode_buff
+.strtab::000005ff	xcodeapi.cpp
+.strtab::0000060c	dvbpsi.c
+.strtab::00000615	__PRETTY_FUNCTION__.3024
+.strtab::0000062e	__PRETTY_FUNCTION__.3031
+.strtab::00000647	__PRETTY_FUNCTION__.3037
+.strtab::00000660	__PRETTY_FUNCTION__.3041
+.strtab::00000679	__PRETTY_FUNCTION__.3052
+.strtab::00000692	__PRETTY_FUNCTION__.3063
+.strtab::000006ab	__PRETTY_FUNCTION__.3077
+.strtab::000006c4	psi.c
+.strtab::000006ca	__PRETTY_FUNCTION__.2639
+.strtab::000006e3	dvbpsi_crc32_table
+.strtab::000006f6	tables/sdt.c
+.strtab::00000703	__PRETTY_FUNCTION__.3198
+.strtab::0000071c	__PRETTY_FUNCTION__.3219
+.strtab::00000735	dvbpsi_ReInitSDT
+.strtab::00000746	__PRETTY_FUNCTION__.3264
+.strtab::0000075f	__PRETTY_FUNCTION__.3207
+.strtab::00000778	__PRETTY_FUNCTION__.3259
+.strtab::00000791	__PRETTY_FUNCTION__.3283
+.strtab::000007aa	__PRETTY_FUNCTION__.3277
+.strtab::000007c3	tables/eit.c
+.strtab::000007d0	NewEITSection
+.strtab::000007de	__PRETTY_FUNCTION__.3217
+.strtab::000007f7	__PRETTY_FUNCTION__.3226
+.strtab::00000810	dvbpsi_ReInitEIT.clone.1
+.strtab::00000829	__PRETTY_FUNCTION__.3296
+.strtab::00000842	__PRETTY_FUNCTION__.3291
+.strtab::0000085b	__PRETTY_FUNCTION__.3328
+.strtab::00000874	__PRETTY_FUNCTION__.3322
+.strtab::0000088d	tables/nit.c
+.strtab::0000089a	__PRETTY_FUNCTION__.3199
+.strtab::000008b3	dvbpsi_ReInitNIT
+.strtab::000008c4	__PRETTY_FUNCTION__.3271
+.strtab::000008dd	__PRETTY_FUNCTION__.3266
+.strtab::000008f6	__PRETTY_FUNCTION__.3290
+.strtab::0000090f	tables/tot.c
+.strtab::0000091c	__PRETTY_FUNCTION__.3182
+.strtab::00000935	__PRETTY_FUNCTION__.3203
+.strtab::0000094e	dvbpsi_ReInitTOT
+.strtab::0000095f	__PRETTY_FUNCTION__.3230
+.strtab::00000978	__PRETTY_FUNCTION__.3191
+.strtab::00000991	__PRETTY_FUNCTION__.3225
+.strtab::000009aa	__PRETTY_FUNCTION__.3249
+.strtab::000009c3	demux.c
+.strtab::000009cb	__PRETTY_FUNCTION__.2705
+.strtab::000009e4	__PRETTY_FUNCTION__.2689
+.strtab::000009fd	__PRETTY_FUNCTION__.2711
+.strtab::00000a16	__PRETTY_FUNCTION__.2725
+.strtab::00000a2f	__PRETTY_FUNCTION__.2731
+.strtab::00000a48	__PRETTY_FUNCTION__.2736
+.strtab::00000a61	__PRETTY_FUNCTION__.2741
+.strtab::00000a7a	descriptor.c
+.strtab::00000a87	__PRETTY_FUNCTION__.2519
+.strtab::00000aa0	elf-init.c
+.strtab::00000aab	stat64.c
+.strtab::00000ab4	__dso_handle
+.strtab::00000ac1	__init_array_end
+.strtab::00000ad2	__init_array_start
+.strtab::00000ae5	_DYNAMIC
+.strtab::00000aee	fileno@@GLIBC_2.0
+.strtab::00000b00	xcode4_update_encoder_param
+.strtab::00000b1c	data_start
+.strtab::00000b27	_fbss
+.strtab::00000b2d	adv7842_get_input
+.strtab::00000b3f	__errno_location@@GLIBC_2.0
+.strtab::00000b5b	_ZN9ADV7842_t17detect_audio_modeERj
+.strtab::00000b7f	util_init_tx_udp_socket
+.strtab::00000b97	DW.ref.__gxx_personality_v0
+.strtab::00000bb3	sprintf@@GLIBC_2.0
+.strtab::00000bc6	dvbpsi_packet_push
+.strtab::00000bd9	_Z21sample_event_callbackPvP13ADV7842_event
+.strtab::00000c05	FormATSC_ETT
+.strtab::00000c12	adv7842_detect_video_std
+.strtab::00000c2b	xcode4_stop_encoder
+.strtab::00000c3f	pthread_cond_destroy@@GLIBC_2.3.2
+.strtab::00000c61	_ZN10xcode_io_t7fb_moveEjjj
+.strtab::00000c7d	connect@@GLIBC_2.0
+.strtab::00000c90	dvbpsi_tot_sections_generate
+.strtab::00000cad	dvbpsi_AttachDemux
+.strtab::00000cc0	terminate_encoder_send_data_thread
+.strtab::00000ce3	adv7842mode_YPbPr_1080i_24b_422_HDMI_tab
+.strtab::00000d0c	_Z13start_encoder9video_stdi
+.strtab::00000d29	pthread_join@@GLIBC_2.0
+.strtab::00000d41	strerror@@GLIBC_2.0
+.strtab::00000d55	_Z19xcode_update_streamjP14_IOCTLSDEVCTRLyj
+.strtab::00000d81	dvbpsi_eit_delete
+.strtab::00000d93	readSbiFile
+.strtab::00000d9f	__libc_csu_fini
+.strtab::00000daf	_Z16xcode_ts_controljP16_IOCTLSDEVTSCTRLij
+.strtab::00000dda	_ZTI10xcode_io_t
+.strtab::00000deb	vixs_encoder_deinit
+.strtab::00000dff	_Z23xcode_dma_pattern_to_fbjjjj
+.strtab::00000e1f	syslog@@GLIBC_2.0
+.strtab::00000e31	util_create_thread
+.strtab::00000e44	_gp_disp
+.strtab::00000e4d	getchar@@GLIBC_2.0
+.strtab::00000e60	_ZN9ADV7842_t8LoadHDMIEh
+.strtab::00000e79	adv7842mode_YPbPr_720p_24b_422_HDMI_tab
+.strtab::00000ea1	dvbpsi_decoder_reset
+.strtab::00000eb6	adv7842_enum_input
+.strtab::00000ec9	_DYNAMIC_LINKING
+.strtab::00000eda	readCfgFile
+.strtab::00000ee6	vixs_encoder_close_stream
+.strtab::00000f00	dvbpsi_decoder_delete
+.strtab::00000f16	_Z25xcode_open_stream_capturejP21_IOCTLSDEVOPENCAPTURE
+.strtab::00000f4d	readCompanyFile
+.strtab::00000f5d	curStd
+.strtab::00000f64	dvbpsi_sdt_empty
+.strtab::00000f75	__cxa_guard_acquire@@CXXABI_1.3
+.strtab::00000f95	_ZN10xcode_io_tD0Ev
+.strtab::00000fa9	dvbpsi_nit_new
+.strtab::00000fb8	adv7842mode_HDMI_YPbPr_HDMI_480i_tab
+.strtab::00000fdd	_Z11print_usagev
+.strtab::00000fee	dvbpsi_CheckPSISection
+.strtab::00001005	__gmon_start__
+.strtab::00001014	dvbpsi_AttachDemuxSubDecoder
+.strtab::00001031	_Jv_RegisterClasses
+.strtab::00001045	vixs_encoder_init
+.strtab::00001057	pthread_cond_signal@@GLIBC_2.3.2
+.strtab::00001078	util_thread_notify_ready
+.strtab::00001091	_ZN9ADV7842_t9CheckEDIDEv
+.strtab::000010ab	_ZdlPv@@GLIBCXX_3.4
+.strtab::000010bf	SigTerm
+.strtab::000010c7	__xstat64@@GLIBC_2.2
+.strtab::000010dc	dvbpsi_DeleteDescriptors
+.strtab::000010f5	dvbpsi_tot_descriptor_add
+.strtab::0000110f	adv7842mode_YPbPr_1080p_24b_422_HDMI_tab
+.strtab::00001138	_fini
+.strtab::0000113e	writev@@GLIBC_2.0
+.strtab::00001150	_ZN9ADV7842_t11set_channelEj
+.strtab::0000116d	calloc@@GLIBC_2.0
+.strtab::0000117f	inet_addr@@GLIBC_2.0
+.strtab::00001194	putchar@@GLIBC_2.0
+.strtab::000011a7	_ZN10xcode_io_t9i2c_writeEiiPKvjii
+.strtab::000011ca	dvbpsi_eit_sections_generate
+.strtab::000011e7	write@@GLIBC_2.0
+.strtab::000011f8	encoder_param
+.strtab::00001206	vixs_encoder_send_stream
+.strtab::0000121f	adv7842mode_YPbPr_576p_10b_422_HDMI_tab
+.strtab::00001247	_Z13print_versionv
+.strtab::0000125a	adv7842_init
+.strtab::00001267	fgets@@GLIBC_2.0
+.strtab::00001278	dvbpsi_NewDemuxSubDecoder
+.strtab::00001292	memset@@GLIBC_2.0
+.strtab::000012a4	_ZN9ADV7842_t20program_input_sourceE20enum_xc_input_type_t
+.strtab::000012df	_Z4termi
+.strtab::000012e8	_ZN9ADV7842_t21detect_video_standardER36enum_analog_digital_video_standard_t
+.strtab::00001335	_GLOBAL_OFFSET_TABLE_
+.strtab::0000134b	dvbpsi_nit_ts_add
+.strtab::0000135d	adv7842mode_S_Video_tab
+.strtab::00001375	__libc_start_main@@GLIBC_2.0
+.strtab::00001392	xcode4_open_encoder
+.strtab::000013a6	_ZN10xcode_io_t19write_reg_mask_bitsEjjj
+.strtab::000013cf	_Z22xcode_print_error_codejPKc
+.strtab::000013ee	adv7842mode_YPbPr_720p_50HZ_24b_422_HDMI_tab
+.strtab::0000141b	ntohl@@GLIBC_2.0
+.strtab::0000142c	htons@@GLIBC_2.0
+.strtab::0000143d	setMinor
+.strtab::00001446	__assert_fail@@GLIBC_2.0
+.strtab::0000145f	dvbpsi_eit_init
+.strtab::0000146f	dvbpsi_demuxGetSubDec
+.strtab::00001485	genNIT
+.strtab::0000148c	launch_encoder_recv_thead
+.strtab::000014a6	_Z35xcode_dma_pattern_to_fb_large_chunkjjjj
+.strtab::000014d2	_ZN10xcode_io_tD1Ev
+.strtab::000014e6	_ZN9ADV7842_t8LoadEDIDEPc
+.strtab::00001500	perror@@GLIBC_2.0
+.strtab::00001512	adv7842mode_HDMI_YPbPr_HDMI_tab
+.strtab::00001532	vixs_encoder_recv_stream
+.strtab::0000154b	launch_encoder_send_data_thead
+.strtab::0000156a	usleep@@GLIBC_2.0
+.strtab::0000157c	dvbpsi_tot_empty
+.strtab::0000158d	dvbpsi_DetachDemuxSubDecoder
+.strtab::000015aa	_IO_stdin_used
+.strtab::000015b9	gettimeofday@@GLIBC_2.0
+.strtab::000015d1	toExit
+.strtab::000015d8	dvbpsi_nit_attach
+.strtab::000015ea	_ZN9ADV7842_tC2Ei
+.strtab::000015fc	adv7842mode_Composite_576i_tab
+.strtab::0000161b	strtol@@GLIBC_2.0
+.strtab::0000162d	vixs_encoder_get_ts_info
+.strtab::00001646	threadId
+.strtab::0000164f	_ZN10xcode_io_t12set_reg_maskEjj
+.strtab::00001670	free@@GLIBC_2.0
+.strtab::00001680	adv7842mode_YPbPr_480i_10b_HDMI_tab
+.strtab::000016a4	_ZN10xcode_io_tC2Ev
+.strtab::000016b8	dvbpsi_DeleteDemuxSubDecoder
+.strtab::000016d5	getline@@GLIBC_2.0
+.strtab::000016e8	_Z14string2netaddrPc
+.strtab::000016fd	genSDT
+.strtab::00001704	__data_start
+.strtab::00001711	genTDT
+.strtab::00001718	_Z20xcode_dma_host_to_fbjPvjj
+.strtab::00001736	sigaction@@GLIBC_2.0
+.strtab::0000174b	stat64
+.strtab::00001752	pthread_cond_init@@GLIBC_2.3.2
+.strtab::00001771	adv7842mode_YPbPr_PAL_576i_10b_HDMI_tab
+.strtab::00001799	_gp
+.strtab::0000179d	ioctl@@GLIBC_2.0
+.strtab::000017ae	socket@@GLIBC_2.0
+.strtab::000017c0	_ZN9ADV7842_tD1Ev
+.strtab::000017d2	dvbpsi_delete
+.strtab::000017e0	pthread_mutex_unlock@@GLIBC_2.0
+.strtab::00001800	adv7842mode_Composite_tab
+.strtab::0000181a	isatty@@GLIBC_2.0
+.strtab::0000182c	_Z17xcode_recv_streamjP14_IOCTLSDEVRECVPvPjyS2_S2_S2_
+.strtab::00001862	dvbpsi_CalculateCRC32
+.strtab::00001878	_ZN10xcode_io_t10mmreg_readEj
+.strtab::00001896	_ZTVN10__cxxabiv117__class_type_infoE@@CXXABI_1.3
+.strtab::000018c8	__cxa_guard_release@@CXXABI_1.3
+.strtab::000018e8	dvbpsi_sdt_delete
+.strtab::000018fa	dvbpsi_nit_descriptor_add
+.strtab::00001914	_Z31xcode_get_frame_buffer_map_addrj
+.strtab::00001939	_ZN9ADV7842_t17set_free_run_modeE23enum_xc_free_run_mode_t
+.strtab::00001974	_Z22xcode_get_mmr_map_addrj
+.strtab::00001990	_ZN9ADV7842_t14write_registerEjhh
+.strtab::000019b2	fclose@@GLIBC_2.2
+.strtab::000019c4	getopt@@GLIBC_2.0
+.strtab::000019d6	dvbpsi_nit_ts_descriptor_add
+.strtab::000019f3	dvbpsi_nit_sections_gather
+.strtab::00001a0e	stderr@@GLIBC_2.0
+.strtab::00001a20	memcpy@@GLIBC_2.0
+.strtab::00001a32	_ZN10xcode_io_t19i2c_write_then_readEiiPKvPvjjii
+.strtab::00001a63	_ZN10xcode_io_t7fb_readEjPvj
+.strtab::00001a80	dvbpsi_sdt_new
+.strtab::00001a8f	strlen@@GLIBC_2.0
+.strtab::00001aa1	dvbpsi_eit_new
+.strtab::00001ab0	_ZN10xcode_io_t14fb_addr_to_ptrEj
+.strtab::00001ad2	pthread_mutex_destroy@@GLIBC_2.0
+.strtab::00001af3	dvbpsi_decoder_psi_section_add
+.strtab::00001b12	debug_ioctl_encoder
+.strtab::00001b26	dvbpsi_eit_nvod_event_add
+.strtab::00001b40	adv7842load_EDID_tab
+.strtab::00001b55	scaler_o480i
+.strtab::00001b62	dvbpsi_sdt_sections_generate
+.strtab::00001b7f	FormATSC_STT
+.strtab::00001b8c	encoderHandle
+.strtab::00001b9a	fcloseall@@GLIBC_2.0
+.strtab::00001baf	_ZN10xcode_io_t6fb_setEjij
+.strtab::00001bca	adv7842mode_YPbPr_NTSC_480i_480p_24b_422_HDMI_tab
+.strtab::00001bfc	adv7842mode_YPbPr_480p_24b_422_HDMI_tab
+.strtab::00001c24	_ZN9ADV7842_tC1Ev
+.strtab::00001c36	_ZN10xcode_io_t8i2c_readEiiPvjii
+.strtab::00001c57	dvbpsi_IsDescriptorDecoded
+.strtab::00001c72	asprintf@@GLIBC_2.0
+.strtab::00001c86	__start
+.strtab::00001c8e	dvbpsi_decoder_psi_sections_completed
+.strtab::00001cb4	vixs_encoder_update_stream
+.strtab::00001ccf	vixs_encoder_flush_stream
+.strtab::00001ce9	dvbpsi_debug
+.strtab::00001cf6	strcpy@@GLIBC_2.0
+.strtab::00001d08	_Z17xcode_send_streamjP14_IOCTLSDEVSENDPvPjyjjjj
+.strtab::00001d39	dvbpsi_decoder_present
+.strtab::00001d50	dvbpsi_nit_detach
+.strtab::00001d62	__DTOR_END__
+.strtab::00001d6f	dvbpsi_tot_delete
+.strtab::00001d81	dvbpsi_sdt_service_descriptor_add
+.strtab::00001da3	__libc_csu_init
+.strtab::00001db3	printf@@GLIBC_2.0
+.strtab::00001dc5	_fdata
+.strtab::00001dcc	util_destroy_thread
+.strtab::00001de0	_ZN10xcode_io_t8fb_writeEjPvj
+.strtab::00001dfe	_ZN9ADV7842_t8LoadEDIDEv
+.strtab::00001e17	adv7842_set_freerun_mode
+.strtab::00001e30	dvbpsi_decoder_new
+.strtab::00001e43	dvbpsi_nit_init
+.strtab::00001e53	__gnu_local_gp
+.strtab::00001e62	_ZN9ADV7842_tC2Ev
+.strtab::00001e74	atoi@@GLIBC_2.0
+.strtab::00001e84	adv7842_subscribe_event
+.strtab::00001e9c	pthread_mutex_init@@GLIBC_2.0
+.strtab::00001eba	adv7842mode_HDMI_YPbPr_HDMI_576i_tab
+.strtab::00001edf	_Z17xcode_open_handlev
+.strtab::00001ef6	dvbpsi_NewDescriptor
+.strtab::00001f0b	_ZTS10xcode_io_t
+.strtab::00001f1c	_Znwj@@GLIBCXX_3.4
+.strtab::00001f2f	_Z20prepare_input_detecti
+.strtab::00001f49	_ZN9ADV7842_t8InitHDMIEv
+.strtab::00001f62	atof@@GLIBC_2.0
+.strtab::00001f72	dvbpsi_nit_delete
+.strtab::00001f84	FormATSC_EIT
+.strtab::00001f91	_Z8byteswapPc
+.strtab::00001f9f	_ZN10xcode_io_t6get_ioEv
+.strtab::00001fb8	terminate_encoder_recv_thread
+.strtab::00001fd6	dvbpsi_tot_new
+.strtab::00001fe5	strtof@@GLIBC_2.0
+.strtab::00001ff7	DebugDumpPrint
+.strtab::00002006	xcode4_close_encoder
+.strtab::0000201b	dvbpsi_sdt_init
+.strtab::0000202b	_Z23xcode_open_stream_localjP19_IOCTLSDEVOPENLOCAL
+.strtab::0000205e	close@@GLIBC_2.0
+.strtab::0000206f	fwrite@@GLIBC_2.0
+.strtab::00002081	dvbpsi_tot_attach
+.strtab::00002093	_ZN9ADV7842_tD2Ev
+.strtab::000020a5	dvbpsi_DeletePSISections
+.strtab::000020be	dvbpsi_AddDescriptor
+.strtab::000020d3	fprintf@@GLIBC_2.0
+.strtab::000020e6	time@@GLIBC_2.0
+.strtab::000020f6	dvbpsi_eit_sections_decode
+.strtab::00002111	_Z15xcode_i2c_writejiiPKvjiiii
+.strtab::00002130	dvbpsi_sdt_attach
+.strtab::00002142	_ZTV10xcode_io_t
+.strtab::00002153	__bss_start
+.strtab::0000215f	malloc@@GLIBC_2.0
+.strtab::00002171	_ZN10xcode_io_t11mmreg_writeEjj
+.strtab::00002191	pthread_mutex_lock@@GLIBC_2.0
+.strtab::000021af	dvbpsi_DuplicateDecodedDescriptor
+.strtab::000021d1	adv7842mode_HDMI_YPbPr_HDMI_1080p_tab
+.strtab::000021f7	_ZN9ADV7842_t8InitModeEv
+.strtab::00002210	dvbpsi_sdt_sections_decode
+.strtab::0000222b	_Z20xcode_update_stream2jP15_IOCTLSDEVCTRL2yj
+.strtab::00002259	adv7842_unsubscribe_event
+.strtab::00002273	__cxa_atexit@@GLIBC_2.2
+.strtab::0000228b	adv7842mode_YPbPr_576p_24b_422_HDMI_tab
+.strtab::000022b3	_ZN9ADV7842_t24get_current_input_sourceEv
+.strtab::000022dd	dvbpsi_eit_empty
+.strtab::000022ee	dvbpsi_CanDecodeAsDescriptor
+.strtab::0000230b	dvbpsi_BuildPSISection
+.strtab::00002322	_ftext
+.strtab::00002329	_Z20xcode_tsd_dvo_configjP15_IOCTLTSDCONFIG
+.strtab::00002355	dvbpsi_sdt_service_add
+.strtab::0000236c	dvbpsi_eit_attach
+.strtab::0000237e	stdin@@GLIBC_2.0
+.strtab::0000238f	dvbpsi_nit_empty
+.strtab::000023a0	dvbpsi_tot_sections_decode
+.strtab::000023bb	_Z32xcode_dma_host_to_fb_large_chunkjPvjj
+.strtab::000023e5	adv7842_program_input
+.strtab::000023fb	pthread_cond_wait@@GLIBC_2.3.2
+.strtab::0000241a	adv7842mode_YPbPr_480p_10b_422_HDMI_tab
+.strtab::00002442	FormTSHeader
+.strtab::0000244f	_Z14xcode_i2c_readjiiPvjiiii
+.strtab::0000246c	memmove@@GLIBC_2.0
+.strtab::0000247f	_ZN9ADV7842_t13reset_ADV7842Ev
+.strtab::0000249e	FormATSC_TVCT
+.strtab::000024ac	strcat@@GLIBC_2.0
+.strtab::000024be	FormATSC_MGT
+.strtab::000024cb	dvbpsi_ValidPSISection
+.strtab::000024e2	_Z18xcode_close_streamjy
+.strtab::000024fb	vasprintf@@GLIBC_2.0
+.strtab::00002510	_end
+.strtab::00002515	adv7842_deinit
+.strtab::00002524	puts@@GLIBC_2.0
+.strtab::00002534	dvbpsi_error
+.strtab::00002541	dvbpsi_tot_init
+.strtab::00002551	dvbpsi_nit_sections_decode
+.strtab::0000256c	_ZN9ADV7842_tC1Ei
+.strtab::0000257e	setsockopt@@GLIBC_2.0
+.strtab::00002594	_Z19detect_input_sourcev
+.strtab::000025ad	dvbpsi_sdt_sections_gather
+.strtab::000025c8	dvbpsi_warning
+.strtab::000025d7	_Z20xcode_dma_fb_to_hostjPvjj
+.strtab::000025f5	__RLD_MAP
+.strtab::000025ff	dvbpsi_NewPSISection
+.strtab::00002614	_ZN9ADV7842_t18set_video_standardE36enum_analog_digital_video_standard_t
+.strtab::0000265d	sscanf@@GLIBC_2.0
+.strtab::0000266f	gmtime@@GLIBC_2.0
+.strtab::00002681	_ZNK9ADV7842_t13read_registerEjhRh
+.strtab::000026a4	adv7842_detect_audio_mode
+.strtab::000026be	htonl@@GLIBC_2.0
+.strtab::000026cf	_Z20xcode_open_stream_tsjP16_IOCTLSDEVOPENTS
+.strtab::000026fc	strncmp@@GLIBC_2.0
+.strtab::0000270f	open64@@GLIBC_2.2
+.strtab::00002721	log_buff
+.strtab::0000272a	dvbpsi_new
+.strtab::00002735	dvbpsi_nit_sections_generate
+.strtab::00002752	dvbpsi_eit_event_add
+.strtab::00002767	__cxa_guard_abort@@CXXABI_1.3
+.strtab::00002785	xcode4_start_encoder
+.strtab::0000279a	genEIT
+.strtab::000027a1	optarg@@GLIBC_2.0
+.strtab::000027b3	adv7842_handle
+.strtab::000027c2	_Z18xcode_dma_fb_to_fbjjjj
+.strtab::000027dd	fread@@GLIBC_2.0
+.strtab::000027ee	g_llc_delay
+.strtab::000027fa	_Z18xcode_close_handlej
+.strtab::00002812	dvbpsi_Demux
+.strtab::0000281f	_edata
+.strtab::00002826	dvbpsi_tot_detach
+.strtab::00002838	__gxx_personality_v0@@CXXABI_1.3
+.strtab::00002859	dvbpsi_eit_detach
+.strtab::0000286b	adv7842mode_YPbPr_1080i_50HZ_24b_422_HDMI_tab
+.strtab::00002899	_ZN10xcode_io_t14clear_reg_maskEjj
+.strtab::000028bc	gethostbyname@@GLIBC_2.0
+.strtab::000028d5	dvbpsi_eit_sections_gather
+.strtab::000028f0	util_sendto
+.strtab::000028fc	dvbpsi_sdt_detach
+.strtab::0000290e	_Unwind_Resume@@GCC_3.0
+.strtab::00002926	dvbpsi_DetachDemux
+.strtab::00002939	strcmp@@GLIBC_2.0
+.strtab::0000294b	CurValidInput
+.strtab::00002959	exit@@GLIBC_2.0
+.strtab::00002969	xcode4_get_encoder_ts_info
+.strtab::00002984	adv7842mode_YPbPr_PAL_576i_576p_24b_422_HDMI_tab
+.strtab::000029b5	_Z32xcode_open_stream_ts_passthroughjP27_IOCTLSDEVOPENTSPASSTHROUGH
+.strtab::000029f9	vixs_encoder_open_stream
+.strtab::00002a12	CurInputType
+.strtab::00002a1f	adv7842_DebugDump
+.strtab::00002a31	_ZN10xcode_io_tD2Ev
+.strtab::00002a45	fopen64@@GLIBC_2.2
+.strtab::00002a58	dvbpsi_tot_sections_gather
+.strtab::00002a73	_ZN10xcode_io_tC1Ev
+.strtab::00002a87	main
+.strtab::00002a8c	_init
+.strtab::00002a92	dvbpsi_eit_event_descriptor_add
+.strtab::00002ab2	pthread_create@@GLIBC_2.2

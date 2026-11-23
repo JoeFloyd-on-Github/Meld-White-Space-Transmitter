@@ -278,6 +278,28 @@ check. Keep that framing intact when editing the README.
     EEPROM) not ruled out. The user chose to stop and document. Written up in
     `docs/radio-and-video.md` §5.1 and `docs/units/mt300-av-677.md` (open
     follow-ups).
+24. **Full Ghidra decompile & annotation of `av_streamer` (2026-11-22).**
+    `AvStreamer/` holds the extracted `/disk/Meld/AV30/test_script/` directory
+    from unit 677's verified backup (`av_streamer` v2.14, md5 `65023c5fd5c3f99af36c8057e1acc75d`,
+    unstripped MIPS32r2-LE with DWARF; unit 192.168.1.196 was offline at the
+    time so live md5 match is pending), the raw Ghidra 12.2 export
+    (`AvStreamer/ghidra/av_streamer_decompiled.c`, 378 functions), per-CU
+    splits and annotated files (`AvStreamer/ghidra/annotated/00_main.c.c` ..
+    `18_nocu.c`, all 19 verified code-identical via `check_annotated.py`), and
+    the combined `AvStreamer/ghidra/av_streamer_annotated.c`. Key findings
+    summarized in `AvStreamer/README.md`:
+    - `av_streamer` never calls `MeldAgent` or any shell command (`system`/`popen`).
+    - Confirms the PSIP latch mechanism: `encoder_send_data_thread_entry()` reads
+      `/etc/config/{queryInfo,sbi,company}` **once** before its loop and
+      generates 11 ATSC packets (`0x1FFB` STT/MGT/TVCT, `0x1000..0x1003` EIT,
+      `0x1100..0x1103` ETT) or 4 DVB-T packets via statically linked
+      `libdvbpsi-1.1.0`.
+    - Documents ADV7842 I2C init/EDID/HPA (`0x34:0x69 = 0xA4`, `0x32:0x77 = 0x0F`,
+      200 ms poll thread + XCode4 GPIO 5 `0x20` audio clock mux), ViXS
+      `/dev/vixs/xcodedrv` ioctl `0x17241724` over 3 fds, hidden CLI flags
+      (`-l`, `-f`, `-F`), and OEM bugs (notably a 100% CPU busy-spin in `main()`
+      when `stdin` is not a tty, and `adv7842_get_input()` masking out 1080p60
+      Component).
 
 ## Key technical facts and decisions
 

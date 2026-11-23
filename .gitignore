@@ -22,3 +22,6 @@ qemu-env/build/
 backup-*/
 *.img
 *.cpio.gz
+
+# av_streamer Ghidra project state
+AvStreamer/ghidra/project/

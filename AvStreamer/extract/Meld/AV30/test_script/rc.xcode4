@@ -1,0 +1,120 @@
+#!/bin/sh
+#
+# VIXS xcode4 driver install script
+# Copyright 2009, VIXS Systems Inc. All rights reserved
+#
+# Install driver and estabish the device file nodes that we will be using
+#
+#
+ 
+module="xcode4drv"
+name="boxster"
+device="xcodedrv"
+dir="/dev/vixs"
+group="wheel"
+mode="666"
+
+#
+# Kernel 2.6 use module extension name .ko
+#
+kernel_version=`uname -r | cut -b3-3`
+if [ "$kernel_version" = "6" ]
+then 
+	module_name=$module.ko
+else
+	module_name=$module.o
+fi
+
+if [ -f $module_name ]
+then
+	echo Found module file $module_name
+else
+	echo Can not find module file $module_name
+	exit 1
+fi
+
+#
+# step 1: remove driver from kernel if existing
+#
+/sbin/rmmod $module 2>/dev/null 
+
+#
+# step 2: load driver module into kernel
+#
+# invoke insmod with all the arguments
+/sbin/insmod $module_name $* 2>/dev/null >/dev/null 
+errnum=$?
+if [ $errnum -eq 0 ]
+then
+	echo Loaded xcode4 driver module $module
+else
+	# try to force load driver
+	/sbin/insmod -f $module_name $* 2>/dev/null >/dev/null 
+	errnum=$?
+	if [ $errnum -eq 0 ]
+	then
+		echo Loaded xcode4 driver module $module
+	else
+		echo Loaded xcode4 driver module $module
+		echo Failed to load module $module_name into kernel
+		echo Error number = $errnum
+		echo Maybe incorrect module file or kernel version
+		exit 2
+	fi
+fi
+
+#
+# step 3: create device node
+#
+# create dir if necessary
+if [ -d $dir ]
+then 
+	echo "Found directory $dir"
+else
+	#install -d $dir
+	mkdir -p /dev/vixs
+	echo "Created directory $dir" 
+fi
+
+# remove stale nodes.
+# rm -f $dir/${device} $dir/${device}2 $dir/${device}3 $dir/${device}4
+
+boxster=`grep -e $name /proc/devices`
+
+# create node with correct device major number if needed
+if [ -n "$boxster" ]
+then
+	if [ -e $dir/${device} ]
+	then 
+		echo "Found device node $dir/${device}"
+	else
+   	 	major=`echo $boxster | cut -b-3 2>/dev/null`
+    	errnum=$?
+    	if [ $errnum -ne 0 ]
+    	then
+       		major=120
+    	fi
+
+		mknod $dir/${device}  c $major 0
+		mknod $dir/${device}2 c $major 1
+		mknod $dir/${device}3 c $major 2
+		mknod $dir/${device}4 c $major 3
+		echo Created device node $dir/$device
+
+		# give the appropriate group/permissions
+		#chgrp $group $dir/${device} $dir/${device}2 $dir/${device}3 $dir/${device}4
+		chmod $mode $dir/${device} $dir/${device}2 $dir/${device}3 $dir/${device}4
+		
+		# force to write/flush to disk
+		sync
+	fi
+	echo Done! Enjoy!
+else
+	echo No xcode4 hardware found
+	echo Failed to create device node
+	exit 3
+fi
+
+#
+# end of script rc.xcode4
+#
