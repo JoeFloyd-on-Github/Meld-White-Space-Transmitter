@@ -93,7 +93,13 @@
       <div class="field"><label title="Co-channel separation added beyond a station's estimated protected contour (FCC fixed-device ~14.4 km for low antennas).">Co-channel margin (km)</label><input id="sepco" type="number" value="14.4" step="0.1"></div>
       <div class="field"><label title="Protected radius of a wireless microphone / low-power aux registration.">Mic / point keep-out (km)</label><input id="keepout" type="number" value="1" step="0.1"></div>
       <div class="field"><label>Channels to show</label>
-        <select id="range"><option value="all">All (2–51)</option><option value="dev" selected>MT300 band (21–51)</option><option value="uhf">UHF (14–36)</option></select>
+        <select id="range">
+          <option value="all" selected>All (2–51: VHF + UHF + 600 MHz)</option>
+          <option value="tv">All TV (2–36: VHF + UHF)</option>
+          <option value="vhf">VHF only (2–13)</option>
+          <option value="uhf">UHF only (14–36)</option>
+          <option value="dev">MT300 band (21–51)</option>
+        </select>
       </div>
     </div>
     <div class="status" id="status">Loading FCC data…</div>
@@ -279,7 +285,7 @@ function run(){
   const sepco=+$("sepco").value||0, keepout=+$("keepout").value||0;
   const rangeSel=$("range").value;
   const chLo = rangeSel==="uhf"?14 : rangeSel==="dev"?21 : 2;
-  const chHi = rangeSel==="uhf"?36 : 51;
+  const chHi = rangeSel==="vhf"?13 : (rangeSel==="uhf"||rangeSel==="tv")?36 : 51;
 
   // nearest co/adjacent TV station per channel
   const co={},adj={},coCount={},adjCount={};
@@ -298,7 +304,7 @@ function run(){
   const pointHit=ch=>micM.get(ch)||mvpdM.get(ch)||tvrxM.get(ch)||pbasM.get(ch)||mobM.get(ch);
 
   const rows=$("rows"); rows.innerHTML="";
-  let nAvail=0,nOcc=0,availList=[];
+  let nAvail=0,nOcc=0,availList=[],vhfAvail=[];
   for(let ch=chLo;ch<=chHi;ch++){
     const b=chBand(ch); if(!b)continue;
     let cls,label,note="";
@@ -309,7 +315,7 @@ function run(){
     else if(co[ch]){cls="occ";label="OCCUPIED";}
     else if(ph){cls="occ";label="OCCUPIED";note="point registration ("+ph.call+", "+ph.dist.toFixed(1)+" km)";}
     else if(adj[ch]){cls="adj";label="ADJACENT";}
-    else {cls="ok";label="AVAILABLE";nAvail++; if(ch>=21)availList.push(ch);}
+    else {cls="ok";label="AVAILABLE";nAvail++; if(ch<=13)vhfAvail.push(ch); if(ch>=21)availList.push(ch);}
     if(cls==="occ")nOcc++;
     const c=co[ch];
     const near = c? `${c.s.call} · ch${c.s.ch} ${c.s.svc} · ${c.d.toFixed(0)} km · ${c.s.erp}kW${c.s.cc!=="USA"?" ("+c.s.cc+")":""}`
@@ -321,10 +327,12 @@ function run(){
     rows.appendChild(tr);
   }
   const authAvail=availList.filter(AUTHORIZED);
+  const vhfChip = chLo<=13 ? `<span class="chip ${vhfAvail.length?"ok":"res"}">VHF (2–13) open: ${vhfAvail.join(", ")||"none"}</span>` : "";
   $("summary").innerHTML =
     `<span class="chip ok">${nAvail} available</span>`+
     `<span class="chip occ">${nOcc} occupied</span>`+
-    `<span class="chip ok">White-space candidates ≥ch21: ${availList.join(", ")||"none"}</span>`+
+    vhfChip+
+    `<span class="chip ok">UHF candidates ≥ch21: ${availList.join(", ")||"none"}</span>`+
     `<span class="chip ${authAvail.length?"ok":"res"}">MT300-authorized &amp; open: ${authAvail.join(", ")||"none"}</span>`;
   $("results").style.display="block";
   $("status").textContent=`At ${lat.toFixed(4)}, ${lon.toFixed(4)} — showing channels ${chLo}–${chHi}.`;

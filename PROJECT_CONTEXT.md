@@ -309,6 +309,14 @@ check. Keep that framing intact when editing the README.
     cannot convert `1080p → 1080i` (only `-o 480i` is wired in `main.c`), and
     gives the exact CEA-861 Underscan bit + checksum patch (`6C 83 71` → `F1`,
     `6C FF` updated) to disable source-side overscan.
+26. **VHF support in `whitespace-finder` + new `radio-finder` tool (2026-11-22).**
+    Updated `tools/whitespace-finder/index.html` to default to **All (2–51)**
+    so VHF channels 2–13 are shown alongside UHF (plus explicit **VHF only 2–13**
+    and **All TV 2–36** filters and a VHF open-channel summary chip). Added
+    `tools/radio-finder/` (`index.html`, `README.md`, `data/fcc_am_station.csv`
+    with 4,267 AM stations, `data/fcc_fm_station.csv` with 11,414 FM stations
+    from `transition.fcc.gov/fcc-bin/{amq,fmq}`), which clusters major markets
+    per state/territory and lists AM/FM stations by frequency, distance, or power.
 
 ## Key technical facts and decisions
 

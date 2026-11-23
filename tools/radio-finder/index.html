@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AM &amp; FM Radio Station Finder</title>
+<style>
+  :root{
+    --bg:#0f1419; --panel:#161c24; --panel2:#1c242e; --line:#2a333f;
+    --fg:#e6edf3; --muted:#9aa7b4; --accent:#4aa3ff;
+    --fm:#2ec77a; --fmbg:#10301f; --am:#e0b020; --ambg:#33290a;
+    --occ:#ff6b6b; --occbg:#3a1414;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f4f6f8; --panel:#fff; --panel2:#f0f3f6; --line:#dde3ea;
+      --fg:#111820; --muted:#5a6572; --accent:#1769c4;
+      --fm:#137a43; --fmbg:#e4f6ec; --am:#8a6a00; --ambg:#fbf2d6;
+      --occ:#b22; --occbg:#fbe5e5;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  .wrap{max-width:1080px;margin:0 auto;padding:16px}
+  h1{font-size:22px;margin:.2em 0}
+  h2{font-size:16px;margin:1.4em 0 .5em;border-bottom:1px solid var(--line);padding-bottom:.3em}
+  p.sub{color:var(--muted);margin:.2em 0 1em}
+  a{color:var(--accent)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin:12px 0}
+  .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+  .field{display:flex;flex-direction:column;gap:3px}
+  .field label{font-size:12px;color:var(--muted)}
+  input,select,button{font:inherit;color:var(--fg);background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:7px 9px}
+  input[type=number]{width:120px}
+  button{cursor:pointer;background:var(--accent);color:#fff;border:none;font-weight:600;padding:8px 16px}
+  button.ghost{background:var(--panel2);color:var(--fg);border:1px solid var(--line);font-weight:500}
+  button:disabled{opacity:.5;cursor:default}
+  .status{font-size:13px;color:var(--muted);margin:8px 0}
+  .summary{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+  .chip{padding:5px 9px;border-radius:999px;font-size:12px;font-weight:600;border:1px solid var(--line)}
+  .chip.fm{background:var(--fmbg);color:var(--fm)} .chip.am{background:var(--ambg);color:var(--am)}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin-top:6px}
+  th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{color:var(--muted);font-weight:600;position:sticky;top:0;background:var(--panel)}
+  td.freq{font-weight:700;white-space:nowrap}
+  td.call{font-weight:600;white-space:nowrap}
+  .tag{display:inline-block;padding:2px 7px;border-radius:6px;font-size:11px;font-weight:700}
+  .tag.fm{background:var(--fmbg);color:var(--fm)} .tag.am{background:var(--ambg);color:var(--am)}
+  .muted{color:var(--muted);font-size:12px}
+  code{background:var(--panel2);padding:1px 5px;border-radius:5px;font-size:12px}
+  .err{background:var(--occbg);color:var(--occ);border:1px solid var(--occ);border-radius:8px;padding:12px;margin:10px 0;display:none}
+  .adv{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AM &amp; FM Radio Station Finder</h1>
+  <p class="sub">Lists licensed US AM and FM broadcast radio stations around any major market or coordinates, using public
+  FCC database records mirrored in <code>./data/</code>. Sibling tool to the
+  <a href="../whitespace-finder/index.html">TV White Space Finder</a> in the
+  <a href="../../README.md">Meld White Space Transmitter</a> project.</p>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="field"><label>Latitude</label><input id="lat" type="number" step="any" value="33.4484"></div>
+      <div class="field"><label>Longitude</label><input id="lon" type="number" step="any" value="-112.0740"></div>
+      <button id="go">Find stations</button>
+      <button id="geo" class="ghost" type="button">Use my location</button>
+    </div>
+    <div class="field" style="margin-top:10px;max-width:480px">
+      <label>Jump to a major market — top 5 per state / territory (station cluster centroid)</label>
+      <select id="market"><option value="">— choose a market —</option></select>
+    </div>
+    <div class="adv">
+      <div class="field"><label>Radius (km)</label><input id="radius" type="number" value="80" min="5" max="500" step="5"></div>
+      <div class="field"><label>Band</label>
+        <select id="band">
+          <option value="all" selected>All (AM + FM)</option>
+          <option value="FM">FM only (88.1–107.9 MHz)</option>
+          <option value="AM">AM only (540–1700 kHz)</option>
+        </select>
+      </div>
+      <div class="field"><label>Sort by</label>
+        <select id="sort">
+          <option value="freq" selected>Frequency (AM then FM)</option>
+          <option value="dist">Distance (nearest first)</option>
+          <option value="pwr">Power (highest first)</option>
+        </select>
+      </div>
+      <div class="field" style="flex:1;min-width:160px"><label>Filter (callsign / city / licensee / freq)</label>
+        <input id="q" type="text" placeholder="e.g. NPR, WTOP, 88.5, Phoenix">
+      </div>
+    </div>
+    <div class="status" id="status">Loading FCC AM &amp; FM data…</div>
+    <div class="err" id="err"></div>
+  </div>
+
+  <div id="results" style="display:none">
+    <h2>Stations</h2>
+    <div class="summary" id="summary"></div>
+    <table><thead><tr>
+      <th>Band</th><th>Freq</th><th>Callsign</th><th>Class</th><th>Power / HAAT</th><th>City, State</th><th>Dist</th><th>Licensee</th>
+    </tr></thead><tbody id="rows"></tbody></table>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const STATES={AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",
+ CT:"Connecticut",DE:"Delaware",DC:"District of Columbia",FL:"Florida",GA:"Georgia",HI:"Hawaii",
+ ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",
+ MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",
+ MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",
+ NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",
+ RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",
+ VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming",
+ PR:"Puerto Rico",VI:"U.S. Virgin Islands",GU:"Guam",AS:"American Samoa",MP:"N. Mariana Islands"};
+const titleCase=s=>(s||"").toLowerCase().replace(/\b[a-z]/g,m=>m.toUpperCase()).replace(/\bMc(\w)/g,(_,c)=>"Mc"+c.toUpperCase());
+
+function hav(la1,lo1,la2,lo2){
+  const R=6371,r=Math.PI/180,dla=(la2-la1)*r,dlo=(lo2-lo1)*r;
+  const a=Math.sin(dla/2)**2+Math.cos(la1*r)*Math.cos(la2*r)*Math.sin(dlo/2)**2;
+  return 2*R*Math.asin(Math.sqrt(a));
+}
+
+function parseCSV(text){
+  const rows=[]; let row=[],f="",q=false,i=0,c;
+  while(i<text.length){
+    c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+    else { if(c==='"')q=true;
+      else if(c===','){row.push(f);f="";}
+      else if(c==='\n'){row.push(f);rows.push(row);row=[];f="";}
+      else if(c==='\r'){}
+      else f+=c; }
+    i++;
+  }
+  if(f.length||row.length){row.push(f);rows.push(row);}
+  const hdr=rows.shift().map(h=>h.trim());
+  return rows.filter(r=>r.length>1).map(r=>{const o={};hdr.forEach((h,j)=>o[h]=r[j]);return o;});
+}
+
+let STATIONS=[];
+
+function buildMarkets(){
+  const CLUSTER_KM=55;
+  const byState={};
+  for(const s of STATIONS){
+    if(!STATES[s.st])continue;
+    (byState[s.st]||(byState[s.st]=[])).push(s);
+  }
+  const sel=$("market");
+  for(const st of Object.keys(byState).sort((a,b)=>STATES[a].localeCompare(STATES[b]))){
+    const clusters=[];
+    for(const s of byState[st]){
+      let best=null,bd=Infinity;
+      for(const c of clusters){const d=hav(s.lat,s.lon,c.sumLat/c.n,c.sumLon/c.n); if(d<bd){bd=d;best=c;}}
+      if(best&&bd<=CLUSTER_KM){best.items.push(s);best.sumLat+=s.lat;best.sumLon+=s.lon;best.n++;}
+      else clusters.push({items:[s],sumLat:s.lat,sumLon:s.lon,n:1});
+    }
+    clusters.sort((a,b)=>b.n-a.n);
+    const og=document.createElement("optgroup"); og.label=STATES[st];
+    for(const c of clusters.slice(0,5)){
+      const freq={}; for(const it of c.items){const k=titleCase(it.city||"?"); freq[k]=(freq[k]||0)+1;}
+      const name=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0][0];
+      const o=document.createElement("option");
+      o.value=(c.sumLat/c.n).toFixed(5)+","+(c.sumLon/c.n).toFixed(5);
+      o.textContent=`${name} — ${c.n} stations`;
+      og.appendChild(o);
+    }
+    sel.appendChild(og);
+  }
+}
+
+async function load(){
+  try{
+    const [amTxt, fmTxt]=await Promise.all(["data/fcc_am_station.csv","data/fcc_fm_station.csv"].map(async u=>{
+      const r=await fetch(u); if(!r.ok) throw new Error(u+" → HTTP "+r.status);
+      return r.text();
+    }));
+    const am=parseCSV(amTxt).map(r=>({
+      band:"AM", freq:+r.freq_khz, freqStr:`${r.freq_khz} kHz`, sortFreq:+r.freq_khz/1000,
+      call:r.callsign, cls:r.class||"—", pwr:+(r.day_kw||r.night_kw||0),
+      pwrStr:[r.day_kw?`Day ${r.day_kw} kW`:"", r.night_kw?`Night ${r.night_kw} kW`:""].filter(Boolean).join(" / ")||"—",
+      dir:r.directional, city:r.city, st:r.state, lat:+r.latitude, lon:+r.longitude, lic:r.licensee
+    }));
+    const fm=parseCSV(fmTxt).map(r=>({
+      band:"FM", freq:+r.freq_mhz, freqStr:`${(+r.freq_mhz).toFixed(1)} MHz`, sortFreq:+r.freq_mhz,
+      call:r.callsign, cls:r.class||"—", pwr:+(r.erp_kw||0),
+      pwrStr:`${r.erp_kw||"?"} kW${r.haat_m?` · ${r.haat_m} m HAAT`:""}`,
+      dir:r.directional, city:r.city, st:r.state, lat:+r.latitude, lon:+r.longitude, lic:r.licensee
+    }));
+    STATIONS=[...am,...fm].filter(s=>isFinite(s.lat)&&isFinite(s.lon));
+    buildMarkets();
+    $("status").textContent=`Loaded ${am.length.toLocaleString()} AM + ${fm.length.toLocaleString()} FM licensed stations. Pick a market or enter a location.`;
+    $("go").disabled=false; run();
+  }catch(e){
+    $("status").style.display="none";
+    const el=$("err"); el.style.display="block";
+    el.innerHTML=`<b>Could not load the CSV data.</b> Serve this folder over HTTP:<br><code>cd tools/radio-finder &amp;&amp; python3 -m http.server 8001</code><br><span class="muted">(${e.message})</span>`;
+  }
+}
+
+function run(){
+  if(!STATIONS.length)return;
+  const lat=+$("lat").value, lon=+$("lon").value, rad=+$("radius").value||80;
+  if(!isFinite(lat)||!isFinite(lon))return;
+  const band=$("band").value, sort=$("sort").value, q=$("q").value.trim().toLowerCase();
+
+  let hits=[];
+  for(const s of STATIONS){
+    if(band!=="all"&&s.band!==band)continue;
+    const d=hav(lat,lon,s.lat,s.lon);
+    if(d>rad)continue;
+    if(q && !(`${s.call} ${s.city} ${s.st} ${s.lic} ${s.freqStr}`.toLowerCase().includes(q)))continue;
+    hits.push({...s, d});
+  }
+  if(sort==="freq") hits.sort((a,b)=>a.sortFreq-b.sortFreq||a.d-b.d);
+  else if(sort==="dist") hits.sort((a,b)=>a.d-b.d||a.sortFreq-b.sortFreq);
+  else hits.sort((a,b)=>b.pwr-a.pwr||a.d-b.d);
+
+  const nFM=hits.filter(x=>x.band==="FM").length, nAM=hits.filter(x=>x.band==="AM").length;
+  $("summary").innerHTML=
+    `<span class="chip fm">${nFM} FM</span>`+
+    `<span class="chip am">${nAM} AM</span>`+
+    `<span class="chip">${hits.length} total within ${rad} km</span>`;
+
+  const rows=$("rows"); rows.innerHTML="";
+  for(const s of hits){
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td><span class="tag ${s.band.toLowerCase()}">${s.band}</span></td>`+
+      `<td class="freq">${s.freqStr}</td>`+
+      `<td class="call">${s.call}</td>`+
+      `<td>${s.cls}</td>`+
+      `<td class="muted">${s.pwrStr}</td>`+
+      `<td>${titleCase(s.city)}, ${s.st}</td>`+
+      `<td class="muted">${s.d.toFixed(1)} km</td>`+
+      `<td class="muted">${s.lic}</td>`;
+    rows.appendChild(tr);
+  }
+  $("results").style.display="block";
+  $("status").textContent=`At ${lat.toFixed(4)}, ${lon.toFixed(4)} (${rad} km radius) — ${hits.length} stations.`;
+}
+
+$("go").onclick=run; $("go").disabled=true;
+["lat","lon","radius"].forEach(id=>$(id).addEventListener("keydown",e=>{if(e.key==="Enter")run();}));
+["radius","band","sort"].forEach(id=>$(id).addEventListener("change",run));
+$("q").addEventListener("input",run);
+$("market").addEventListener("change",e=>{const v=e.target.value; if(!v)return;
+  const [la,lo]=v.split(",").map(Number); $("lat").value=la; $("lon").value=lo; run();});
+$("geo").onclick=()=>{ if(!navigator.geolocation){alert("No geolocation.");return;}
+  navigator.geolocation.getCurrentPosition(p=>{$("lat").value=p.coords.latitude.toFixed(5);$("lon").value=p.coords.longitude.toFixed(5);run();},
+   ()=>alert("Could not get location."));};
+load();
+</script>
+</body>
+</html>

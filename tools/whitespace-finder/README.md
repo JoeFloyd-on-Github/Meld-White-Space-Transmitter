@@ -24,7 +24,22 @@ python3 -m http.server 8000
 
 Then open <http://localhost:8000/>. Enter a latitude/longitude, **pick a TV
 market from the dropdown**, or hit "Use my location" — and it lists every channel
-with a status and the nearest occupant.
+(defaulting to **All 2–51: VHF + UHF + 600 MHz**, with filters for **VHF only 2–13**,
+**All TV 2–36**, **UHF only 14–36**, and **MT300 band 21–51**) with a status and the
+nearest occupant. See also the sibling [`tools/radio-finder/`](../radio-finder/) tool
+for AM & FM broadcast stations by market.
+
+### Note on VHF channels after the DTV transition
+
+Moving out of VHF was **not** mandatory in the 2009 US digital TV transition,
+though many stations preferred UHF (14–51) because VHF has higher ambient/impulse
+noise and requires larger receive antennas. Channels **2–13** remain active TV
+broadcast channels (Low-VHF 2–6 at 54–88 MHz; High-VHF 7–13 at 174–216 MHz),
+and the post-2017 incentive auction repack (which shrank UHF to 14–36) even
+moved a few stations back into High-VHF. In the current FCC snapshot
+(`fcc_tv_station.csv`), **1,841** stations operate on VHF channels 2–13
+(alongside 6,229 on UHF 14–36). Note that a station's PSIP *virtual* channel
+(e.g., `4.1` or `7.1`) often differs from its actual RF channel.
 
 The **market dropdown** is built from the loaded data, not hard-coded: for each
 state / district / territory it clusters the full-power TV stations by proximity,
