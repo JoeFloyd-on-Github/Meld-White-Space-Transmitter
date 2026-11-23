@@ -300,6 +300,15 @@ check. Keep that framing intact when editing the README.
       (`-l`, `-f`, `-F`), and OEM bugs (notably a 100% CPU busy-spin in `main()`
       when `stdin` is not a tty, and `adv7842_get_input()` masking out 1080p60
       Component).
+25. **EDID format, 1080p/1080i resolution, and overscan writeup (2026-11-22).**
+    `docs/edid-and-resolution.md` documents the ADV7842 `.txt` EDID script
+    format (`40` IO map, `64` KSV, `6C` 256-byte EDID RAM), compares all four
+    shipped EDIDs (`edid.txt` advertises `1080p60` VIC `16*` while
+    `Meld_Edid_r12_720p_pcm48.txt` marks `1080i60` VIC `5*` native, explaining
+    why unit 677 locked at `1080i@60`), explains why unmodified `av_streamer`
+    cannot convert `1080p → 1080i` (only `-o 480i` is wired in `main.c`), and
+    gives the exact CEA-861 Underscan bit + checksum patch (`6C 83 71` → `F1`,
+    `6C FF` updated) to disable source-side overscan.
 
 ## Key technical facts and decisions
 
