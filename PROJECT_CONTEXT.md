@@ -318,6 +318,22 @@ check. Keep that framing intact when editing the README.
     from `transition.fcc.gov/fcc-bin/{amq,fmq}`), which clusters major markets
     per state/territory and lists AM/FM stations by frequency, distance, or power.
 
+27. **Firmware provenance writeup (2026-11-25).** `docs/provenance.md` — who wrote
+    what, from the files themselves. **Spectrum Bridge, Inc.** (2012, SVN author
+    `mario`) wrote the base stack: the `whitespaceagent`, the `wsagent_start` /
+    `wsagent_stop` helper scripts, the `sbi` config system, **and the base web UI**
+    (the `cbi` framework + core pages `config/index/network/preferences/processor/`
+    `registration/status/upgrade.php`, `cbi.js`/`xhr.js`/`cascade.css`) — all
+    carrying the identical SB copyright header and rendering a `© 2012 Spectrum
+    Bridge` footer. **Meld** integrated it: swapped in the `images/meld.jpg` logo
+    and `MELDTECH` titles (leaving SB's footer in place), added a `meldtech` section
+    inside SB's `sbi` namespace and the `RF_Control.php` / `SystemInfo.php` pages,
+    wrote the hardware/video layer (`MeldAgent`, `av_streamer`) and boot wiring, and
+    pasted dated 2013/2015 edits into SB's `wsagent_start` that link registration to
+    the TX-enable. The point: every bug found here (items 21–23) lives in **Meld's
+    integration seam**, not in SB's base. Corrects the earlier loose attribution of
+    the web UI to Meld.
+
 ## Key technical facts and decisions
 
 - **Why the redirect is easy:** `wsa` uses `gethostbyname` (honors `/etc/hosts`),
